@@ -1,0 +1,10 @@
+@import "../../styles/global";
+
+.content {
+ top: calculateRem(50);
+ left: calculateRem(150);
+ position: absolute;
+ width: 100%;
+ background: antiquewhite;
+ height: 90%;
+}

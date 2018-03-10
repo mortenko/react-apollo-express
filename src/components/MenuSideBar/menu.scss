@@ -1,0 +1,24 @@
+@import "../../styles/global";
+
+.menu {
+  position: absolute;
+  top: calculateRem(50);
+  left: 0;
+  width: calculateRem(150);
+  height: 90%;
+  background: lightblue;
+}
+
+ul {
+  li {
+    display: inline-block;
+    list-style-type: none;
+  }
+}
+
+a {
+  text-decoration: none;
+&:hover {
+  text-decoration: underline;
+ }
+}

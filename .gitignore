@@ -1,0 +1,8 @@
+node_modules
+build/**
+!build/index.html
+yarn.lock
+.idea
+npm-debug.log
+coverage/*
+src/**/*.css
