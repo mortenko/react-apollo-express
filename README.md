@@ -1,1 +1,1 @@
-react-apollo-express app for inlopp X
+react-apollo-express app for inloopX
