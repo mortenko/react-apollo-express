@@ -7,13 +7,14 @@ module.exports = {
       const Order = {
         customerID: faker.random.number({
           min: 1,
-          max: 15
+          max: 100
         }),
-        timeorder: faker.date.future()
+        createdAt: faker.date.past(),
+        updatedAt: faker.date.recent()
       };
       return Order;
     }
-    for (let i = 1; i <= 15; i++) {
+    for (let i = 1; i <= 50; i++) {
       OrderData.push(generateOrder());
     }
     return queryInterface.bulkInsert("Orders", OrderData);

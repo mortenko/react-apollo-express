@@ -15,7 +15,7 @@ module.exports = {
       return Customer;
     }
 
-    for (let i = 1; i <= 20; i++) {
+    for (let i = 1; i <= 100; i++) {
       customerData.push(generateCustomer());
     }
     return queryInterface.bulkInsert("Customers", customerData);

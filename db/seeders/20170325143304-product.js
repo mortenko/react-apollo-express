@@ -15,7 +15,7 @@ module.exports = {
       };
       return Product;
     }
-    for (let i = 1; i <= 20; i++) {
+    for (let i = 1; i <= 150; i++) {
       productData.push(generateProduct());
     }
     return queryInterface.bulkInsert("Products", productData);

@@ -6,14 +6,14 @@ module.exports = {
     function generateCustomerPhoto(i) {
       const CustomerPhoto = {
         customerID: i,
-        filename: faker.system.fileName(),
-        filetype: faker.image.avatar(),
+        photo: faker.image.avatar(),
+        name: faker.random.word(),
         createdAt: faker.date.past(),
         updatedAt: faker.date.past()
       };
       return CustomerPhoto;
     }
-    for (let i = 1; i <= 20; i++) {
+    for (let i = 1; i <= 100; i++) {
       customerPhotoData.push(generateCustomerPhoto(i));
     }
     return queryInterface.bulkInsert("CustomerPhotos", customerPhotoData);

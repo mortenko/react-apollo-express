@@ -12,7 +12,7 @@ module.exports = {
         totalsumwithdph: faker.commerce.price() * 1.5,
         productID: faker.random.number({
           min: 1,
-          max: 20
+          max: 150
         }),
         orderID: i,
         createdAt: faker.date.future(),
@@ -20,7 +20,7 @@ module.exports = {
       };
       return OrderItem;
     }
-    for (let i = 1; i <= 15; i++) {
+    for (let i = 1; i <= 50; i++) {
       orderItemData.push(generateOrderItem(i));
     }
     return queryInterface.bulkInsert("OrderItems", orderItemData);
