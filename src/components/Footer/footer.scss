@@ -1,10 +1,8 @@
-@import "../../styles/global";
-
 .footer {
-  position: absolute;
+  position: relative;
   bottom: 0;
   left: 0;
   width: 100%;
-  height: calculateRem(60);
-  background: darkkhaki;
+  height: 80px;
+  background: lightgrey;
 }

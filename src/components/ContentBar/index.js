@@ -1,7 +1,13 @@
 import React from "react";
-import styles from "./content.scss";
+import PropTypes from "prop-types";
+import styles from "./contentbar.scss";
 
-export default function ContentBar(props) {
-    return(<div className={styles.content}>{props.children}</div>)
+const ContentBar = (props) => (
+    <div className={styles.contentBar}>{props.children}</div>
+);
+export default ContentBar;
 
-}
+ContentBar.propTypes = {
+   children: PropTypes.node.isRequired,
+};
+
