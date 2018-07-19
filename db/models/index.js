@@ -1,10 +1,9 @@
 import fs from "fs";
 import path from "path";
 import Sequelize from "sequelize";
-
 const basename = path.basename(module.filename);
 const env = process.env.NODE_ENV || "development";
-const config = require(__dirname + "/../dbConfig/config.json")[env];
+const config = require("../config/config.json")[env];
 const db = {};
 
 let sequelize = null;
@@ -21,7 +20,6 @@ fs
   })
   .forEach(file => {
     const model = sequelize["import"](path.join(__dirname, file));
-    console.log(db[model.name]);
     db[model.name] = model;
   });
 
@@ -34,4 +32,4 @@ Object.keys(db).forEach(modelName => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-module.exports = db;
+export default db;
