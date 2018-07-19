@@ -1,0 +1,17 @@
+@import "../../styles/colors.scss";
+
+.uploadButton {
+  padding-top: 10px;
+}
+
+.uploadButton__text {
+  font-size: 18px;
+  font-weight: bolder;
+  span {
+    color: $font-color-danger;
+    font-size: 20px;
+  }
+}
+.uploadButton__image {
+  margin-top: 10px;
+}
