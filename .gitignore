@@ -6,3 +6,4 @@ yarn.lock
 npm-debug.log
 coverage/*
 src/**/*.css
+.DS_Store
