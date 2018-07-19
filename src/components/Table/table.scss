@@ -1,0 +1,30 @@
+.table {
+  margin-top: 20px;
+  .table__header {
+    text-align: center;
+    background-color: white;
+  }
+  thead {
+    tr {
+      .table__head {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-around;
+        margin-bottom: 20px;
+        border-bottom: none;
+        width: 100%;
+      }
+    }
+    td {
+      padding: 4px 20px 4px 24px;
+    }
+  }
+  .table__title {
+    font-size: 22px;
+  }
+  .table__row {
+    &:hover {
+      background-color: lightgray;
+    }
+  }
+}
