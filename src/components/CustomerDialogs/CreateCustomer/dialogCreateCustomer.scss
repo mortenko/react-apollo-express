@@ -1,0 +1,10 @@
+@import "../../../styles/colors";
+@import "../../Dialog/_dialog.scss";
+
+.dialogCreateCustomer__title {
+  background-color: $primary;
+}
+
+.dialog__title {
+  @extend .dialogCreateCustomer__title
+}

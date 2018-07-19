@@ -1,0 +1,13 @@
+@import "../../../styles/colors";
+@import "../../Dialog/_dialog.scss";
+
+.dialogDeleteCustomer__title {
+  background-color: $bright_red;
+}
+.dialogDeleteCustomer__content {
+  padding: 5%;
+}
+
+.dialog__title {
+  @extend .dialogDeleteCustomer__title
+}
