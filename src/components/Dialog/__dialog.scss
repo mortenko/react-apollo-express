@@ -1,0 +1,18 @@
+.dialog {
+  border-radius: 5%;
+}
+.dialog__container {
+  padding: 5%;
+}
+.dialog__title {
+  text-align: center;
+  background-color: $primary;
+}
+.dialog__content {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+}
+.dialog__upload__text {
+  margin-top: 8px;
+}
