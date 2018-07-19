@@ -1,4 +1,5 @@
 {
+  "parser": "babel-eslint",
   "env": {
     "browser": true,
     "es6": true,
@@ -10,7 +11,7 @@
   },
   "settings": {
     "pragma": "React",
-    "version": "16.2",
+    "version": "16.4",
     "flowVersion": "0.54.1"
   },
   "extends": ["eslint:recommended", "plugin:react/recommended", "plugin:import/errors", "plugin:import/warnings"],
@@ -30,6 +31,8 @@
     "react/prop-types": 1,
     "react/no-find-dom-node": 0,
     "react/sort-comp": 1,
-    "import/first":1
+    "react/display-name": 0,
+    "import/first":1,
+    "import/no-unresolved": 0
   }
 }

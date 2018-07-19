@@ -67,6 +67,7 @@ module.exports = {
     devtoolModuleFilenameTemplate: info => path.resolve(info.absoluteResourcePath).replace(/\\/g, "/")
   },
   resolve: {
+
     // This allows you to set a fallback for where Webpack should look for modules.
     // We placed these paths second because we want `node_modules` to "win"
     // if there are any conflicts. This matches Node resolution mechanism.
@@ -104,7 +105,7 @@ module.exports = {
       // { parser: { requireEnsure: false } },
 
       // First, run the linter.
-      // It's important to do this before Babel processes the JS.
+//      It's important to do this before Babel processes the JS.
       {
         test: /\.(js|jsx|mjs)$/,
         enforce: "pre",
@@ -163,27 +164,27 @@ module.exports = {
                   modules: true,
                   localIdentName: "[path][name]__[local]--[hash:base64:5]"
                 }
-              },
-              {
-                loader: require.resolve("postcss-loader"),
-                options: {
-                  // Necessary for external CSS imports to work
-                  // https://github.com/facebookincubator/create-react-app/issues/2677
-                  ident: "postcss",
-                  plugins: () => [
-                    require("postcss-flexbugs-fixes"),
-                    autoprefixer({
-                      browsers: [
-                        ">1%",
-                        "last 4 versions",
-                        "Firefox ESR",
-                        "not ie < 9" // React doesn't support IE8 anyway
-                      ],
-                      flexbox: "no-2009"
-                    })
-                  ]
-                }
               }
+              // {
+              //   loader: require.resolve("postcss-loader"),
+              //   options: {
+              //     // Necessary for external CSS imports to work
+              //     // https://github.com/facebookincubator/create-react-app/issues/2677
+              //     ident: "postcss",
+              //     plugins: () => [
+              //       require("postcss-flexbugs-fixes"),
+              //       autoprefixer({
+              //         browsers: [
+              //           ">1%",
+              //           "last 4 versions",
+              //           "Firefox ESR",
+              //           "not ie < 9" // React doesn't support IE8 anyway
+              //         ],
+              //         flexbox: "no-2009"
+              //       })
+              //     ]
+              //   }
+              // }
             ]
           },
           {
@@ -217,7 +218,7 @@ module.exports = {
             // it's runtime that would otherwise processed through "file" loader.
             // Also exclude `html` and `json` extensions so they get processed
             // by webpacks internal loaders.
-            exclude: [/\.js$/, /\.html$/, /\.json$/, /\.scss$/],
+            exclude: [/\.(js|jsx|mjs)$/, /\.html$/, /\.json$/],
             loader: require.resolve("file-loader"),
             options: {
               name: "static/media/[name].[hash:8].[ext]"
