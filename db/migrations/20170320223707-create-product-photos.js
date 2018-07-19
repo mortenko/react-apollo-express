@@ -9,17 +9,18 @@ module.exports = {
       },
       productID: {
         type: Sequelize.INTEGER,
+        onDelete: "cascade",
         references: {
           model: "Products",
           key: "productID",
           deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
         }
       },
-      filename: {
+      photo: {
         type: Sequelize.STRING
       },
-      filetype: {
-        type: Sequelize.BLOB
+      name: {
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,

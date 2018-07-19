@@ -1,37 +1,38 @@
 module.exports = {
   up(queryInterface, Sequelize) {
-    return queryInterface.createTable('CustomerPhotos', {
+    return queryInterface.createTable("CustomerPhotos", {
       customerPhotoID: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER
       },
       customerID: {
         type: Sequelize.INTEGER,
+        onDelete: "cascade",
         references: {
-          model: 'Customers',
-          key: 'customerID',
-          deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE,
-        },
+          model: "Customers",
+          key: "customerID",
+          deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
+        }
       },
-      filename: {
-        type: Sequelize.STRING,
+      photo: {
+        type: Sequelize.STRING
       },
-      filetype: {
-        type: Sequelize.BLOB,
+      name: {
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE,
+        type: Sequelize.DATE
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE,
-      },
+        type: Sequelize.DATE
+      }
     });
   },
   down(queryInterface, Sequelize) {
-    return queryInterface.dropTable('CustomerPhotos');
+    return queryInterface.dropTable("CustomerPhotos");
   }
 };
