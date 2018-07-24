@@ -1,4 +1,4 @@
-import gql from "graphql-tag";
+import { gql } from "apollo-server-express";
 
 const FETCH_CUSTOMERS = gql`
   query customers($cursor: Int!, $pageNumber: Int!) {

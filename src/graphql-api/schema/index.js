@@ -1,12 +1,11 @@
-import { makeExecutableSchema } from "graphql-tools";
-import { GraphQLUpload } from "apollo-upload-server";
+import { makeExecutableSchema, GraphQLUpload, } from "apollo-server";
 import GraphQLJSON from "graphql-type-json";
 import {
   CustomerResolvers,
   OrderResolvers,
   ProductResolvers
 } from "../resolvers";
-import { CustomScalarTypeResolvers } from "../customScalarTypes";
+import { CustomScalarDateResolvers } from "../customScalarTypes";
 import { merge } from "lodash";
 import Customer from "./customer";
 import Product from "./product";
@@ -39,7 +38,7 @@ const schema = makeExecutableSchema({
     CustomerResolvers,
     OrderResolvers,
     ProductResolvers,
-    CustomScalarTypeResolvers
+    CustomScalarDateResolvers
   ),
   logger: {
     log: e => {
