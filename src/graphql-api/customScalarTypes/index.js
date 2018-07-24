@@ -1,6 +1,7 @@
 import { GraphQLScalarType } from "graphql";
 
-const CustomScalarTypeResolvers = {
+//TODO need to be implemented
+const CustomScalarDateResolvers = {
   Date: new GraphQLScalarType({
     name: "Date",
     description: "date custom scalar type",
@@ -18,4 +19,4 @@ const CustomScalarTypeResolvers = {
     }
   })
 };
-export { CustomScalarTypeResolvers };
+export { CustomScalarDateResolvers };

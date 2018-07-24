@@ -15,11 +15,11 @@ import { DELETE_CUSTOMER_MODAL } from "components/CustomerDialogs/DeleteCustomer
 import Button from "components/Button";
 import Loader from "components/Loader";
 import styles from "components/Table/table.scss";
+import Alert from "components/Alert";
 import Pagination, { PaginationHoc } from "components/Pagination";
 import { ModalContext } from "../../context";
 import { FETCH_CUSTOMERS } from "../../graphql-client/queries/customer";
 import { PersonAdd, Edit, Delete } from "../../assets/material-ui-icons";
-import Alert from "../../components/Alert";
 
 const CustomerPage = ({
   paginationData: { pageNumber, itemsCountPerPage },
@@ -27,7 +27,7 @@ const CustomerPage = ({
 }) => {
   return (
     <ModalContext.Consumer>
-      {({ modal }) => {
+      {modal => {
         return (
           <Query
             query={FETCH_CUSTOMERS}
@@ -38,13 +38,7 @@ const CustomerPage = ({
             fetchPolicy="network-only"
             notifyOnNetworkStatusChange
           >
-            {({
-              loading,
-              error,
-              data,
-              variables: { pageNumber },
-              refetch
-            }) => {
+            {({ loading, error, data, variables: { pageNumber }, refetch }) => {
               if (loading) return <Loader />;
               if (error) return <Alert>Error: ${error.message}</Alert>;
               const { customers: { customers, count } } = data;
