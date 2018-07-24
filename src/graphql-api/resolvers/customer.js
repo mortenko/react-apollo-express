@@ -6,7 +6,9 @@ import models from "../../../db/models";
 import {
   asyncAccessFile,
   asyncCreateDir,
-  asyncRemoveFile
+  asyncRemoveFile,
+  asyncRemoveDir,
+  asyncReadDir
 } from "../utils/promisify";
 
 const CustomerResolvers = {
@@ -183,18 +185,39 @@ const CustomerResolvers = {
       return updateCustomerResponse;
     },
     deleteCustomer: async (_, { customerID }) => {
-      const resolvePathToFile = path.resolve(
+      const resolvePathToDir = path.resolve(
         `./public/photos/customers/${customerID}`
       );
-      const isExistFile = await asyncAccessFile(resolvePathToFile)
+      const isExistDir = await asyncAccessFile(resolvePathToDir)
         .then(() => true)
         .catch(() => false);
-      if (isExistFile) {
+      if (isExistDir) {
         try {
-          await asyncRemoveFile(resolvePathToFile);
-        } catch (removeFileError) {
-          throw new ApolloError(removeFileError, 500);
+          const files = await asyncReadDir(resolvePathToDir);
+          for (let file = 0; file < files.length; file++) {
+            try {
+              const resolvePathToFile = path.join(
+                resolvePathToDir,
+                files[file]
+              );
+              await asyncRemoveFile(resolvePathToFile);
+            } catch (fileRemoveError) {
+              throw new ApolloError(fileRemoveError, 500);
+            }
+          }
+          await asyncRemoveDir(resolvePathToDir);
+        } catch (dirError) {
+          throw new ApolloError(dirError, 500);
         }
+      }
+      try {
+        await models.Customer.destroy({
+          where: {
+            customerID
+          }
+        });
+      } catch (deleteCustomerError) {
+        throw new ApolloError(deleteCustomerError, 400);
       }
     }
   }
