@@ -1,10 +1,11 @@
 import React from "react";
 import { Mutation } from "react-apollo";
+import PropTypes from "prop-types";
+import queryString from "query-string";
 import {
   DELETE_CUSTOMER,
-  FETCH_CUSTOMERS,
-  FETCH_CUSTOMER
-} from "../../../graphql-client/queries/customer/index";
+  FETCH_CUSTOMERS
+} from "../../../graphql-client/queries/customer";
 import {
   Dialog,
   DialogTitle,
@@ -12,17 +13,11 @@ import {
   DialogContentText,
   DialogActions
 } from "components/Dialog";
-import { enhanceWithHoc } from "../CreateCustomer/index";
 import Loader from "components/Loader";
 import Button from "components/Button";
-import { adopt } from "react-adopt";
-import { ToastContext } from "../../../context/index";
+import { enhanceWithHoc } from "../CreateCustomer";
+import { ToastContext } from "../../../context";
 import styles from "./dialogDeleteCustomer.scss";
-import queryString from "query-string";
-
-const DeleteCustomerFormConsumers = adopt({
-  toast: <ToastContext.Consumer />
-});
 
 const DialogDeleteCustomer = ({
   open,
@@ -32,8 +27,8 @@ const DialogDeleteCustomer = ({
   location: { search }
 }) => {
   return (
-    <DeleteCustomerFormConsumers>
-      {({ toast }) => (
+    <ToastContext.Consumer>
+      {toast => (
         <Mutation
           mutation={DELETE_CUSTOMER}
           variables={{ customerID }}
@@ -121,8 +116,23 @@ const DialogDeleteCustomer = ({
           }}
         </Mutation>
       )}
-    </DeleteCustomerFormConsumers>
+    </ToastContext.Consumer>
   );
+};
+DialogDeleteCustomer.propTypes = {
+  classes: PropTypes.object.isRequired,
+  closeModal: PropTypes.func.isRequired,
+  data: PropTypes.shape({
+    customerID: PropTypes.number,
+    firstname: PropTypes.string,
+    lastname: PropTypes.string
+  }).isRequired,
+  location: PropTypes.objectOf(PropTypes.object),
+  open: PropTypes.bool.isRequired
+};
+
+DialogDeleteCustomer.defaultProps = {
+  location: { search: "" }
 };
 
 export const DELETE_CUSTOMER_MODAL = "DELETE_CUSTOMER_MODAL";

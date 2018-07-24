@@ -1,29 +1,21 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Query } from "react-apollo";
 import { Dialog, DialogStyles } from "components/Dialog";
 import Loader from "components/Loader";
 import styles from "./dialogUpdateCustomer.scss";
-import { FETCH_CUSTOMER } from "../../../graphql-client/queries/customer/index";
+import { FETCH_CUSTOMER } from "../../../graphql-client/queries/customer";
 import UpdateCustomerForm from "./updateCustomerForm";
 
-const DialogUpdateCustomer = ({
-  open,
-  closeModal,
-  data: { customerID },
-  ...props
-}) => {
+const DialogUpdateCustomer = ({ open, closeModal, data: { customerID } }) => {
   return (
     <Dialog
       maxWidth="md"
       fullWidth={true}
       className={styles.dialog}
       open={open}
-      {...props}
     >
-      <Query
-        query={FETCH_CUSTOMER}
-        variables={{ customerID }}
-      >
+      <Query query={FETCH_CUSTOMER} variables={{ customerID }}>
         {({ loading, error, data }) => {
           if (loading) return <Loader />;
           if (error) return <div>{error}</div>;
@@ -40,7 +32,11 @@ const DialogUpdateCustomer = ({
     </Dialog>
   );
 };
+DialogUpdateCustomer.propTypes = {
+  closeModal: PropTypes.func,
+  data: PropTypes.shape({ customerID: PropTypes.number }),
+  open: PropTypes.bool
+}.isRequired;
 
 export const UPDATE_CUSTOMER_MODAL = "UPDATE_CUSTOMER_MODAL";
-
 export default DialogUpdateCustomer;

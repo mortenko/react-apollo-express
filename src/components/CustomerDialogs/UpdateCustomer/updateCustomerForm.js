@@ -1,13 +1,10 @@
-import React, { Component } from "react";
-import Button from "components/Button";
+import React from "react";
+import PropTypes from "prop-types";
 import { Mutation } from "react-apollo";
-import { ToastContext } from "../../../context/index";
-import Loader from "components/Loader";
-import Grid from "@material-ui/core/Grid";
 import queryString from "query-string";
-import BaseCustomerForm from "../baseCustomerForm";
-import { adopt } from "react-adopt";
-import { enhanceWithHoc } from "../CreateCustomer/index";
+import Grid from "@material-ui/core/Grid";
+import Loader from "components/Loader";
+import Button from "components/Button";
 import {
   InputAdornment,
   TextField,
@@ -16,16 +13,15 @@ import {
   DialogTitle,
   DialogStyles
 } from "components/Dialog";
+import { ToastContext } from "../../../context";
+import BaseCustomerForm from "../baseCustomerForm";
+import { enhanceWithHoc } from "../CreateCustomer";
 import styles from "./dialogUpdateCustomer.scss";
 import {
   FETCH_CUSTOMERS,
   FETCH_CUSTOMER,
   UPDATE_CUSTOMER
-} from "../../../graphql-client/queries/customer/index";
-
-const UpdateCustomerFormConsumers = adopt({
-  toast: <ToastContext.Consumer />
-});
+} from "../../../graphql-client/queries/customer";
 
 const UpdateCustomerForm = props => {
   const {
@@ -37,8 +33,8 @@ const UpdateCustomerForm = props => {
   } = props;
 
   return (
-    <UpdateCustomerFormConsumers>
-      {({ toast }) => {
+    <ToastContext.Consumer>
+      {(toast) => {
         return (
           <Mutation
             mutation={UPDATE_CUSTOMER}
@@ -106,7 +102,7 @@ const UpdateCustomerForm = props => {
                                   ...customer
                                 }
                               }
-                            } = this.props;
+                            } = props;
                             // test whole customer
                             if (isRequired(updateCustomerObj) === false) {
                               try {
@@ -145,7 +141,28 @@ const UpdateCustomerForm = props => {
           </Mutation>
         );
       }}
-    </UpdateCustomerFormConsumers>
+    </ToastContext.Consumer>
   );
+};
+UpdateCustomerForm.propTypes = {
+  closeModal: PropTypes.func.isRequired,
+  handleInputChange: PropTypes.func.isRequired,
+  location: PropTypes.objectOf(PropTypes.string),
+  newData: PropTypes.shape({
+    customerID: PropTypes.number,
+    firstname: PropTypes.string,
+    lastname: PropTypes.string,
+    phone: PropTypes.string,
+    email: PropTypes.string,
+    CustomerPhoto: PropTypes.shape({
+      photo: PropTypes.object,
+      name: PropTypes.string
+    })
+  }).isRequired,
+  validationFunctions: PropTypes.objectOf(PropTypes.func)
+};
+UpdateCustomerForm.defaultProps = {
+  location: { search: "" },
+  validationFunctions: {}
 };
 export default enhanceWithHoc(UpdateCustomerForm);

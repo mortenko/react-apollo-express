@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import { Mutation } from "react-apollo";
 import { compose, withProps } from "recompose";
 import { withRouter } from "react-router";
@@ -70,7 +70,6 @@ const DialogCreateCustomer = props => {
       maxWidth="md"
       fullWidth={true}
       open={open}
-      {...props}
       className={styles.dialog}
     >
       <ToastContext.Consumer>
@@ -148,6 +147,26 @@ const DialogCreateCustomer = props => {
       </ToastContext.Consumer>
     </Dialog>
   );
+};
+DialogCreateCustomer.propTypes = {
+  closeModal: PropTypes.func.isRequired,
+  handleInputChange: PropTypes.func.isRequired,
+  newData: PropTypes.shape({
+    customerID: PropTypes.number,
+    firstname: PropTypes.string,
+    lastname: PropTypes.string,
+    phone: PropTypes.string,
+    email: PropTypes.string,
+    CustomerPhoto: PropTypes.shape({
+      photo: PropTypes.object,
+      name: PropTypes.string
+    })
+  }).isRequired,
+  open: PropTypes.bool.isRequired,
+  validationFunctions: PropTypes.objectOf(PropTypes.func)
+};
+DialogCreateCustomer.defaultProps = {
+  validationFunctions: {}
 };
 
 export const CREATE_CUSTOMER_MODAL = "CREATE_CUSTOMER_MODAL";

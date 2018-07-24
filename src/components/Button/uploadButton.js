@@ -52,14 +52,16 @@ const UploadButton = ({
   );
 };
 UploadButton.propTypes = {
+  classes: PropTypes.object.isRequired,
   handleInputChange: PropTypes.func.isRequired,
-  photo: PropTypes.object.isRequired,
+  photo: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
   photoName: PropTypes.string,
-  classes: PropTypes.object,
   validate: PropTypes.objectOf(PropTypes.func),
   validationPhotoError: PropTypes.string
 };
 UploadButton.defaultProps = {
+  classes: {},
+  photo: "",
   photoName: "",
   validate: {},
   validationPhotoError: ""

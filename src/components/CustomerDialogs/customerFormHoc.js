@@ -1,7 +1,43 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 export default function withCustomerForm(WrappedComponent) {
   return class extends Component {
+    static propTypes = {
+      formData: PropTypes.shape({
+        firstname: PropTypes.string,
+        lastname: PropTypes.string,
+        phone: PropTypes.string,
+        email: PropTypes.string,
+        CustomerPhoto: PropTypes.shape({
+          photo: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+          name: PropTypes.string
+        })
+      }),
+      initialFormValues: PropTypes.shape({
+        firstname: PropTypes.string,
+        lastname: PropTypes.string,
+        phone: PropTypes.string,
+        email: PropTypes.string,
+        CustomerPhoto: PropTypes.shape({
+          photo: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+          name: PropTypes.string
+        })
+      })
+    };
+    static defaultProps = {
+      initialFormValues: {
+        firstname: "",
+        lastname: "",
+        phone: "",
+        email: "",
+        CustomerPhoto: {
+          photo: null,
+          name: ""
+        }
+      },
+      formData: undefined
+    };
     constructor(props) {
       super(props);
       const setInitialFormValues = props.formData
@@ -10,7 +46,6 @@ export default function withCustomerForm(WrappedComponent) {
       this.state = {
         ...setInitialFormValues
       };
-
     }
     handleInputChange = event => {
       if (event.target.files !== null) {
@@ -19,7 +54,7 @@ export default function withCustomerForm(WrappedComponent) {
             ...this.state.customer,
             CustomerPhoto: {
               [event.target.id]: event.target.files[0],
-              name: event.target.files[0].name,
+              name: event.target.files[0].name
             }
           }
         });
@@ -31,7 +66,6 @@ export default function withCustomerForm(WrappedComponent) {
             customer: {
               ...currentState.customer,
               [name]: value
-
             }
           };
         });

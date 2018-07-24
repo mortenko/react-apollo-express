@@ -34,10 +34,10 @@ const Button = ({
   );
 };
 Button.propTypes = {
+  children: PropTypes.node.isRequired,
   color: PropTypes.string,
-  variant: PropTypes.string,
   onClick: PropTypes.func,
-  children: PropTypes.node.isRequired
+  variant: PropTypes.string
 };
 Button.defaultProps = {
   onClick: () => {},

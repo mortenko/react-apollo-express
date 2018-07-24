@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import {
   Dialog,
   DialogStyles,
@@ -12,12 +13,7 @@ import Alert from "components/Alert";
 import Grid from "@material-ui/core/Grid";
 import styles from "./baseCustomerForm.scss";
 import UploadButton from "components/Button/uploadButton";
-
-import {
-  Email,
-  Person,
-  Phone
-} from "../../assets/material-ui-icons/index";
+import { Email, Person, Phone } from "../../assets/material-ui-icons";
 
 const BaseCustomerForm = ({
   customerState,
@@ -143,5 +139,34 @@ const BaseCustomerForm = ({
     </div>
   );
 };
-
+BaseCustomerForm.propTypes = {
+  classes: PropTypes.object.isRequired,
+  customerState: PropTypes.shape({
+    firstname: PropTypes.string,
+    lastname: PropTypes.string,
+    phone: PropTypes.string,
+    email: PropTypes.string,
+    CustomerPhoto: PropTypes.shape({
+      photo: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+      name: PropTypes.string
+    })
+  }),
+  handleInputChange: PropTypes.func.isRequired,
+  validationErrors: PropTypes.object,
+  validationFunctions: PropTypes.objectOf(PropTypes.func)
+};
+BaseCustomerForm.defaultProps = {
+  customerState: PropTypes.shape({
+    firstname: "",
+    lastname: "",
+    phone: "",
+    email: "",
+    CustomerPhoto: {
+      photo: {},
+      name: ""
+    }
+  }),
+  validationErrors: {},
+  validationFunctions: {}
+};
 export default BaseCustomerForm;
