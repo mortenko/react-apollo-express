@@ -4,23 +4,22 @@ module.exports = {
   up(queryInterface) {
     const productData = [];
     function generateProduct() {
-      const Product = {
+      const price = faker.commerce.price();
+      return {
         name: faker.commerce.productName(),
-        description: faker.lorem.text(),
-        pricewithoutdph: faker.commerce.price(),
-        pricewithdph: faker.commerce.price() * 1.2,
-        barcode: faker.random.number(),
-        createdAt: faker.date.future(),
-        updatedAt: faker.date.future()
+        description: faker.lorem.sentence(),
+        pricewithoutdph: price,
+        pricewithdph: Number(price * 1.35).toFixed(2),
+        barcode: faker.random.uuid(),
+        createdAt: faker.date.recent(),
+        updatedAt: faker.date.past()
       };
-      return Product;
     }
     for (let i = 1; i <= 150; i++) {
       productData.push(generateProduct());
     }
     return queryInterface.bulkInsert("Products", productData);
   },
-
   down(queryInterface) {
     return queryInterface.bulkDelete("Products");
   }

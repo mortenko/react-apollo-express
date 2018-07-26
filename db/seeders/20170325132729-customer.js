@@ -1,10 +1,10 @@
 const faker = require("faker");
+
 module.exports = {
   up(queryInterface) {
     const customerData = [];
-
     function generateCustomer() {
-      const Customer = {
+      return {
         firstname: faker.name.firstName(),
         lastname: faker.name.lastName(),
         phone: faker.phone.phoneNumber(),
@@ -12,9 +12,7 @@ module.exports = {
         createdAt: faker.date.past(),
         updatedAt: faker.date.past()
       };
-      return Customer;
     }
-
     for (let i = 1; i <= 100; i++) {
       customerData.push(generateCustomer());
     }

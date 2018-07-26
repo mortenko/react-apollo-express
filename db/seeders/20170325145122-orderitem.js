@@ -1,9 +1,10 @@
 const faker = require("faker");
+
 module.exports = {
   up(queryInterface) {
     const orderItemData = [];
     function generateOrderItem(i) {
-      const OrderItem = {
+      return {
         quantity: faker.random.number({
           min: 1,
           max: 5
@@ -18,7 +19,6 @@ module.exports = {
         createdAt: faker.date.future(),
         updatedAt: faker.date.future()
       };
-      return OrderItem;
     }
     for (let i = 1; i <= 50; i++) {
       orderItemData.push(generateOrderItem(i));

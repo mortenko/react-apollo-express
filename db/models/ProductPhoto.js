@@ -16,7 +16,13 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     photo: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: {
+          args: true,
+          msg: "Photo is required"
+        }
+      }
     },
     name: {
       type: DataTypes.STRING,

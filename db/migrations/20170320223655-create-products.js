@@ -20,7 +20,7 @@ module.exports = {
         type: Sequelize.DECIMAL,
       },
       barcode: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
       },
       createdAt: {
         allowNull: false,

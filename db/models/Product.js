@@ -9,36 +9,57 @@ module.exports = (sequelize, DataTypes) => {
     name: {
       type: DataTypes.STRING,
       validate: {
-        isLength: { min: 5, max: 30 }
+        isLength: {
+          args: { min: 5, max: 20 },
+          msg: "product name must have at least 5 and max 20 characters"
+        }
       }
     },
     description: {
       type: DataTypes.TEXT,
       validate: {
-        isLength: { min: 10, max: 150 }
+        isLength: {
+          arg: { min: 20, max: 150 },
+          msg:
+            "product description must have at least 20 and max 150 characters"
+        }
       }
     },
     pricewithoutdph: {
       type: DataTypes.DECIMAL,
       validate: {
-        isDecimal: true
+        isDecimal: {
+          args: true,
+          msg: "pricewithoutdph is not decimal number"
+        }
       }
     },
     pricewithdph: {
       type: DataTypes.DECIMAL,
       validate: {
-        isDecimal: true
+        isDecimal: {
+          args: true,
+          msg: "pricewithdph is not decimal number"
+        }
       }
     },
     barcode: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
       validate: {
-        isInt: true
+        isUUID: {
+          args: 4,
+          msg: "barcode is not type of UUID4"
+        }
       }
     }
   });
   Product.associate = models => {
-    Product.hasOne(models.ProductPhoto, { foreignKey: "productID", onDelete: "cascade", hooks: "true" });
+    Product.hasOne(models.ProductPhoto, {
+      foreignKey: "productID",
+      onDelete: "cascade",
+      hooks: "true"
+    });
     Product.belongsToMany(models.OrderItem, {
       foreignKey: "productID",
       through: "ProductOrderItem",

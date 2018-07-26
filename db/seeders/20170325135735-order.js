@@ -1,10 +1,10 @@
 const faker = require("faker");
 
 module.exports = {
-  up(queryInterface, Sequelize) {
+  up(queryInterface) {
     const OrderData = [];
     function generateOrder() {
-      const Order = {
+      return {
         customerID: faker.random.number({
           min: 1,
           max: 100
@@ -12,7 +12,6 @@ module.exports = {
         createdAt: faker.date.past(),
         updatedAt: faker.date.recent()
       };
-      return Order;
     }
     for (let i = 1; i <= 50; i++) {
       OrderData.push(generateOrder());
