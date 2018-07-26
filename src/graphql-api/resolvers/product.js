@@ -1,32 +1,65 @@
-const models = require("../../../db/models");
+import models from "../../../db/models";
+import { ApolloError } from "apollo-server";
 
 const ProductResolvers = {
   Query: {
-    products: (_, { cursor }) => {
-      return models.Product.findAndCountAll({
-        include: {
-          model: models.ProductPhoto,
-          attributes: ["productPhotoID", "photo"],
-          required: true
-        },
-        offset: cursor,
-        limit: 10,
-        attributes: ["productID", "name", "description", "pricewithoutdph", "pricewithdph", "barcode"]
-      }).then(response => {
-        return response.rows;
-      });
+    products: async (_, { cursor, pageNumber }) => {
+      const offset = (pageNumber - 1) * cursor;
+      try {
+        const { rows: products, count } = await models.Product.findAndCountAll({
+          order: ["productID"],
+          include: {
+            model: models.ProductPhoto,
+            attributes: ["photo", "name"],
+            required: true
+          },
+          offset,
+          limit: 12,
+          attributes: [
+            "productID",
+            "name",
+            "description",
+            "pricewithoutdph",
+            "pricewithdph",
+            "barcode",
+            "createdAt"
+          ]
+        });
+        return { products, count };
+      } catch (fetchProductsError) {
+        throw new ApolloError(fetchProductsError, 500);
+      }
     },
     product: (_, { id }) => {
       return models.Product.find({
         where: {
           productID: id
         },
-        attributes: ["productID", "name", "description", "pricewithoutdph", "pricewithdph", " barcode"]
+        attributes: [
+          "productID",
+          "name",
+          "description",
+          "pricewithoutdph",
+          "pricewithdph",
+          "barcode"
+        ]
       });
     }
   },
   Mutation: {
-    createProduct: (_, { input: { name, description, pricewithoutdph, pricewithdph, barcode, photo } }) => {
+    createProduct: (
+      _,
+      {
+        input: {
+          name,
+          description,
+          pricewithoutdph,
+          pricewithdph,
+          barcode,
+          photo
+        }
+      }
+    ) => {
       const newProduct = {
         name,
         description,
@@ -43,7 +76,20 @@ const ProductResolvers = {
         });
       });
     },
-    updateProduct: (_, { productID, input: { name, description, pricewithoutdph, pricewithdph, barcode, photo } }) => {
+    updateProduct: (
+      _,
+      {
+        productID,
+        input: {
+          name,
+          description,
+          pricewithoutdph,
+          pricewithdph,
+          barcode,
+          photo
+        }
+      }
+    ) => {
       const updateProduct = {
         name,
         description,

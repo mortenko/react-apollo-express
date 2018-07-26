@@ -1,12 +1,12 @@
-import { makeExecutableSchema, GraphQLUpload, } from "apollo-server";
+import { makeExecutableSchema, GraphQLUpload } from "apollo-server";
 import GraphQLJSON from "graphql-type-json";
+import { merge } from "lodash";
 import {
   CustomerResolvers,
   OrderResolvers,
   ProductResolvers
 } from "../resolvers";
-import { CustomScalarDateResolvers } from "../customScalarTypes";
-import { merge } from "lodash";
+import { GraphQLDate, GraphQLUUID } from "../customScalarTypes";
 import Customer from "./customer";
 import Product from "./product";
 import Order from "./order";
@@ -21,9 +21,20 @@ const SchemaDefinition = `
 const CustomScalarTypes = `
   scalar Upload
   scalar JSON
+  scalar Date
+  scalar UUID
 `;
 
 const schema = makeExecutableSchema({
+  resolvers: merge(
+    { JSON: GraphQLJSON },
+    { Upload: GraphQLUpload },
+    { Date: GraphQLDate },
+    { UUID: GraphQLUUID },
+    CustomerResolvers,
+    OrderResolvers,
+    ProductResolvers
+  ),
   typeDefs: [
     SchemaDefinition,
     CustomScalarTypes,
@@ -32,14 +43,6 @@ const schema = makeExecutableSchema({
     Order,
     OrderItem
   ],
-  resolvers: merge(
-    { JSON: GraphQLJSON },
-    { Upload: GraphQLUpload },
-    CustomerResolvers,
-    OrderResolvers,
-    ProductResolvers,
-    CustomScalarDateResolvers
-  ),
   logger: {
     log: e => {
       console.log(e);

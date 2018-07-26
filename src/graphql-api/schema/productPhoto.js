@@ -1,7 +1,8 @@
 const ProductPhoto = `
  type ProductPhoto {
    productPhotoID: ID!
-   photo: String
+   photo: String!
+   name: String!
   }  
 `;
 

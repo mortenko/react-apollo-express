@@ -1,5 +1,4 @@
 const Order = `
-scalar Date
  type Order {
   orderID: ID
   createdAt: Date 
@@ -12,7 +11,6 @@ scalar Date
   }
   extend type Mutation {
     deleteOrder(orderID: ID!): Order
-  
   }
 `;
 

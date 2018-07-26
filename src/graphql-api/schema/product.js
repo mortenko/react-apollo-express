@@ -7,7 +7,8 @@ const Product = `
   description: String!
   pricewithoutdph: Float!
   pricewithdph: Float!
-  barcode: Int!
+  barcode: UUID!
+  createdAt: Date
   ProductPhoto: ProductPhoto
  }
  input ProductInput {
@@ -15,11 +16,16 @@ const Product = `
   description: String!
   pricewithoutdph: Float!
   pricewithdph: Float!
-  barcode: Int!
+  barcode: UUID!
   photo: String!
  }
+  type Products implements Pagination {
+   products: [Product] 
+   count: Int!
+   cursor: Int!
+  }
  extend type Query {
-  products: [Product]
+  products(cursor: Int!, pageNumber: Int!): Products
   product(productID: ID!): Product
  }
  extend type Mutation {
