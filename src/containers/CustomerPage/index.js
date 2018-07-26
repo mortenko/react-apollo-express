@@ -9,17 +9,21 @@ import {
   TableCell,
   TableRow
 } from "components/Table";
+import {
+  UpdateButtonAction,
+  DeleteButtonAction
+} from "components/Table/tableComponents";
+import styles from "components/Table/table.scss";
 import { CREATE_CUSTOMER_MODAL } from "components/CustomerDialogs/CreateCustomer";
 import { UPDATE_CUSTOMER_MODAL } from "components/CustomerDialogs/UpdateCustomer";
 import { DELETE_CUSTOMER_MODAL } from "components/CustomerDialogs/DeleteCustomer";
 import Button from "components/Button";
 import Loader from "components/Loader";
-import styles from "components/Table/table.scss";
 import Alert from "components/Alert";
 import Pagination, { PaginationHoc } from "components/Pagination";
 import { ModalContext } from "../../context";
 import { FETCH_CUSTOMERS } from "../../graphql-client/queries/customer";
-import { PersonAdd, Edit, Delete } from "../../assets/material-ui-icons";
+import { PersonAdd } from "../../assets/material-ui-icons";
 
 const CustomerPage = ({
   paginationData: { pageNumber, itemsCountPerPage },
@@ -103,32 +107,26 @@ const CustomerPage = ({
                             <TableCell>{email}</TableCell>
                             <TableCell>{phone}</TableCell>
                             <TableCell>
-                              <Button
-                                onClick={() => {
-                                  modal.openModal(UPDATE_CUSTOMER_MODAL, {
+                              <UpdateButtonAction
+                                updateAction={() => modal.openModal(
+                                  UPDATE_CUSTOMER_MODAL,
+                                  {
                                     customerID
-                                  });
-                                }}
-                                variant="fab"
-                                color="primary"
-                              >
-                                <Edit />
-                              </Button>
+                                  }
+                                )}
+                              />
                             </TableCell>
                             <TableCell>
-                              <Button
-                                onClick={() => {
-                                  modal.openModal(DELETE_CUSTOMER_MODAL, {
+                              <DeleteButtonAction
+                                deleteAction={() => modal.openModal(
+                                  DELETE_CUSTOMER_MODAL,
+                                  {
                                     customerID,
                                     firstname,
                                     lastname
-                                  });
-                                }}
-                                variant="fab"
-                                color="secondary"
-                              >
-                                <Delete />
-                              </Button>
+                                  }
+                                )}
+                              />
                             </TableCell>
                           </TableRow>
                         )

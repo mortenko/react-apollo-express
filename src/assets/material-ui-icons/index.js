@@ -9,3 +9,4 @@ export { default as Person } from "@material-ui/icons/Person";
 export { default as Email } from "@material-ui/icons/Email";
 export { default as Phone } from "@material-ui/icons/Phone";
 export { default as AddAPhoto } from "@material-ui/icons/AddAPhoto";
+export { default as NoteAdd } from "@material-ui/icons/NoteAdd";

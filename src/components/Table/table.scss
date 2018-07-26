@@ -9,10 +9,10 @@
       .table__head {
         display: flex;
         align-items: baseline;
-        justify-content: space-around;
+        justify-content: space-between;
         margin-bottom: 20px;
         border-bottom: none;
-        width: 100%;
+        padding: 0;
       }
     }
     td {
@@ -21,6 +21,7 @@
   }
   .table__title {
     font-size: 22px;
+    padding-right: 10px;
   }
   .table__row {
     &:hover {

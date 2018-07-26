@@ -34,10 +34,10 @@ const App = () => {
                   <Grid item xs={12} sm={12} lg={12}>
                     <Header />
                   </Grid>
-                  <Grid item xs={3} sm={3} md={2} lg={1}  xl={1}>
+                  <Grid item xs={4} sm={2} md={2} lg={1}  xl={1}>
                     <MenuSideBar />
                   </Grid>
-                  <Grid item xs={9} sm={9} md={10} lg={11} xl={11}>
+                  <Grid item xs={8} sm={10} md={10} lg={11} xl={11}>
                     <ModalProvider modal={modal} />
                     <ContentBar>
                       <Route exact path="/" component={HomePage} />
