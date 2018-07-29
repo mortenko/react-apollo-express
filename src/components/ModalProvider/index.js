@@ -8,6 +8,9 @@ import DialogUpdateCustomer, {
 import DialogDeleteCustomer, {
   DELETE_CUSTOMER_MODAL
 } from "components/CustomerDialogs/DeleteCustomer";
+import DialogCreateProduct, {
+  CREATE_PRODUCT_MODAL
+} from "components/ProductDialogs/CreateProduct";
 
 function ModalProvider({ modal: { currentModal, isOpen, ...props } }) {
   switch (currentModal) {
@@ -17,6 +20,8 @@ function ModalProvider({ modal: { currentModal, isOpen, ...props } }) {
       return <DialogUpdateCustomer open={isOpen} {...props} />;
     case DELETE_CUSTOMER_MODAL:
       return <DialogDeleteCustomer open={isOpen} {...props} />;
+    case CREATE_PRODUCT_MODAL:
+      return <DialogCreateProduct  open={isOpen} {...props} />;
     default:
       return null;
   }
