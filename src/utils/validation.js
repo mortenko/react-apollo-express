@@ -84,7 +84,55 @@ function withValidator(WrappedComponent) {
         }
       });
     };
-
+    isNumber = (field, value) => {
+      const isNumber = {};
+      if ((!isNaN(parseFloat(value)) && isFinite(value)) || value === "") {
+        isNumber[field] = "";
+      } else {
+        isNumber[field] = "It's not a number";
+      }
+      this.setState({
+        validationErrors: {
+          ...this.state.validationErrors,
+          ...isNumber
+        }
+      });
+    };
+    isUUID = (field, value) => {
+      const isUUID = {};
+      if (
+        value &&
+        !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+          value
+        )
+      ) {
+        isUUID[field] = "It's not valid UUID";
+      } else {
+        isUUID[field] = "";
+      }
+      this.setState({
+        validationErrors: {
+          ...this.state.validationErrors,
+          ...isUUID
+        }
+      });
+    };
+    //TODO FINISH FUNCTION isGreaterThen
+    isGreaterThen(
+      obj1 = { field: 0 },
+      obj2 = { comparedField: 0 }
+    ) {
+      const isGreaterThen = {};
+      if (Number(obj1.field) < Number(obj2.comparedField)) {
+        isGreaterThen.field = `must be greater then ${Object.key(obj2)[0]}`;
+      }
+      this.setState({
+        validationErrors: {
+          ...this.state.validationErrors,
+          ...isGreaterThen
+        }
+      });
+    }
     handleServerErrors = error => {
       let serverValidationErrors = {};
       error.graphQLErrors.forEach(({ message }) => {
@@ -94,7 +142,7 @@ function withValidator(WrappedComponent) {
         });
       });
       this.setState({
-        validationErrors:{
+        validationErrors: {
           ...this.state.validationErrors,
           ...serverValidationErrors
         }
@@ -109,6 +157,8 @@ function withValidator(WrappedComponent) {
         isRequired: this.isRequired,
         isLength: this.isLength,
         isPhoneNumber: this.isPhoneNumber,
+        isNumber: this.isNumber,
+        isUUID: this.isUUID,
         hasValidationErrors: this.hasValidationErrors,
         handleServerErrors: this.handleServerErrors
       };

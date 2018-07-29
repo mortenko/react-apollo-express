@@ -6,7 +6,7 @@ const FETCH_PRODUCTS = gql`
       @connection(key: "products", filter: ["pageNumber"]) {
       products {
         productID
-        name
+        productname
         description
         pricewithoutdph
         pricewithdph
@@ -22,4 +22,21 @@ const FETCH_PRODUCTS = gql`
   }
 `;
 
-export { FETCH_PRODUCTS };
+const CREATE_PRODUCT = gql`
+  mutation createProduct($photoFile: Upload!, $product: ProductInput!) {
+    createProduct(photoFile: $photoFile, product: $product) {
+      product {
+        productname
+        description
+        pricewithoutdph
+        pricewithdph
+        barcode
+      }
+      photoFile {
+        photoFile
+      }
+    }
+  }
+`;
+
+export { CREATE_PRODUCT, FETCH_PRODUCTS };
