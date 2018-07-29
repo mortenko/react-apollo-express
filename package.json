@@ -45,6 +45,7 @@
     "recompose": "^0.27.1",
     "sequelize": "^4.37.10",
     "sequelize-cli": "^4.0.0",
+    "uuid": "^3.3.2",
     "whatwg-fetch": "2.0.3"
   },
   "devDependencies": {
