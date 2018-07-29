@@ -1,10 +1,8 @@
 import React from "react";
 import { Mutation } from "react-apollo";
 import { compose, withProps } from "recompose";
-import { withRouter } from "react-router";
 import PropTypes from "prop-types";
 import Grid from "@material-ui/core/Grid";
-import withStyles from "@material-ui/core/styles/withStyles";
 import { ToastContext } from "../../../context/index";
 import Button from "components/Button";
 import {
@@ -16,12 +14,13 @@ import {
   InputAdornment,
   TextField
 } from "components/Dialog";
-import styles from "./dialogCreateCustomer.scss";
+import styles from "./createCustomer.scss";
 import Loader from "components/Loader";
 import withValidator from "../../../utils/validation";
-import { CREATE_CUSTOMER } from "../../../graphql-client/queries/customer/index";
+import { CREATE_CUSTOMER } from "../../../graphql-client/queries/customer";
 import BaseCustomerForm from "../baseCustomerForm";
-import withCustomerForm from "../customerFormHoc";
+import withCustomerForm from "../withCustomerForm";
+import { enhanceWithBaseHoc } from "../../Dialog/dialogHoc";
 
 const initialErrorValues = {
   firstname: "",
@@ -42,14 +41,12 @@ const initialFormValues = {
     }
   }
 };
-
-export const enhanceWithHoc = compose(
-  withStyles(DialogStyles),
+//TODO add resetForm() into onClick function when creating new customer ( check product)
+export const enhanceWithCustomerHoc = compose(
   withProps(() => ({ initialErrorValues }), withValidator),
   withProps(() => ({ initialFormValues }), withCustomerForm),
   withCustomerForm,
-  withValidator,
-  withRouter
+  enhanceWithBaseHoc
 );
 const DialogCreateCustomer = props => {
   const {
@@ -63,8 +60,6 @@ const DialogCreateCustomer = props => {
     newData,
     handleInputChange
   } = props;
-  // in mutation I need to send photoFile and customer separately
-  //  const { customer: { photoFile, ...customer } } = this.state;
   return (
     <Dialog
       maxWidth="md"
@@ -85,6 +80,8 @@ const DialogCreateCustomer = props => {
                       <DialogTitle className={styles.dialog__title}>
                         Create Customer
                       </DialogTitle>
+                    </Grid>
+                    <Grid item xs={12}>
                       <BaseCustomerForm
                         customerState={{ ...newData }}
                         handleInputChange={handleInputChange}
@@ -100,7 +97,11 @@ const DialogCreateCustomer = props => {
                         >
                           Cancel
                         </Button>
+
                         <Button
+                          variant="contained"
+                          color="success"
+                          disabled={hasValidationErrors()}
                           onClick={async () => {
                             const {
                               ///destruct CustomerPhoto from object customer
@@ -130,9 +131,6 @@ const DialogCreateCustomer = props => {
                               }
                             }
                           }}
-                          variant="contained"
-                          color="success"
-                          disabled={hasValidationErrors()}
                         >
                           Create Customer
                         </Button>
@@ -171,4 +169,4 @@ DialogCreateCustomer.defaultProps = {
 
 export const CREATE_CUSTOMER_MODAL = "CREATE_CUSTOMER_MODAL";
 
-export default enhanceWithHoc(DialogCreateCustomer);
+export default enhanceWithCustomerHoc(DialogCreateCustomer);

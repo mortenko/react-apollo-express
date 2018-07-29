@@ -15,8 +15,8 @@ import {
 } from "components/Dialog";
 import { ToastContext } from "../../../context";
 import BaseCustomerForm from "../baseCustomerForm";
-import { enhanceWithHoc } from "../CreateCustomer";
-import styles from "./dialogUpdateCustomer.scss";
+import { enhanceWithCustomerHoc } from "../CreateCustomer";
+import styles from "./updateCustomer.scss";
 import {
   FETCH_CUSTOMERS,
   FETCH_CUSTOMER,
@@ -165,4 +165,4 @@ UpdateCustomerForm.defaultProps = {
   location: { search: "" },
   validationFunctions: {}
 };
-export default enhanceWithHoc(UpdateCustomerForm);
+export default enhanceWithCustomerHoc(UpdateCustomerForm);

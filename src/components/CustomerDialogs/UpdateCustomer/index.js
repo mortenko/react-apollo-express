@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Query } from "react-apollo";
 import { Dialog, DialogStyles } from "components/Dialog";
 import Loader from "components/Loader";
-import styles from "./dialogUpdateCustomer.scss";
+import styles from "./updateCustomer.scss";
 import { FETCH_CUSTOMER } from "../../../graphql-client/queries/customer";
 import UpdateCustomerForm from "./updateCustomerForm";
 

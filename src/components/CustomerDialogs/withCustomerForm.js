@@ -5,23 +5,27 @@ export default function withCustomerForm(WrappedComponent) {
   return class extends Component {
     static propTypes = {
       formData: PropTypes.shape({
-        firstname: PropTypes.string,
-        lastname: PropTypes.string,
-        phone: PropTypes.string,
-        email: PropTypes.string,
-        CustomerPhoto: PropTypes.shape({
-          photo: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-          name: PropTypes.string
+        customer: PropTypes.shape({
+          firstname: PropTypes.string,
+          lastname: PropTypes.string,
+          phone: PropTypes.string,
+          email: PropTypes.string,
+          CustomerPhoto: PropTypes.shape({
+            photo: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+            name: PropTypes.string
+          })
         })
       }),
       initialFormValues: PropTypes.shape({
-        firstname: PropTypes.string,
-        lastname: PropTypes.string,
-        phone: PropTypes.string,
-        email: PropTypes.string,
-        CustomerPhoto: PropTypes.shape({
-          photo: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-          name: PropTypes.string
+        customer: PropTypes.shape({
+          firstname: PropTypes.string,
+          lastname: PropTypes.string,
+          phone: PropTypes.string,
+          email: PropTypes.string,
+          CustomerPhoto: PropTypes.shape({
+            photo: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+            name: PropTypes.string
+          })
         })
       })
     };

@@ -15,9 +15,9 @@ import {
 } from "components/Dialog";
 import Loader from "components/Loader";
 import Button from "components/Button";
-import { enhanceWithHoc } from "../CreateCustomer";
+import { enhanceWithCustomerHoc } from "../CreateCustomer";
 import { ToastContext } from "../../../context";
-import styles from "./dialogDeleteCustomer.scss";
+import styles from "./deleteCustomer.scss";
 
 const DialogDeleteCustomer = ({
   open,
@@ -136,4 +136,4 @@ DialogDeleteCustomer.defaultProps = {
 };
 
 export const DELETE_CUSTOMER_MODAL = "DELETE_CUSTOMER_MODAL";
-export default enhanceWithHoc(DialogDeleteCustomer);
+export default enhanceWithCustomerHoc(DialogDeleteCustomer);
