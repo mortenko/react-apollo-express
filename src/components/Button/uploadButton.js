@@ -4,7 +4,18 @@ import PropTypes from "prop-types";
 import Button from "components/Button";
 import Alert from "components/Alert";
 import styles from "./uploadButton.scss";
+import withStyles from "@material-ui/core/styles/withStyles";
 import { AddAPhoto } from "../../assets/material-ui-icons";
+
+const UploadButtonStyles = {
+  uploadInput: {
+    display: "none"
+  },
+  iconLeft: {
+    paddingRight: 5,
+    fontSize: 20
+  }
+};
 
 const UploadButton = ({
   classes,
@@ -67,4 +78,4 @@ UploadButton.defaultProps = {
   validationPhotoError: ""
 };
 
-export default UploadButton;
+export default  withStyles(UploadButtonStyles)(UploadButton);

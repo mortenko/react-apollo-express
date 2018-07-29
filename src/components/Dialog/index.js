@@ -7,13 +7,6 @@ const DialogStyles = {
     right: 30,
     bottom: 10
   },
-  uploadInput: {
-    display: "none"
-  },
-  iconLeft: {
-    paddingRight: 5,
-    fontSize: 20
-  },
   MuiDialogContentText: {
     paddingTop: "5%"
   }
