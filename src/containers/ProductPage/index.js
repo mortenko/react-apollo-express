@@ -11,6 +11,7 @@ import {
   TableRow
 } from "components/Table";
 import {
+  CreateButtonAction,
   CopyButtonAction,
   DeleteButtonAction,
   UpdateButtonAction
@@ -19,6 +20,7 @@ import styles from "components/Table/table.scss";
 import Button from "components/Button";
 import Loader from "components/Loader";
 import Alert from "components/Alert";
+import { CREATE_PRODUCT_MODAL } from "components/ProductDialogs/CreateProduct";
 import Pagination, { PaginationHoc } from "components/Pagination";
 import { ModalContext } from "../../context";
 import { NoteAdd } from "../../assets/material-ui-icons";
@@ -46,18 +48,12 @@ const ProductPage = ({
                   <TableHead>
                     <TableRow>
                       <TableCell className={styles.table__head}>
-                        <div className={styles.table__title}>
-                          Products table
-                        </div>
-                        <div>
-                          <Button
-                            onClick={() => console.log("create new product")}
-                            color="success"
-                            variant="fab"
-                          >
-                            <NoteAdd />
-                          </Button>
-                        </div>
+                        <CreateButtonAction
+                          title="Products table"
+                          createAction={() => modal.openModal(CREATE_PRODUCT_MODAL)}
+                        >
+                          <NoteAdd />
+                        </CreateButtonAction>
                       </TableCell>
                     </TableRow>
                   </TableHead>
@@ -78,7 +74,7 @@ const ProductPage = ({
                     {products.map(
                       ({
                         productID,
-                        name,
+                        productname,
                         description,
                         pricewithoutdph,
                         pricewithdph,
@@ -88,7 +84,7 @@ const ProductPage = ({
                       }) => (
                         <TableRow key={productID} className={styles.table__row}>
                           <TableCell>{productID}</TableCell>
-                          <TableCell>{name}</TableCell>
+                          <TableCell>{productname}</TableCell>
                           <TableCell>
                             <Image
                               width={127}

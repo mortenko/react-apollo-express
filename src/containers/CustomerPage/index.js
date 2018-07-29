@@ -10,6 +10,7 @@ import {
   TableRow
 } from "components/Table";
 import {
+  CreateButtonAction,
   UpdateButtonAction,
   DeleteButtonAction
 } from "components/Table/tableComponents";
@@ -52,20 +53,14 @@ const CustomerPage = ({
                     <TableHead>
                       <TableRow>
                         <TableCell className={styles.table__head}>
-                          <div className={styles.table__title}>
-                            Customers Table
-                          </div>
-                          <div>
-                            <Button
-                              onClick={() =>
-                                modal.openModal(CREATE_CUSTOMER_MODAL)
-                              }
-                              color="success"
-                              variant="fab"
-                            >
-                              <PersonAdd />
-                            </Button>
-                          </div>
+                          <CreateButtonAction
+                            title="Customers Table"
+                            createAction={() =>
+                              modal.openModal(CREATE_CUSTOMER_MODAL)
+                            }
+                          >
+                            <PersonAdd />
+                          </CreateButtonAction>
                         </TableCell>
                       </TableRow>
                     </TableHead>
@@ -108,24 +103,22 @@ const CustomerPage = ({
                             <TableCell>{phone}</TableCell>
                             <TableCell>
                               <UpdateButtonAction
-                                updateAction={() => modal.openModal(
-                                  UPDATE_CUSTOMER_MODAL,
-                                  {
+                                updateAction={() =>
+                                  modal.openModal(UPDATE_CUSTOMER_MODAL, {
                                     customerID
-                                  }
-                                )}
+                                  })
+                                }
                               />
                             </TableCell>
                             <TableCell>
                               <DeleteButtonAction
-                                deleteAction={() => modal.openModal(
-                                  DELETE_CUSTOMER_MODAL,
-                                  {
+                                deleteAction={() =>
+                                  modal.openModal(DELETE_CUSTOMER_MODAL, {
                                     customerID,
                                     firstname,
                                     lastname
-                                  }
-                                )}
+                                  })
+                                }
                               />
                             </TableCell>
                           </TableRow>
