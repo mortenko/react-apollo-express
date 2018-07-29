@@ -1,5 +1,7 @@
 import models from "../../../db/models";
-import { ApolloError } from "apollo-server";
+import { ApolloError, UserInputError } from "apollo-server";
+import path from "path";
+import { collectServerErrors, savePhoto } from "../utils/helper";
 
 const ProductResolvers = {
   Query: {
@@ -17,7 +19,7 @@ const ProductResolvers = {
           limit: 12,
           attributes: [
             "productID",
-            "name",
+            "productname",
             "description",
             "pricewithoutdph",
             "pricewithdph",
@@ -47,34 +49,33 @@ const ProductResolvers = {
     }
   },
   Mutation: {
-    createProduct: (
-      _,
-      {
-        input: {
-          name,
-          description,
-          pricewithoutdph,
-          pricewithdph,
-          barcode,
-          photo
+    createProduct: async (_, { photoFile, product }) => {
+      try {
+        const { dataValues: { productID } } = await models.Product.create(
+          product
+        );
+        const rootPath = path.resolve("./public");
+        const productPath = path.join(rootPath, "/photos/products");
+        const productPhotoDir = path.join(productPath, productID.toString());
+        try {
+          const filename = await savePhoto(photoFile, productPhotoDir);
+          try {
+            await models.ProductPhoto.create({
+              productID,
+              photo: `/photos/products/${productID}/${filename}`,
+              name: `${filename}`
+            });
+          } catch (productPhotoError) {
+            throw new UserInputError(JSON.stringify(productPhotoError));
+          }
+        } catch (savePhotoFileError) {
+          throw savePhotoFileError;
         }
+      } catch (createProductError) {
+        console.log(createProductError);
+        //const serverErrors = collectServerErrors(createProductError);
+        //throw new UserInputError(JSON.stringify(serverErrors));
       }
-    ) => {
-      const newProduct = {
-        name,
-        description,
-        pricewithoutdph,
-        pricewithdph,
-        barcode
-      };
-      models.Product.create(newProduct);
-      models.Product.afterCreate((product, options) => {
-        const { productID } = product.dataValues;
-        models.ProductPhoto.create({
-          productID,
-          photo
-        });
-      });
     },
     updateProduct: (
       _,
@@ -125,3 +126,4 @@ const ProductResolvers = {
 };
 
 export default ProductResolvers;
+

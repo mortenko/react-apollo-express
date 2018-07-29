@@ -3,7 +3,7 @@ import ProductPhoto from "./productPhoto";
 const Product = ` 
  type Product {
   productID: ID!
-  name: String!
+  productname: String!
   description: String!
   pricewithoutdph: Float!
   pricewithdph: Float!
@@ -12,24 +12,28 @@ const Product = `
   ProductPhoto: ProductPhoto
  }
  input ProductInput {
-  name: String!
+  productID: ID
+  productname: String!
   description: String!
   pricewithoutdph: Float!
   pricewithdph: Float!
   barcode: UUID!
-  photo: String!
  }
-  type Products implements Pagination {
-   products: [Product] 
-   count: Int!
-   cursor: Int!
-  }
+ type ProductWithFile {
+   product: Product
+   photoFile: File
+ }
+ type Products implements Pagination {
+  products: [Product] 
+  count: Int!
+  cursor: Int!
+ }
  extend type Query {
   products(cursor: Int!, pageNumber: Int!): Products
   product(productID: ID!): Product
  }
  extend type Mutation {
-   createProduct(input: ProductInput): Product
+   createProduct(photoFile: Upload!, product: ProductInput): ProductWithFile
    updateProduct(productID: ID!, input: ProductInput): Product
    deleteProduct(productID: ID!): Product
  }

@@ -7,3 +7,4 @@ export const asyncRemoveDir = util.promisify(fs.rmdir);
 export const asyncReadDir = util.promisify(fs.readdir);
 export const asyncAccessFile = util.promisify(fs.access);
 export const asyncRemoveFile = util.promisify(fs.unlink);
+export const asyncStat = util.promisify(fs.stat);

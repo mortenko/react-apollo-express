@@ -1,6 +1,5 @@
 import { GraphQLScalarType } from "graphql";
 import format from "date-fns/format";
-//TODO need to be implemented
 
 const GraphQLDate = new GraphQLScalarType({
   name: "Date",
