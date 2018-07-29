@@ -6,8 +6,12 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       type: DataTypes.INTEGER
     },
-    name: {
+    productname: {
       type: DataTypes.STRING,
+      unique: {
+        args: true,
+        msg: "Product with this name already exists"
+      },
       validate: {
         isLength: {
           args: { min: 5, max: 20 },
@@ -25,6 +29,7 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
+    //TODO need to handle that  pricewithoutdph must be less then pricewithdph
     pricewithoutdph: {
       type: DataTypes.DECIMAL,
       validate: {
@@ -46,6 +51,10 @@ module.exports = (sequelize, DataTypes) => {
     barcode: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
+      unique: {
+        args: true,
+        msg: "barcode already exists"
+      },
       validate: {
         isUUID: {
           args: 4,

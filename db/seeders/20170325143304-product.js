@@ -6,7 +6,7 @@ module.exports = {
     function generateProduct() {
       const price = faker.commerce.price();
       return {
-        name: faker.commerce.productName(),
+        productname: faker.commerce.productName(),
         description: faker.lorem.sentence(),
         pricewithoutdph: price,
         pricewithdph: Number(price * 1.35).toFixed(2),
