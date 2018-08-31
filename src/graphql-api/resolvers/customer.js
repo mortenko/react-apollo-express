@@ -1,6 +1,5 @@
 import { collectServerErrors, savePhoto } from "../utils/helper";
 import { UserInputError, ApolloError } from "apollo-server";
-import fs from "fs";
 import path from "path";
 import models from "../../../db/models";
 import {
@@ -115,7 +114,8 @@ const CustomerResolvers = {
       }
       if (typeof photoFile === "string") {
         updateCustomerResponse["customer"]["CustomerPhoto"] = {
-          photo
+          photo,
+          name: path.basename(photoFile)
         };
       } else if (typeof photoFile === "object") {
         const dirPath = path.resolve(`./public/photos/customers/${customerID}`);
@@ -123,7 +123,10 @@ const CustomerResolvers = {
           const filename = await savePhoto(photoFile, dirPath, photo);
           try {
             const response = await models.CustomerPhoto.update(
-              { photo: `photos/customers/${customerID}/${filename}` },
+              {
+                photo: `photos/customers/${customerID}/${filename}`,
+                name: filename
+              },
               {
                 returning: true,
                 where: {
@@ -133,7 +136,8 @@ const CustomerResolvers = {
             );
             const { photo } = response[1][0].dataValues;
             updateCustomerResponse["customer"]["CustomerPhoto"] = {
-              photo
+              photo,
+              name: filename
             };
           } catch (customerPhotoUpdateError) {
             throw new ApolloError(customerPhotoUpdateError, 500);
@@ -184,4 +188,3 @@ const CustomerResolvers = {
 };
 
 export default CustomerResolvers;
-

@@ -21,6 +21,23 @@ const FETCH_PRODUCTS = gql`
     }
   }
 `;
+const FETCH_PRODUCT = gql`
+  query product($productID: Int!) {
+    product(productID: $productID)
+      @connection(key: "product", filter: ["productID"]) {
+      productID
+      productname
+      description
+      pricewithoutdph
+      pricewithdph
+      barcode
+      ProductPhoto {
+        photo
+        name
+      }
+    }
+  }
+`;
 
 const CREATE_PRODUCT = gql`
   mutation createProduct($photoFile: Upload!, $product: ProductInput!) {
@@ -39,4 +56,26 @@ const CREATE_PRODUCT = gql`
   }
 `;
 
-export { CREATE_PRODUCT, FETCH_PRODUCTS };
+const UPDATE_PRODUCT = gql`
+  mutation updateProduct($photoFile: Upload!, $product: ProductInput!) {
+    updateProduct(photoFile: $photoFile, product: $product) {
+      product {
+        productID
+        productname
+        description
+        pricewithoutdph
+        pricewithdph
+        barcode
+        ProductPhoto {
+         photo
+         name
+        }
+      }
+      photoFile {
+        photoFile
+      }
+    }
+  }
+`;
+
+export { CREATE_PRODUCT, FETCH_PRODUCTS, FETCH_PRODUCT, UPDATE_PRODUCT };

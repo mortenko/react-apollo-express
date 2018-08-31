@@ -32,20 +32,25 @@ const ProductResolvers = {
         throw new ApolloError(fetchProductsError, 500);
       }
     },
-    product: (_, { id }) => {
-      return models.Product.find({
-        where: {
-          productID: id
-        },
-        attributes: [
-          "productID",
-          "name",
-          "description",
-          "pricewithoutdph",
-          "pricewithdph",
-          "barcode"
-        ]
-      });
+    product: async (_, { productID }) => {
+      try {
+        return await models.Product.findById(productID, {
+          include: {
+            model: models.ProductPhoto,
+            attributes: ["photo", "name"]
+          },
+          attributes: [
+            "productID",
+            "productname",
+            "description",
+            "pricewithoutdph",
+            "pricewithdph",
+            "barcode"
+          ]
+        });
+      } catch (productFindByIdError) {
+        throw new ApolloError(JSON.stringify(productFindByIdError), 400);
+      }
     }
   },
   Mutation: {
@@ -77,43 +82,77 @@ const ProductResolvers = {
         //throw new UserInputError(JSON.stringify(serverErrors));
       }
     },
-    updateProduct: (
+    updateProduct: async (
       _,
-      {
-        productID,
-        input: {
-          name,
-          description,
-          pricewithoutdph,
-          pricewithdph,
-          barcode,
-          photo
+      { photoFile, product: { productID, ...product } }
+    ) => {
+      const updateProductResponse = {};
+      try {
+        const productObj = await models.Product.update(product, {
+          where: {
+            productID
+          },
+          returning: true,
+          individualHooks: true
+        });
+        const {
+          createdAt,
+          updatedAt,
+          ...updatedProduct
+        } = productObj[1][0].dataValues;
+        updateProductResponse["product"] = { productID, ...updatedProduct };
+      } catch (updateProductError) {
+        console.log(updateProductError);
+      }
+      let photo = null;
+      try {
+        const {
+          dataValues: { photo: productPhoto }
+        } = await models.ProductPhoto.find({
+          where: { productID },
+          attributes: ["photo"]
+        });
+        console.log("productPhoto", productPhoto);
+        photo = productPhoto;
+      } catch (queryFindPhotoError) {
+        throw new ApolloError(queryFindPhotoError, 500);
+      }
+      if (typeof photoFile === "string") {
+        updateProductResponse["product"]["ProductPhoto"] = {
+          photo,
+          name: path.basename(photoFile)
+        };
+      } else if (typeof photoFile === "object") {
+        const dirPath = path.resolve(`./public/photos/products/${productID}`);
+        try {
+          const filename = await savePhoto(photoFile, dirPath, photo);
+          try {
+            const response = await models.ProductPhoto.update(
+              {
+                photo: `photos/products/${productID}/${filename}`,
+                name: filename
+              },
+              {
+                returning: true,
+                where: {
+                  productID
+                }
+              }
+            );
+            const { photo } = response[1][0].dataValues;
+            updateProductResponse["product"]["ProductPhoto"] = {
+              photo,
+              name: filename
+            };
+          } catch (productPhotoUpdateError) {
+            throw new ApolloError(productPhotoUpdateError, 500);
+          }
+        } catch (savePhotoError) {
+          console.log(savePhotoError);
+          //   throw new ApolloError(savePhotoError, 500);
         }
       }
-    ) => {
-      const updateProduct = {
-        name,
-        description,
-        pricewithoutdph,
-        pricewithdph,
-        barcode
-      };
-      models.Product.update(updateProduct, {
-        where: {
-          productID
-        },
-        individualHooks: true
-      });
-      models.Product.afterUpdate((user, options) => {
-        models.ProductPhoto.update(
-          { photo },
-          {
-            where: {
-              productID
-            }
-          }
-        );
-      });
+      return updateProductResponse;
     },
     deleteProduct: (_, { productID }) => {
       models.Product.destroy({
@@ -126,4 +165,3 @@ const ProductResolvers = {
 };
 
 export default ProductResolvers;
-

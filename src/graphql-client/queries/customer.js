@@ -63,6 +63,7 @@ const UPDATE_CUSTOMER = gql`
         email
         CustomerPhoto {
           photo
+          name
         }
       }
       photoFile {

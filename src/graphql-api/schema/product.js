@@ -30,11 +30,11 @@ const Product = `
  }
  extend type Query {
   products(cursor: Int!, pageNumber: Int!): Products
-  product(productID: ID!): Product
+  product(productID: Int!): Product
  }
  extend type Mutation {
    createProduct(photoFile: Upload!, product: ProductInput): ProductWithFile
-   updateProduct(productID: ID!, input: ProductInput): Product
+   updateProduct(photoFile: Upload!, product: ProductInput): ProductWithFile
    deleteProduct(productID: ID!): Product
  }
 `;
