@@ -3,7 +3,8 @@
 const autoprefixer = require("autoprefixer");
 const path = require("path");
 const webpack = require("webpack");
-const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
+  .BundleAnalyzerPlugin;
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CaseSensitivePathsPlugin = require("case-sensitive-paths-webpack-plugin");
@@ -31,19 +32,28 @@ module.exports = {
     filename: "static/js/bundle.js",
     chunkFilename: "static/js/[name].chunk.js",
     publicPath: publicPath,
-    devtoolModuleFilenameTemplate: info => path.resolve(info.absoluteResourcePath).replace(/\\/g, "/")
+    devtoolModuleFilenameTemplate: info =>
+      path.resolve(info.absoluteResourcePath).replace(/\\/g, "/")
   },
   resolve: {
     modules: ["node_modules", paths.appNodeModules].concat(
       process.env.NODE_PATH.split(path.delimiter).filter(Boolean)
     ),
-    extensions: [".web.js", ".mjs", ".js", ".json", ".web.jsx", ".jsx"],
+    extensions: [
+      ".web.js",
+      ".mjs",
+      ".js",
+      ".json",
+      ".web.jsx",
+      ".jsx",
+      ".scss"
+    ],
     alias: {
-      "react-native": "react-native-web"
+      "react-native": "react-native-web",
+      components: path.resolve("src/components"),
+      containers: path.resolve("src/containers")
     },
-    plugins: [
-      new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson])
-    ]
+    plugins: [new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson])]
   },
   module: {
     strictExportPresence: true,
@@ -52,7 +62,7 @@ module.exports = {
       {
         test: /\.mjs$/,
         include: /node_modules/,
-        type: "javascript/auto",
+        type: "javascript/auto"
       },
       {
         test: /\.(js|jsx|mjs)$/,
@@ -109,7 +119,7 @@ module.exports = {
               {
                 loader: "css-loader",
                 options: {
-                  importLoaders:1,
+                  importLoaders: 1,
                   sourceMap: true,
                   modules: true,
                   localIdentName: "[path][name]__[local]--[hash:base64:5]"
@@ -149,8 +159,7 @@ module.exports = {
     new CaseSensitivePathsPlugin(),
     new WatchMissingNodeModulesPlugin(paths.appNodeModules),
     new BundleAnalyzerPlugin(),
-    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
   ],
   node: {
     dgram: "empty",

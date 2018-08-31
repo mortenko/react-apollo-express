@@ -11,9 +11,11 @@ import { InMemoryCache } from "apollo-cache-inmemory";
 import { MuiThemeProvider } from "@material-ui/core/styles";
 import theme from "./styles/theme";
 import "normalize.css";
-import "index.scss";
+import "./index.scss";
 import App from "./App";
 import registerServiceWorker from "./registerServiceWorker";
+
+//TODO for re-authentication use apollo-link-error
 
 const cache = new InMemoryCache({
   addTypename: false

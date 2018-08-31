@@ -9,7 +9,7 @@
     "apollo-client": "^2.3.2",
     "apollo-errors": "^1.9.0",
     "apollo-link": "^1.2.2",
-    "apollo-link-error": "^1.0.9",
+    "apollo-link-error": "^1.1.0",
     "apollo-link-http": "^1.5.4",
     "apollo-link-state": "^0.4.1",
     "apollo-server": "^2.0.0",
@@ -93,7 +93,7 @@
     "webpack-manifest-plugin": "^2.0.3"
   },
   "scripts": {
-    "start-dev": "NODE_PATH=./src/ NODE_ENV=development node scripts/start.js",
+    "start-dev": "NODE_ENV=development node scripts/start.js",
     "build": "NODE_ENV=production node scripts/build.js",
     "start-server": "NODE_ENV=development nodemon src/graphql-api/server/index.js --exec babel-node --presets es2015,stage-2",
     "test": "node scripts/test.js --env=jsdom",

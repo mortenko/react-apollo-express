@@ -63,7 +63,8 @@ module.exports = {
     ),
     extensions: [".web.js", ".mjs", ".js", ".json", ".web.jsx", ".jsx"],
     alias: {
-      "react-native": "react-native-web"
+      "react-native": "react-native-web",
+      components: path.resolve("/src/components")
     },
     plugins: [new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson])]
   },
@@ -73,7 +74,7 @@ module.exports = {
       {
         test: /\.mjs$/,
         include: /node_modules/,
-        type: "javascript/auto",
+        type: "javascript/auto"
       },
       {
         test: /\.(js|jsx|mjs)$/,

@@ -15,7 +15,7 @@ import RenderPropsToastMessage from "components/ToastProvider/renderPropsToastMe
 import ModalProvider from "components/ModalProvider";
 import ToastProvider from "components/ToastProvider";
 import { ModalContext, ToastContext } from "./context";
-import styles from "App.scss";
+import styles from "./App.scss";
 
 //TODO rewrite to fromRenderProps when it will be release
 const AppRenderPropsComponent = adopt({
