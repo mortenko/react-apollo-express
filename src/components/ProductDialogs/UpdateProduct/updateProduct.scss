@@ -1,0 +1,10 @@
+@import "../../../styles/colors";
+@import "../../Dialog/_dialog.scss";
+
+.dialogUpdateProduct__title {
+  background-color: $secondary;
+}
+
+.dialog__title {
+  @extend .dialogUpdateProduct__title
+}

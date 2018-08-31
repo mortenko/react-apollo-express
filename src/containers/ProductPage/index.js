@@ -21,6 +21,7 @@ import Button from "components/Button";
 import Loader from "components/Loader";
 import Alert from "components/Alert";
 import { CREATE_PRODUCT_MODAL } from "components/ProductDialogs/CreateProduct";
+import { UPDATE_PRODUCT_MODAL } from "components/ProductDialogs/UpdateProduct";
 import Pagination, { PaginationHoc } from "components/Pagination";
 import { ModalContext } from "../../context";
 import { NoteAdd } from "../../assets/material-ui-icons";
@@ -41,7 +42,9 @@ const ProductPage = ({
           {({ loading, error, data, variables: { pageNumber }, refetch }) => {
             if (loading) return <Loader />;
             if (error) return <Alert>Error: ${error.message}</Alert>;
-            const { products: { products, count } } = data;
+            const {
+              products: { products, count }
+            } = data;
             return (
               <div>
                 <Table className={styles.table}>
@@ -50,7 +53,9 @@ const ProductPage = ({
                       <TableCell className={styles.table__head}>
                         <CreateButtonAction
                           title="Products table"
-                          createAction={() => modal.openModal(CREATE_PRODUCT_MODAL)}
+                          createAction={() =>
+                            modal.openModal(CREATE_PRODUCT_MODAL)
+                          }
                         >
                           <NoteAdd />
                         </CreateButtonAction>
@@ -100,7 +105,11 @@ const ProductPage = ({
                           <TableCell>{createdAt}</TableCell>
                           <TableCell>
                             <UpdateButtonAction
-                              updateAction={() => console.log("update Product")}
+                              updateAction={() =>
+                                modal.openModal(UPDATE_PRODUCT_MODAL, {
+                                  productID
+                                })
+                              }
                             />
                           </TableCell>
                           <TableCell>
