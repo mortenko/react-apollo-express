@@ -30,7 +30,8 @@ export default function withProductForm(WrappedComponent) {
             name: PropTypes.string
           })
         })
-      })
+      }),
+      validationFunctions: PropTypes.objectOf(PropTypes.func).isRequired
     };
     static defaultProps = {
       initialFormValues: {
@@ -57,42 +58,51 @@ export default function withProductForm(WrappedComponent) {
     }
     renderBarcode = () => {
       const generateUUID = uuid();
-      this.setState({
-        product: {
-          ...this.state.product,
-          barcode: generateUUID
+      this.setState(
+        {
+          product: {
+            ...this.state.product,
+            barcode: generateUUID
+          }
+        },
+        () => {
+          this.props.validationFunctions.isUUID("barcode", generateUUID);
         }
-      },() => {
-        this.props.validationFunctions.isUUID("barcode", generateUUID);
-      });
+      );
     };
     resetForm = () => {
       this.setState({
         ...this.props.initialFormValues
-      })
-  };
-    handleInputChange = event => {
-      if (
-        event.target.files !== null &&
-        typeof event.target.files !== "undefined"
-      ) {
+      });
+    };
+    handleInputChange = ({ target: { files, id, value } }) => {
+      if (files !== null && typeof files !== "undefined") {
         this.setState({
           product: {
             ...this.state.product,
             ProductPhoto: {
-              [event.target.id]: event.target.files[0],
-              name: event.target.files[0].name
+              [id]: files[0],
+              name: files[0].name
             }
           }
         });
-      } else {
-        const name = event.target.id;
-        const value = event.target.value;
+      } else if (id === "pricewithoutdph") {
         this.setState(currentState => {
           return {
             product: {
               ...currentState.product,
-              [name]: value
+              pricewithoutdph: value,
+              pricewithdph: value && (value * 1.2).toFixed(2)
+            }
+          };
+        });
+      }
+      else {
+        this.setState(currentState => {
+          return {
+            product: {
+              ...currentState.product,
+              [id]: value
             }
           };
         });
@@ -100,8 +110,10 @@ export default function withProductForm(WrappedComponent) {
     };
     render() {
       const newProps = {
-        newData: this.state,
+        calculatePriceWithdph: pricewithoutdph =>
+          this.calculatePriceWithdph(pricewithoutdph),
         handleInputChange: event => this.handleInputChange(event),
+        newData: this.state,
         renderBarcode: () => this.renderBarcode(),
         resetForm: () => this.resetForm()
       };

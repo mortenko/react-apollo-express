@@ -105,7 +105,7 @@ const DialogCreateProduct = props => {
                         <Button
                           onClick={async () => {
                             const {
-                              ///destruct CustomerPhoto from object customer
+                              ///destruct ProductPhoto from object product
                               product: { ProductPhoto: { photo }, ...product }
                             } = newData;
                             if (isRequired({ ...product, photo }) === false) {
@@ -150,6 +150,27 @@ const DialogCreateProduct = props => {
       )}
     </ToastContext.Consumer>
   );
+};
+DialogCreateProduct.propTypes = {
+  closeModal: PropTypes.func.isRequired,
+  handleInputChange: PropTypes.func.isRequired,
+  newData: PropTypes.shape({
+    productname: PropTypes.string,
+    description: PropTypes.string,
+    pricewithoutdph: PropTypes.number,
+    pricewithdph: PropTypes.number,
+    barcode: PropTypes.string,
+    ProductPhoto: PropTypes.shape({
+      photo: PropTypes.object,
+      name: PropTypes.string
+    })
+  }).isRequired,
+  open: PropTypes.bool.isRequired,
+  resetForm: PropTypes.func.isRequired,
+  validationFunctions: PropTypes.objectOf(PropTypes.func)
+};
+DialogCreateProduct.defaultProps = {
+  validationFunctions: {}
 };
 
 export const CREATE_PRODUCT_MODAL = "CREATE_PRODUCT_MODAL";

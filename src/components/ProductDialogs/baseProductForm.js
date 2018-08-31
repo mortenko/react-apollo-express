@@ -14,16 +14,7 @@ import {
 import Button from "components/Button";
 
 const BaseProductForm = ({
-  productState,
-  classes,
-  handleInputChange,
-  resetForm,
-  validationErrors,
-  renderBarcode,
-  validationFunctions: { isLength, isRequired, isNumber, isUUID }
-}) => {
-  //TODO AUTOMATICALY COUNT pricewithdph filed acc price without dph
-  const {
+  productState: {
     product: {
       productname,
       description,
@@ -32,7 +23,14 @@ const BaseProductForm = ({
       barcode,
       ProductPhoto: { photo, name }
     }
-  } = productState;
+  },
+  handleInputChange,
+  resetForm,
+  validationErrors,
+  renderBarcode,
+  calculatePriceWithdph,
+  validationFunctions: { isGreaterThen, isLength, isRequired, isNumber, isUUID }
+}) => {
   return (
     <Grid container>
       <DialogContent>
@@ -57,7 +55,9 @@ const BaseProductForm = ({
               isLength(5, 20)(event.target.id, event.target.value);
             }}
           />
-          <Alert>{validationErrors.productname}</Alert>
+          <Alert>
+            {validationErrors.productname}
+          </Alert>
         </Grid>
         <Grid item xs={12}>
           <TextField
@@ -82,7 +82,9 @@ const BaseProductForm = ({
               isLength(20, 150)(event.target.id, event.target.value);
             }}
           />
-          <Alert>{validationErrors.description}</Alert>
+          <Alert>
+            {validationErrors.description}
+          </Alert>
         </Grid>
         <Grid item xs={12}>
           <TextField
@@ -106,7 +108,9 @@ const BaseProductForm = ({
               isNumber(event.target.id, event.target.value);
             }}
           />
-          <Alert>{validationErrors.pricewithoutdph}</Alert>
+          <Alert>
+            {validationErrors.pricewithoutdph}
+          </Alert>
         </Grid>
         <Grid item xs={12}>
           <TextField
@@ -116,6 +120,7 @@ const BaseProductForm = ({
             type="number"
             value={pricewithdph}
             margin="normal"
+            helperText="this field is automatically calculated from  price without dph"
             fullWidth
             error={validationErrors.pricewithdph.length !== 0}
             InputProps={{
@@ -124,13 +129,23 @@ const BaseProductForm = ({
                   <AttachMoney />
                 </InputAdornment>
               )
+              // readOnly: true
             }}
             onChange={event => {
+              const { target: { id, value } } = event;
               handleInputChange(event);
-              isNumber(event.target.id, event.target.value);
+              /* both functions isGreaterThen and isNumber update react state using async setState
+               * from that reason the function isNumber is called as a anonymous callback
+                *
+                * */
+              isGreaterThen({ pricewithoutdph }, { [id]: value }, () => {
+                isNumber(id, value);
+              });
             }}
           />
-          <Alert>{validationErrors.pricewithdph}</Alert>
+          <Alert>
+            {validationErrors.pricewithdph}
+          </Alert>
         </Grid>
         <Grid item xs={12}>
           <div className={styles.barcode}>
@@ -158,7 +173,9 @@ const BaseProductForm = ({
               <Button onClick={renderBarcode}>Generate UUID</Button>
             </div>
           </div>
-          <Alert>{validationErrors.barcode}</Alert>
+          <Alert>
+            {validationErrors.barcode}
+          </Alert>
         </Grid>
         <Grid item xs={12}>
           <UploadButton
@@ -172,6 +189,44 @@ const BaseProductForm = ({
       </DialogContent>
     </Grid>
   );
+};
+BaseProductForm.propTypes = {
+  calculatePriceWithdph: PropTypes.func.isRequired,
+  handleInputChange: PropTypes.func.isRequired,
+  productState: PropTypes.shape({
+    product: PropTypes.shape({
+      productname: PropTypes.string,
+      description: PropTypes.string,
+      pricewithoutdph: PropTypes.number,
+      pricewithdph: PropTypes.number,
+      barcode: PropTypes.string,
+      ProductPhoto: PropTypes.shape({
+        photo: PropTypes.object,
+        name: PropTypes.string
+      })
+    })
+  }),
+  renderBarcode: PropTypes.func.isRequired,
+  resetForm: PropTypes.func.isRequired,
+  validationErrors: PropTypes.object,
+  validationFunctions: PropTypes.objectOf(PropTypes.func)
+};
+BaseProductForm.defaultProps = {
+  productState: PropTypes.shape({
+    product: PropTypes.shape({
+      productname: "",
+      description: "",
+      pricewithoutdph: 0,
+      pricewithdph: 0,
+      barcode: "",
+      ProductPhoto: PropTypes.shape({
+        photo: PropTypes.object,
+        name: PropTypes.string
+      })
+    })
+  }),
+  validationErrors: {},
+  validationFunctions: {}
 };
 
 export default BaseProductForm;
