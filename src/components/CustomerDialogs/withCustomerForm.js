@@ -51,6 +51,11 @@ export default function withCustomerForm(WrappedComponent) {
         ...setInitialFormValues
       };
     }
+    resetForm = () => {
+      this.setState({
+        ...this.props.initialFormValues
+      });
+    }
     handleInputChange = event => {
       if (event.target.files !== null) {
         this.setState({
@@ -77,8 +82,9 @@ export default function withCustomerForm(WrappedComponent) {
     };
     render() {
       const newProps = {
+        handleInputChange: event => this.handleInputChange(event),
         newData: this.state,
-        handleInputChange: event => this.handleInputChange(event)
+        resetForm: () => this.resetForm()
       };
       return <WrappedComponent {...this.props} {...newProps} />;
     }

@@ -29,9 +29,9 @@ export default class RenderPropsModal extends Component {
     });
   }
   render() {
-    return <div> {this.props.children(this.state)} </div>
+    return <div> {this.props.children(this.state)} </div>;
   }
 }
-RenderPropsModal.propTypes ={
-  children: PropTypes.func
+RenderPropsModal.propTypes = {
+  children: PropTypes.func.isRequired
 };

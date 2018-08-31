@@ -41,7 +41,6 @@ const initialFormValues = {
     }
   }
 };
-//TODO add resetForm() into onClick function when creating new customer ( check product)
 export const enhanceWithCustomerHoc = compose(
   withProps(() => ({ initialErrorValues }), withValidator),
   withProps(() => ({ initialFormValues }), withCustomerForm),
@@ -52,6 +51,7 @@ const DialogCreateCustomer = props => {
   const {
     open,
     closeModal,
+    resetForm,
     validationFunctions: {
       isRequired,
       hasValidationErrors,
@@ -93,7 +93,10 @@ const DialogCreateCustomer = props => {
                         <Button
                           variant="contained"
                           color="info"
-                          onClick={closeModal}
+                          onClick={() => {
+                            closeModal();
+                            resetForm();
+                          }}
                         >
                           Cancel
                         </Button>
@@ -161,6 +164,7 @@ DialogCreateCustomer.propTypes = {
     })
   }).isRequired,
   open: PropTypes.bool.isRequired,
+  resetForm: PropTypes.func.isRequired,
   validationFunctions: PropTypes.objectOf(PropTypes.func)
 };
 DialogCreateCustomer.defaultProps = {

@@ -1,15 +1,19 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 function withValidator(WrappedComponent) {
   return class extends Component {
+    static propTypes = {
+      initialErrorValues: PropTypes.object.isRequired
+    };
     state = {
       validationErrors: this.props.initialErrorValues
     };
     hasValidationErrors = () => {
-      const { errors } = this.state;
+      const { validationErrors } = this.state;
       let hasErrors = false;
-      for (const key in errors) {
-        if (errors[key].length !== 0) {
+      for (const key in validationErrors) {
+        if (validationErrors[key].length !== 0) {
           hasErrors = true;
         }
       }
@@ -117,14 +121,14 @@ function withValidator(WrappedComponent) {
         }
       });
     };
-    //TODO FINISH FUNCTION isGreaterThen
-    isGreaterThen(
-      obj1 = { field: 0 },
-      obj2 = { comparedField: 0 }
-    ) {
+    isGreaterThen = (obj1, obj2) => {
       const isGreaterThen = {};
-      if (Number(obj1.field) < Number(obj2.comparedField)) {
-        isGreaterThen.field = `must be greater then ${Object.key(obj2)[0]}`;
+      if (Number(Object.values(obj1)[0]) > Number(Object.values(obj2)[0])) {
+        isGreaterThen[Object.keys(obj2)[0]] = `${Object.keys(
+          obj2
+        )[0]} must be greater then ${Object.keys(obj1)[0]}`;
+      } else {
+        isGreaterThen[Object.keys(obj2)[0]] = "";
       }
       this.setState({
         validationErrors: {
@@ -132,7 +136,7 @@ function withValidator(WrappedComponent) {
           ...isGreaterThen
         }
       });
-    }
+    };
     handleServerErrors = error => {
       let serverValidationErrors = {};
       error.graphQLErrors.forEach(({ message }) => {
@@ -148,12 +152,12 @@ function withValidator(WrappedComponent) {
         }
       });
     };
-
     render() {
       // exclude initialErrorValues
       const { initialErrorValues, ...props } = this.props;
       const validationFunctions = {
         isEmail: this.isEmail,
+        isGreaterThen: this.isGreaterThen,
         isRequired: this.isRequired,
         isLength: this.isLength,
         isPhoneNumber: this.isPhoneNumber,
