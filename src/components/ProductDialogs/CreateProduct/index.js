@@ -23,12 +23,12 @@ import withProductForm from "../withProductForm";
 import { enhanceWithBaseHoc } from "../../Dialog/dialogHoc";
 
 const initialErrorValues = {
-  productname: "",
-  description: "",
-  pricewithoutdph: "",
-  pricewithdph: "",
-  barcode: "",
-  photo: ""
+  productname: {},
+  description: {},
+  pricewithoutdph: {},
+  pricewithdph: [],
+  barcode: {},
+  photo: {}
 };
 const initialFormValues = {
   product: {

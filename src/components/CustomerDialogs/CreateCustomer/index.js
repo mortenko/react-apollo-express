@@ -23,11 +23,11 @@ import withCustomerForm from "../withCustomerForm";
 import { enhanceWithBaseHoc } from "../../Dialog/dialogHoc";
 
 const initialErrorValues = {
-  firstname: "",
-  lastname: "",
-  email: "",
-  phone: "",
-  photo: ""
+  firstname: {},
+  lastname: {},
+  email: {},
+  phone: {},
+  photo: {}
 };
 const initialFormValues = {
   customer: {

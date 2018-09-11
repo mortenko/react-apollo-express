@@ -86,7 +86,8 @@ export default function withProductForm(WrappedComponent) {
             }
           }
         });
-      } else if (id === "pricewithoutdph") {
+      }
+      else if (id === "pricewithoutdph") {
         this.setState(currentState => {
           return {
             product: {

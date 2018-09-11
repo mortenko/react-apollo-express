@@ -44,20 +44,20 @@ const UploadButton = ({
         </Button>
       </label>
       <div className={styles.uploadButton__text}>
-        {validationPhotoError.length !== 0 && (
-          <Alert>{validationPhotoError}</Alert>
-        )}
+        {Object.keys(validationPhotoError).length > 0 &&
+          <Alert>
+            {Object.values(validationPhotoError)[0]}
+          </Alert>}
       </div>
       <div className={styles.uploadButton__image}>
-        {photo !== null && (
+        {photo !== null &&
           <Image
             src={typeof photo === "object" ? URL.createObjectURL(photo) : photo}
             width={127}
             height={127}
             alt={photoName}
             fileName={photoName}
-          />
-        )}
+          />}
       </div>
     </div>
   );
@@ -78,4 +78,4 @@ UploadButton.defaultProps = {
   validationPhotoError: ""
 };
 
-export default  withStyles(UploadButtonStyles)(UploadButton);
+export default withStyles(UploadButtonStyles)(UploadButton);

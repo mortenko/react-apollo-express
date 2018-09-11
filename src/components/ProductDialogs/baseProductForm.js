@@ -29,6 +29,7 @@ const BaseProductForm = ({
   validationErrors,
   renderBarcode,
   calculatePriceWithdph,
+  printErrorMessage,
   validationFunctions: { isGreaterThen, isLength, isRequired, isNumber, isUUID }
 }) => {
   return (
@@ -42,7 +43,7 @@ const BaseProductForm = ({
             margin="normal"
             value={productname}
             fullWidth
-            error={validationErrors.productname.length !== 0}
+            error={Object.keys(validationErrors.productname).length > 0}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -56,7 +57,7 @@ const BaseProductForm = ({
             }}
           />
           <Alert>
-            {validationErrors.productname}
+            {printErrorMessage(validationErrors.productname)}
           </Alert>
         </Grid>
         <Grid item xs={12}>
@@ -69,7 +70,7 @@ const BaseProductForm = ({
             margin="normal"
             value={description}
             fullWidth
-            error={validationErrors.description.length !== 0}
+            error={Object.keys(validationErrors.description).length > 0}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -83,7 +84,7 @@ const BaseProductForm = ({
             }}
           />
           <Alert>
-            {validationErrors.description}
+            {printErrorMessage(validationErrors.description)}
           </Alert>
         </Grid>
         <Grid item xs={12}>
@@ -95,7 +96,7 @@ const BaseProductForm = ({
             type="number"
             margin="normal"
             fullWidth
-            error={validationErrors.pricewithoutdph.length !== 0}
+            error={Object.keys(validationErrors.pricewithoutdph).length > 0}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -109,7 +110,7 @@ const BaseProductForm = ({
             }}
           />
           <Alert>
-            {validationErrors.pricewithoutdph}
+            {printErrorMessage(validationErrors.pricewithoutdph)}
           </Alert>
         </Grid>
         <Grid item xs={12}>
@@ -128,23 +129,18 @@ const BaseProductForm = ({
                 <InputAdornment position="start">
                   <AttachMoney />
                 </InputAdornment>
-              )
-              // readOnly: true
+              ),
+              readOnly: true
             }}
             onChange={event => {
               const { target: { id, value } } = event;
               handleInputChange(event);
-              /* both functions isGreaterThen and isNumber update react state using async setState
-               * from that reason the function isNumber is called as a anonymous callback
-                *
-                * */
-              isGreaterThen({ pricewithoutdph }, { [id]: value }, () => {
-                isNumber(id, value);
-              });
+              isGreaterThen({ pricewithoutdph }, { [id]: value });
+              isNumber(id, value);
             }}
           />
           <Alert>
-            {validationErrors.pricewithdph}
+            {printErrorMessage(validationErrors.pricewithdph)}
           </Alert>
         </Grid>
         <Grid item xs={12}>
@@ -156,7 +152,7 @@ const BaseProductForm = ({
               value={barcode}
               fullWidth
               margin="normal"
-              error={validationErrors.barcode.length !== 0}
+              error={Object.keys(validationErrors.barcode).length > 0}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -174,7 +170,7 @@ const BaseProductForm = ({
             </div>
           </div>
           <Alert>
-            {validationErrors.barcode}
+            {printErrorMessage(validationErrors.barcode)}
           </Alert>
         </Grid>
         <Grid item xs={12}>
@@ -193,6 +189,7 @@ const BaseProductForm = ({
 BaseProductForm.propTypes = {
   calculatePriceWithdph: PropTypes.func.isRequired,
   handleInputChange: PropTypes.func.isRequired,
+  printErrorMessage: PropTypes.func.isRequired,
   productState: PropTypes.shape({
     product: PropTypes.shape({
       productname: PropTypes.string,

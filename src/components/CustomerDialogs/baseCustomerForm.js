@@ -11,6 +11,7 @@ const BaseCustomerForm = ({
   customerState,
   handleInputChange,
   classes,
+  printErrorMessage,
   validationFunctions: { isEmail, isPhoneNumber, isLength, isRequired },
   validationErrors
 }) => {
@@ -34,6 +35,7 @@ const BaseCustomerForm = ({
             margin="normal"
             value={firstname}
             fullWidth
+            error={Object.keys(validationErrors.firstname).length > 0}
             onChange={event => {
               handleInputChange(event);
               isLength(3, 15)(event.target.id, event.target.value);
@@ -45,9 +47,8 @@ const BaseCustomerForm = ({
                 </InputAdornment>
               )
             }}
-            error={validationErrors.firstname.length !== 0}
           />
-          <Alert>{validationErrors.firstname}</Alert>
+          <Alert>{printErrorMessage(validationErrors.firstname)}</Alert>
         </Grid>
         <Grid item xs={12}>
           <TextField
@@ -57,6 +58,7 @@ const BaseCustomerForm = ({
             margin="normal"
             value={lastname}
             fullWidth
+            error={Object.keys(validationErrors.lastname).length > 0}
             onChange={event => {
               handleInputChange(event);
               isLength(3, 15)(event.target.id, event.target.value);
@@ -68,9 +70,8 @@ const BaseCustomerForm = ({
                 </InputAdornment>
               )
             }}
-            error={validationErrors.lastname.length !== 0}
           />
-          <Alert>{validationErrors.lastname}</Alert>
+          <Alert>{printErrorMessage(validationErrors.lastname)}</Alert>
         </Grid>
         <Grid item xs={12}>
           <TextField
@@ -80,6 +81,7 @@ const BaseCustomerForm = ({
             margin="normal"
             value={phone}
             fullWidth
+            error={Object.keys(validationErrors.phone).length > 0}
             onChange={event => {
               handleInputChange(event);
               isPhoneNumber(event.target.id, event.target.value);
@@ -91,9 +93,8 @@ const BaseCustomerForm = ({
                 </InputAdornment>
               )
             }}
-            error={validationErrors.phone.length !== 0}
           />
-          <Alert>{validationErrors.phone}</Alert>
+          <Alert>{printErrorMessage(validationErrors.phone)}</Alert>
         </Grid>
         <Grid item xs={12}>
           <TextField
@@ -104,6 +105,7 @@ const BaseCustomerForm = ({
             margin="normal"
             value={email}
             fullWidth
+            error={Object.keys(validationErrors.email).length > 0}
             onChange={event => {
               handleInputChange(event);
               isEmail(event.target.id, event.target.value);
@@ -115,9 +117,8 @@ const BaseCustomerForm = ({
                 </InputAdornment>
               )
             }}
-            error={validationErrors.email.length !== 0}
           />
-          <Alert>{validationErrors.email}</Alert>
+          <Alert>{printErrorMessage(validationErrors.email)}</Alert>
         </Grid>
         <Grid item xs={12}>
           <UploadButton
@@ -145,6 +146,7 @@ BaseCustomerForm.propTypes = {
     })
   }),
   handleInputChange: PropTypes.func.isRequired,
+  printErrorMessage: PropTypes.func.isRequired,
   validationErrors: PropTypes.object,
   validationFunctions: PropTypes.objectOf(PropTypes.func)
 };
