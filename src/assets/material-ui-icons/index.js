@@ -1,7 +1,7 @@
 export { default as Delete } from "@material-ui/icons/Delete";
 export { default as Create } from "@material-ui/icons/Create";
 export { default as Edit } from "@material-ui/icons/Edit";
-export { default as FileCopy } from "@material-ui/icons/ContentCopy";
+export { default as FileCopy } from "@material-ui/icons/FileCopy";
 export { default as PersonAdd } from "@material-ui/icons/PersonAdd";
 export { default as LeftArrow } from "@material-ui/icons/ArrowBack";
 export { default as RightArrow } from "@material-ui/icons/ArrowForward";

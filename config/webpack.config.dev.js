@@ -158,7 +158,7 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new CaseSensitivePathsPlugin(),
     new WatchMissingNodeModulesPlugin(paths.appNodeModules),
-    new BundleAnalyzerPlugin(),
+    //new BundleAnalyzerPlugin(),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
   ],
   node: {
