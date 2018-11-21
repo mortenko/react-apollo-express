@@ -17,6 +17,22 @@ const SchemaDefinition = `
   query: Query
   mutation: Mutation
  }`;
+const SchemaShared = `
+  interface IMutationResponse {
+    code: Int!
+    message: String!
+    success: Boolean!
+  }
+  interface IPagination {
+   count: Int!
+   cursor: Int!
+  }
+   type MutationResponse implements IMutationResponse {
+    code: Int!
+    message: String!
+    success: Boolean!
+   }
+`;
 
 const CustomScalarTypes = `
   scalar Upload
@@ -37,6 +53,7 @@ const schema = makeExecutableSchema({
   ),
   typeDefs: [
     SchemaDefinition,
+    SchemaShared,
     CustomScalarTypes,
     ...Customer,
     ...Product,

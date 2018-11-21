@@ -1,11 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
-import { ErrorLink } from "apollo-link-error";
-import { ApolloLink } from "apollo-link";
-import { withClientState } from "apollo-link-state";
 import { ApolloClient } from "apollo-client";
+import { ApolloLink } from "apollo-link";
+import { HttpLink } from "apollo-link-http";
+import { ErrorLink } from "apollo-link-error";
 import { createUploadLink } from "apollo-upload-client";
+import { withClientState } from "apollo-link-state";
 import { ApolloProvider } from "react-apollo";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import { MuiThemeProvider } from "@material-ui/core/styles";
@@ -31,11 +32,14 @@ const stateLink = withClientState({
   }
 });
 const uploadLink = createUploadLink({ uri: "http://localhost:8000/graphql" });
+const httpLink = new HttpLink({
+  uri: "http://localhost:8000/graphql",
+  includeExtensions: true
+});
 const errorLink = new ErrorLink();
-
 const client = new ApolloClient({
-  link: ApolloLink.from([stateLink, errorLink, uploadLink]),
   cache,
+  link: ApolloLink.from([stateLink, uploadLink, errorLink, httpLink]),
   connectToDevTools: true
 });
 

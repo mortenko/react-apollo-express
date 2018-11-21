@@ -7,7 +7,8 @@ function withValidator(WrappedComponent) {
       initialErrorValues: PropTypes.object.isRequired
     };
     state = {
-      validationErrors: this.props.initialErrorValues
+      validationErrors: this.props.initialErrorValues,
+      serverErrors: []
     };
     hasValidationErrors = () => {
       const { validationErrors } = this.state;
@@ -93,7 +94,6 @@ function withValidator(WrappedComponent) {
         }
       }
       this.setState({
-        ...this.state.validationErrors,
         validationErrors
       });
     };
@@ -139,10 +139,10 @@ function withValidator(WrappedComponent) {
         value !== ""
       ) {
         this.addNewValidationMessage(field, {
-          isPhoneNumber: "Invalid phone number"
+          isMobilePhone: "Invalid phone number"
         });
       } else {
-        this.removeValidationMessage(field, "isPhoneNumber");
+        this.removeValidationMessage(field, "isMobilePhone");
       }
     };
     isNumber = (field, value) => {
@@ -170,28 +170,54 @@ function withValidator(WrappedComponent) {
       const obj2Val = Object.values(obj2)[0];
       if (Number(obj1Val) > Number(obj2Val) && obj2Val !== "") {
         this.addNewValidationMessage(Object.keys(obj2)[0], {
-          isGreaterThen: `${Object.keys(
-            obj2
-          )[0]} must be greater then ${Object.keys(obj1)[0]}`
+          isGreaterThen: `${Object.keys(obj2)[0]} must be greater then ${
+            Object.keys(obj1)[0]
+          }`
         });
       } else {
         this.removeValidationMessage(Object.keys(obj2)[0], "isGreaterThen");
       }
     };
-    handleServerErrors = error => {
-      let serverValidationErrors = {};
-      error.graphQLErrors.forEach(({ message }) => {
-        const parseJSON = JSON.parse(message);
-        parseJSON.forEach(obj => {
-          serverValidationErrors = { ...serverValidationErrors, ...obj };
+    handleServerErrors = ({ graphQLErrors, networkError }) => {
+      if (networkError) {
+        const {
+          result: {
+            errors: [
+              {
+                message,
+                extensions: { code }
+              }
+            ]
+          },
+          response,
+          statusCode
+        } = networkError;
+        this.setState({
+          serverErrors: this.serverErrors.concat([
+            { message, code, statusCode }
+          ])
         });
-      });
-      this.setState({
-        validationErrors: {
-          ...this.state.validationErrors,
-          ...serverValidationErrors
+      } else if (graphQLErrors) {
+        const [
+          {
+            message,
+            extensions: {
+              exception: { response }
+            }
+          }
+        ] = graphQLErrors;
+        if (
+          message === "SequelizeUniqueConstraintError" ||
+          message === "SequelizeValidationError"
+        ) {
+          this.setState({
+            validationErrors: {
+              ...this.state.validationErrors,
+              ...response
+            }
+          });
         }
-      });
+      }
     };
     render() {
       // exclude initialErrorValues

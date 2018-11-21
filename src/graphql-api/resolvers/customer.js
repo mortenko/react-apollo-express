@@ -1,5 +1,9 @@
-import { collectServerErrors, savePhoto } from "../utils/helper";
-import { UserInputError, ApolloError } from "apollo-server";
+import { savePhoto } from "../utils/helper";
+import {
+  validationErrorResponse,
+  validationSuccessResponse,
+  customErrorResponse
+} from "../utils/error_handler";
 import path from "path";
 import models from "../../../db/models";
 import {
@@ -31,7 +35,7 @@ const CustomerResolvers = {
         });
         return { customers, count };
       } catch (fetchCustomerError) {
-        throw new ApolloError(fetchCustomerError, 500);
+        customErrorResponse("Customers not founded", 404, fetchCustomerError);
       }
     },
     customer: async (_, { customerID }) => {
@@ -44,7 +48,11 @@ const CustomerResolvers = {
           attributes: ["customerID", "firstname", "lastname", "phone", "email"]
         });
       } catch (customerFindByIdError) {
-        throw new ApolloError(JSON.stringify(customerFindByIdError), 400);
+        customErrorResponse(
+          `Customer with ${customerID} was not found`,
+          404,
+          customerFindByIdError
+        );
       }
     }
   },
@@ -53,9 +61,9 @@ const CustomerResolvers = {
       const rootPath = path.resolve("./public");
       const customerPath = path.join(rootPath, "/photos/customers");
       try {
-        const { dataValues: { customerID } } = await models.Customer.create(
-          customer
-        );
+        const {
+          dataValues: { customerID, firstname, lastname, email, phone }
+        } = await models.Customer.create(customer);
         const customerUniqueDir = path.join(customerPath, `${customerID}`);
         try {
           const filename = await savePhoto(photoFile, customerUniqueDir);
@@ -65,16 +73,23 @@ const CustomerResolvers = {
               photo: `/photos/customers/${customerID}/${filename}`,
               name: filename
             });
+            const objResponse = {
+              // key of object must be the same as the graphql name query
+              customer: { firstname, lastname, email, phone }
+            };
+            return validationSuccessResponse(
+              objResponse,
+              200,
+              `Customer ${firstname} ${lastname} was created successfully`
+            );
           } catch (customerPhotoError) {
-            throw new UserInputError(JSON.stringify(customerPhotoError));
+            validationErrorResponse(400, customerPhotoError);
           }
         } catch (photoFileError) {
-          throw new ApolloError(photoFileError, 400);
+          customErrorResponse("Cant't save photo of User", _, photoFileError);
         }
       } catch (createCustomerError) {
-        console.log("createCustomerError", createCustomerError);
-        // const serverErrors = collectServerErrors(createCustomerError);
-        // throw new UserInputError(JSON.stringify(serverErrors));
+        validationErrorResponse(400, createCustomerError);
       }
     },
     updateCustomer: async (
@@ -96,57 +111,70 @@ const CustomerResolvers = {
           ...updatedCustomer
         } = customerObj[1][0].dataValues;
         updateCustomerResponse["customer"] = { customerID, ...updatedCustomer };
-      } catch (updateCustomerError) {
-        const serverErrors = collectServerErrors(updateCustomerError);
-        throw new UserInputError(JSON.stringify(serverErrors));
-      }
-      let photo = null;
-      try {
-        const {
-          dataValues: { photo: customerPhoto }
-        } = await models.CustomerPhoto.find({
-          where: { customerID },
-          attributes: ["photo"]
-        });
-        photo = customerPhoto;
-      } catch (queryFindPhotoError) {
-        throw new ApolloError(queryFindPhotoError, 500);
-      }
-      if (typeof photoFile === "string") {
-        updateCustomerResponse["customer"]["CustomerPhoto"] = {
-          photo,
-          name: path.basename(photoFile)
-        };
-      } else if (typeof photoFile === "object") {
-        const dirPath = path.resolve(`./public/photos/customers/${customerID}`);
+        let photo = null;
         try {
-          const filename = await savePhoto(photoFile, dirPath, photo);
-          try {
-            const response = await models.CustomerPhoto.update(
-              {
-                photo: `photos/customers/${customerID}/${filename}`,
-                name: filename
-              },
-              {
-                returning: true,
-                where: {
-                  customerID
-                }
-              }
-            );
-            const { photo } = response[1][0].dataValues;
+          const {
+            dataValues: { photo: customerPhoto }
+          } = await models.CustomerPhoto.find({
+            where: { customerID },
+            attributes: ["photo"]
+          });
+          photo = customerPhoto;
+          if (typeof photoFile === "string") {
             updateCustomerResponse["customer"]["CustomerPhoto"] = {
               photo,
-              name: filename
+              name: path.basename(photoFile)
             };
-          } catch (customerPhotoUpdateError) {
-            throw new ApolloError(customerPhotoUpdateError, 500);
+          } else if (typeof photoFile === "object") {
+            const dirPath = path.resolve(
+              `./public/photos/customers/${customerID}`
+            );
+            try {
+              const filename = await savePhoto(photoFile, dirPath, photo);
+              try {
+                const response = await models.CustomerPhoto.update(
+                  {
+                    photo: `photos/customers/${customerID}/${filename}`,
+                    name: filename
+                  },
+                  {
+                    returning: true,
+                    where: {
+                      customerID
+                    }
+                  }
+                );
+                const { photo } = response[1][0].dataValues;
+                updateCustomerResponse["customer"]["CustomerPhoto"] = {
+                  photo,
+                  name: filename
+                };
+              } catch (customerPhotoUpdateError) {
+                validationErrorResponse(400, customerPhotoUpdateError);
+              }
+            } catch (savePhotoError) {
+              customErrorResponse(
+                "Can't save new photo from updateCustomer",
+                "400",
+                savePhotoError
+              );
+            }
           }
-        } catch (savePhotoError) {
-          throw new ApolloError(savePhotoError, 500);
+        } catch (queryFindPhotoError) {
+          customErrorResponse(
+            `Cant't find customer with ${customerID}`,
+            404,
+            queryFindPhotoError
+          );
         }
+        return validationSuccessResponse(
+          updateCustomerResponse,
+          200,
+          "Customer was updated successfully"
+        );
+      } catch (updateCustomerError) {
+        validationErrorResponse(400, updateCustomerError);
       }
-      return updateCustomerResponse;
     },
     deleteCustomer: async (_, { customerID }) => {
       const resolvePathToDir = path.resolve(
@@ -157,32 +185,46 @@ const CustomerResolvers = {
         .catch(() => false);
       if (isExistDir) {
         try {
-          const files = await asyncReadDir(resolvePathToDir);
-          for (let file = 0; file < files.length; file++) {
-            try {
-              const resolvePathToFile = path.join(
-                resolvePathToDir,
-                files[file]
-              );
-              await asyncRemoveFile(resolvePathToFile);
-            } catch (fileRemoveError) {
-              throw new ApolloError(fileRemoveError, 500);
+          await models.Customer.destroy({
+            where: {
+              customerID
             }
+          });
+          try {
+            const files = await asyncReadDir(resolvePathToDir);
+            for (let file = 0; file < files.length; file++) {
+              try {
+                const resolvePathToFile = path.join(
+                  resolvePathToDir,
+                  files[file]
+                );
+                await asyncRemoveFile(resolvePathToFile);
+              } catch (fileRemoveError) {
+                customErrorResponse(
+                  "File can't be removed",
+                  _,
+                  fileRemoveError
+                );
+              }
+            }
+            await asyncRemoveDir(resolvePathToDir);
+          } catch (dirError) {
+            customErrorResponse(_, _, dirError);
           }
-          await asyncRemoveDir(resolvePathToDir);
-        } catch (dirError) {
-          throw new ApolloError(dirError, 500);
+        } catch (deleteCustomerError) {
+          customErrorResponse(
+            `User with ID ${customerID} can't be deleted`,
+            400,
+            deleteCustomerError
+          );
         }
       }
-      try {
-        await models.Customer.destroy({
-          where: {
-            customerID
-          }
-        });
-      } catch (deleteCustomerError) {
-        throw new ApolloError(deleteCustomerError, 400);
-      }
+      const objResponse = { customer: { customerID } };
+      return validationSuccessResponse(
+        objResponse,
+        200,
+        `Customer was successfully deleted with ID: ${customerID}`
+      );
     }
   }
 };

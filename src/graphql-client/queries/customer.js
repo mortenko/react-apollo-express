@@ -48,6 +48,11 @@ const CREATE_CUSTOMER = gql`
       photoFile {
         photoFile
       }
+      mutationResponse {
+        code
+        message
+        success
+      }
     }
   }
 `;
@@ -69,13 +74,25 @@ const UPDATE_CUSTOMER = gql`
       photoFile {
         photoFile
       }
+      mutationResponse {
+       code
+       message
+       success
+      }
     }
   }
 `;
 const DELETE_CUSTOMER = gql`
   mutation deleteCustomer($customerID: Int!) {
     deleteCustomer(customerID: $customerID) {
-      customerID
+      customer {
+        customerID
+      }
+      mutationResponse {
+        code
+        message
+        success
+      }
     }
   }
 `;

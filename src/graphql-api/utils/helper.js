@@ -4,7 +4,7 @@ import {
   asyncRemoveFile,
   asyncStat
 } from "./promisify";
-import { ApolloError, UserInputError } from "apollo-server";
+
 import path from "path";
 import fs from "fs";
 
@@ -19,19 +19,16 @@ async function writeFileWithStream(customerPhotoPath, readableStream) {
     });
     readableStream.pipe(wstream);
     wstream
-      .on("error", error => {
-        return reject(error);
+      .on("error", readableStreamError => {
+        return reject(readableStreamError);
       })
       .on("finish", () => {
         return resolve(customerPhotoPath);
       });
   });
 }
-function collectServerErrors({ errors }) {
-  return errors.map(val => ({ [val.path]: val.message }));
-}
 
-function savePhoto(promiseFile, photoDir,  previousPhotoPath = "") {
+function savePhoto(promiseFile, photoDir, previousPhotoPath = "") {
   return new Promise(async (resolve, reject) => {
     try {
       const { filename, stream } = await promiseFile;
@@ -43,7 +40,7 @@ function savePhoto(promiseFile, photoDir,  previousPhotoPath = "") {
           // create dir with primary key name
           await asyncCreateDir(photoDir);
         } catch (createDirError) {
-          throw new ApolloError(createDirError, 500);
+          reject(createDirError);
         }
       }
       try {
@@ -58,21 +55,24 @@ function savePhoto(promiseFile, photoDir,  previousPhotoPath = "") {
           await writeFileWithStream(photoPath, stream);
         } else {
           // resolve path to previous photo you want to delete
-          const resolvePreviousPhotoPath = path.resolve(`./public/${previousPhotoPath}`);
+          const resolvePreviousPhotoPath = path.resolve(
+            `./public/${previousPhotoPath}`
+          );
           // delete previous photoFile
           await asyncRemoveFile(resolvePreviousPhotoPath);
           // write new photo
           await writeFileWithStream(photoPath, stream);
         }
       } catch (FileError) {
-        reject(new ApolloError(FileError));
+        reject(FileError);
       }
       resolve(filename);
     } catch (photoFileError) {
-      reject(new UserInputError(JSON.stringify(photoFileError)));
+      reject(photoFileError);
     }
   });
 }
 
-export { collectServerErrors, savePhoto };
-
+export {
+  savePhoto
+};

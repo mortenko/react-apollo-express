@@ -23,6 +23,7 @@ const DialogDeleteCustomer = ({
   open,
   closeModal,
   classes,
+  validationFunctions: { handleServerErrors },
   data: { customerID, firstname, lastname },
   location: { search }
 }) => {
@@ -35,7 +36,9 @@ const DialogDeleteCustomer = ({
           update={cache => {
             const { page } = queryString.parse(search);
             const parsePageInt = parseInt(page, 10);
-            const { customers: { customers } } = cache.readQuery({
+            const {
+              customers: { customers }
+            } = cache.readQuery({
               query: FETCH_CUSTOMERS,
               variables: { pageNumber: parsePageInt }
             });
@@ -88,20 +91,25 @@ const DialogDeleteCustomer = ({
                     <Button
                       onClick={async () => {
                         try {
-                          await deleteCustomer({
+                          const {
+                            data: {
+                              deleteCustomer: {
+                                customer: { customerID }
+                              }
+                            }
+                          } = await deleteCustomer({
                             variables: {
                               customerID
                             }
                           });
                           closeModal();
                           toast.addToastMessage({
-                            content: `Customer ${firstname} ${lastname} was deleted successfully`,
+                            content: `Customer ${firstname} ${lastname} with ID: ${customerID} was deleted successfully`,
                             type: "success",
                             delay: 2500
                           });
                         } catch (error) {
-                          console.log("error", error);
-                          // handleServerErrors(error);
+                          handleServerErrors(error);
                         }
                       }}
                       variant="contained"
@@ -128,7 +136,8 @@ DialogDeleteCustomer.propTypes = {
     lastname: PropTypes.string
   }).isRequired,
   location: PropTypes.objectOf(PropTypes.object),
-  open: PropTypes.bool.isRequired
+  open: PropTypes.bool.isRequired,
+  validationFunctions: PropTypes.objectOf(PropTypes.func)
 };
 
 DialogDeleteCustomer.defaultProps = {

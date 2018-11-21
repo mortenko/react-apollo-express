@@ -69,10 +69,12 @@ const DialogCreateCustomer = props => {
     >
       <ToastContext.Consumer>
         {toast => (
-          <Mutation mutation={CREATE_CUSTOMER}>
+          <Mutation
+            mutation={CREATE_CUSTOMER}
+            errorPolicy="all"
+          >
             {(createCustomer, { loading, error, data }) => {
               if (loading) return <Loader />;
-              if (error) return `${error.message}`;
               return (
                 <div className={styles.dialog__container}>
                   <Grid container>
@@ -115,7 +117,13 @@ const DialogCreateCustomer = props => {
                             } = newData;
                             if (isRequired({ ...customer, photo }) === false) {
                               try {
-                                await createCustomer({
+                                const {
+                                  data: {
+                                    createCustomer: {
+                                      mutationResponse: { message }
+                                    }
+                                  }
+                                } = await createCustomer({
                                   variables: {
                                     photoFile: photo,
                                     customer
@@ -123,14 +131,12 @@ const DialogCreateCustomer = props => {
                                 });
                                 closeModal();
                                 toast.addToastMessage({
-                                  content: `Customer ${customer.firstname} ${
-                                    customer.lastname
-                                  } was created successfully`,
+                                  content: message,
                                   type: "success",
                                   delay: 2500
                                 });
-                              } catch (error) {
-                                handleServerErrors(error);
+                              } catch (customerError) {
+                                handleServerErrors(customerError)
                               }
                             }
                           }}

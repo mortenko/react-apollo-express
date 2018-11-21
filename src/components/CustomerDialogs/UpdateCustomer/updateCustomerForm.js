@@ -25,7 +25,11 @@ import {
 
 const UpdateCustomerForm = props => {
   const {
-    validationFunctions: { isRequired, hasValidationErrors },
+    validationFunctions: {
+      isRequired,
+      hasValidationErrors,
+      handleServerErrors
+    },
     handleInputChange,
     location: { search },
     closeModal,
@@ -34,14 +38,23 @@ const UpdateCustomerForm = props => {
 
   return (
     <ToastContext.Consumer>
-      {(toast) => {
+      {toast => {
         return (
           <Mutation
             mutation={UPDATE_CUSTOMER}
-            update={(cache, { data: { updateCustomer: { customer } } }) => {
+            update={(
+              cache,
+              {
+                data: {
+                  updateCustomer: { customer }
+                }
+              }
+            ) => {
               const { page } = queryString.parse(search);
               const parsePageInt = parseInt(page, 10);
-              const { customers: { customers } } = cache.readQuery({
+              const {
+                customers: { customers }
+              } = cache.readQuery({
                 query: FETCH_CUSTOMERS,
                 variables: { pageNumber: parsePageInt }
               });
@@ -68,7 +81,6 @@ const UpdateCustomerForm = props => {
           >
             {(updateCustomer, { loading, error, data }) => {
               if (loading) return <Loader />;
-              if (error) return <span>{error.message}</span>;
               return (
                 <div className={styles.dialog__container}>
                   <Grid container>
@@ -121,8 +133,7 @@ const UpdateCustomerForm = props => {
                                   delay: 2500
                                 });
                               } catch (error) {
-                                console.log("error", error);
-                                // handleServerErrors(error);
+                                handleServerErrors(error);
                               }
                             }
                           }}
