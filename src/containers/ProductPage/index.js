@@ -17,11 +17,11 @@ import {
   UpdateButtonAction
 } from "components/Table/tableComponents";
 import styles from "components/Table/table.scss";
-import Button from "components/Button";
 import Loader from "components/Loader";
 import Alert from "components/Alert";
 import { CREATE_PRODUCT_MODAL } from "components/ProductDialogs/CreateProduct";
 import { UPDATE_PRODUCT_MODAL } from "components/ProductDialogs/UpdateProduct";
+import { DELETE_PRODUCT_MODAL } from "components/ProductDialogs/DeleteProduct";
 import Pagination, { PaginationHoc } from "components/Pagination";
 import { ModalContext } from "../../context";
 import { NoteAdd } from "../../assets/material-ui-icons";
@@ -114,7 +114,12 @@ const ProductPage = ({
                           </TableCell>
                           <TableCell>
                             <DeleteButtonAction
-                              deleteAction={() => console.log("delete Product")}
+                              deleteAction={() =>
+                                modal.openModal(DELETE_PRODUCT_MODAL, {
+                                  productID,
+                                  productname
+                                })
+                              }
                             />
                           </TableCell>
                           <TableCell>
@@ -144,5 +149,11 @@ const ProductPage = ({
     </ModalContext.Consumer>
   );
 };
-
+ProductPage.propTypes = {
+  handleChangePage: PropTypes.func,
+  paginationData: PropTypes.shape({
+    pageNumber: PropTypes.number,
+    itemsCountPerPage: PropTypes.number
+  })
+}.isRequired;
 export default PaginationHoc(ProductPage);

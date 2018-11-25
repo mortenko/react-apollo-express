@@ -1,0 +1,10 @@
+.dialogDelete__title {
+  background-color: $bright_red;
+}
+.dialogDelete__content {
+  padding: 5%;
+}
+
+.dialog__title {
+  @extend .dialogDelete__title
+}

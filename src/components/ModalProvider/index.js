@@ -14,6 +14,9 @@ import DialogCreateProduct, {
 import DialogUpdateProduct, {
   UPDATE_PRODUCT_MODAL
 } from "components/ProductDialogs/UpdateProduct";
+import DialogDeleteProduct, {
+  DELETE_PRODUCT_MODAL
+} from "components/ProductDialogs/DeleteProduct";
 
 function ModalProvider({ modal: { currentModal, isOpen, ...props } }) {
   switch (currentModal) {
@@ -27,6 +30,8 @@ function ModalProvider({ modal: { currentModal, isOpen, ...props } }) {
       return <DialogCreateProduct open={isOpen} {...props} />;
     case UPDATE_PRODUCT_MODAL:
       return <DialogUpdateProduct open={isOpen} {...props} />;
+    case DELETE_PRODUCT_MODAL:
+      return <DialogDeleteProduct open={isOpen} {...props} />;
     default:
       return null;
   }
