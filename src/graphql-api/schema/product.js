@@ -19,11 +19,12 @@ const Product = `
   pricewithdph: Float!
   barcode: UUID!
  }
- type ProductWithFile {
+ type ProductResponse {
    product: Product
    photoFile: File
+   mutationResponse: MutationResponse
  }
- type Products implements Pagination {
+ type Products implements IPagination {
   products: [Product] 
   count: Int!
   cursor: Int!
@@ -33,9 +34,9 @@ const Product = `
   product(productID: Int!): Product
  }
  extend type Mutation {
-   createProduct(photoFile: Upload!, product: ProductInput): ProductWithFile
-   updateProduct(photoFile: Upload!, product: ProductInput): ProductWithFile
-   deleteProduct(productID: ID!): Product
+   createProduct(photoFile: Upload!, product: ProductInput): ProductResponse
+   updateProduct(photoFile: Upload!, product: ProductInput): ProductResponse
+   deleteProduct(productID: Int!): ProductResponse
  }
 `;
 

@@ -1,8 +1,17 @@
 import models from "../../../db/models";
-import { ApolloError, UserInputError } from "apollo-server";
 import path from "path";
-import { collectServerErrors, savePhoto } from "../utils/helper";
-
+import { recursivelyRemoveFiles, savePhoto } from "../utils/helper";
+import {
+  validationErrorResponse,
+  validationSuccessResponse,
+  customErrorResponse
+} from "../utils/error_handler";
+import {
+  asyncAccessFile,
+  asyncReadDir,
+  asyncRemoveDir,
+  asyncRemoveFile
+} from "../utils/promisify";
 const ProductResolvers = {
   Query: {
     products: async (_, { cursor, pageNumber }) => {
@@ -29,7 +38,7 @@ const ProductResolvers = {
         });
         return { products, count };
       } catch (fetchProductsError) {
-        throw new ApolloError(fetchProductsError, 500);
+        customErrorResponse("Can't fetch products", 404, fetchProductsError);
       }
     },
     product: async (_, { productID }) => {
@@ -49,19 +58,30 @@ const ProductResolvers = {
           ]
         });
       } catch (productFindByIdError) {
-        throw new ApolloError(JSON.stringify(productFindByIdError), 400);
+        customErrorResponse(
+          `Can't find product with ID: ${productID}`,
+          404,
+          productFindByIdError
+        );
       }
     }
   },
   Mutation: {
     createProduct: async (_, { photoFile, product }) => {
+      const rootPath = path.resolve("./public");
+      const productPath = path.join(rootPath, "/photos/products");
       try {
-        const { dataValues: { productID } } = await models.Product.create(
-          product
-        );
-        const rootPath = path.resolve("./public");
-        const productPath = path.join(rootPath, "/photos/products");
-        const productPhotoDir = path.join(productPath, productID.toString());
+        const {
+          dataValues: {
+            productID,
+            productname,
+            description,
+            pricewithoutdph,
+            pricewithdph,
+            barcode
+          }
+        } = await models.Product.create(product);
+        const productPhotoDir = path.join(productPath, `${productID}`);
         try {
           const filename = await savePhoto(photoFile, productPhotoDir);
           try {
@@ -71,15 +91,32 @@ const ProductResolvers = {
               name: `${filename}`
             });
           } catch (productPhotoError) {
-            throw new UserInputError(JSON.stringify(productPhotoError));
+            validationErrorResponse(400, productPhotoError);
           }
-        } catch (savePhotoFileError) {
-          throw savePhotoFileError;
+        } catch (savePhotoError) {
+          customErrorResponse(
+            "Cant save photo of product",
+            400,
+            savePhotoError
+          );
         }
+        return validationSuccessResponse(
+          {
+            product: {
+              productID,
+              productname,
+              description,
+              pricewithoutdph,
+              pricewithdph,
+              barcode
+            }
+          },
+          200,
+          "Product was successfull created"
+        );
       } catch (createProductError) {
-        console.log(createProductError);
-        //const serverErrors = collectServerErrors(createProductError);
-        //throw new UserInputError(JSON.stringify(serverErrors));
+        console.log("createProductError", createProductError);
+        validationErrorResponse(400, createProductError);
       }
     },
     updateProduct: async (
@@ -101,65 +138,109 @@ const ProductResolvers = {
           ...updatedProduct
         } = productObj[1][0].dataValues;
         updateProductResponse["product"] = { productID, ...updatedProduct };
-      } catch (updateProductError) {
-        console.log(updateProductError);
-      }
-      let photo = null;
-      try {
-        const {
-          dataValues: { photo: productPhoto }
-        } = await models.ProductPhoto.find({
-          where: { productID },
-          attributes: ["photo"]
-        });
-        console.log("productPhoto", productPhoto);
-        photo = productPhoto;
-      } catch (queryFindPhotoError) {
-        throw new ApolloError(queryFindPhotoError, 500);
-      }
-      if (typeof photoFile === "string") {
-        updateProductResponse["product"]["ProductPhoto"] = {
-          photo,
-          name: path.basename(photoFile)
-        };
-      } else if (typeof photoFile === "object") {
-        const dirPath = path.resolve(`./public/photos/products/${productID}`);
+        let photo = null;
         try {
-          const filename = await savePhoto(photoFile, dirPath, photo);
-          try {
-            const response = await models.ProductPhoto.update(
-              {
-                photo: `photos/products/${productID}/${filename}`,
-                name: filename
-              },
-              {
-                returning: true,
-                where: {
-                  productID
-                }
-              }
-            );
-            const { photo } = response[1][0].dataValues;
+          const {
+            dataValues: { photo: productPhoto }
+          } = await models.ProductPhoto.find({
+            where: { productID },
+            attributes: ["photo"]
+          });
+          photo = productPhoto;
+          if (typeof photoFile === "string") {
             updateProductResponse["product"]["ProductPhoto"] = {
               photo,
-              name: filename
+              name: path.basename(photoFile)
             };
-          } catch (productPhotoUpdateError) {
-            throw new ApolloError(productPhotoUpdateError, 500);
+          } else if (typeof photoFile === "object") {
+            const dirPath = path.resolve(
+              `./public/photos/products/${productID}`
+            );
+            try {
+              const filename = await savePhoto(photoFile, dirPath, photo);
+              try {
+                const response = await models.ProductPhoto.update(
+                  {
+                    photo: `photos/products/${productID}/${filename}`,
+                    name: filename
+                  },
+                  {
+                    returning: true,
+                    where: {
+                      productID
+                    }
+                  }
+                );
+                const { photo } = response[1][0].dataValues;
+                updateProductResponse["product"]["ProductPhoto"] = {
+                  photo,
+                  name: filename
+                };
+              } catch (updatePhotoError) {
+                validationErrorResponse(400, updatePhotoError);
+              }
+            } catch (saveUpdatedProductPhotoError) {
+              customErrorResponse(
+                "Cant update product photo",
+                _,
+                saveUpdatedProductPhotoError
+              );
+            }
           }
-        } catch (savePhotoError) {
-          console.log(savePhotoError);
-          //   throw new ApolloError(savePhotoError, 500);
+        } catch (productPhotoFindError) {
+          customErrorResponse(
+            `Cant find photo with id: ${productID}`,
+            404,
+            productPhotoFindError
+          );
         }
+      } catch (updateProductError) {
+        validationErrorResponse(400, updateProductError);
       }
-      return updateProductResponse;
+      return validationSuccessResponse(
+        updateProductResponse,
+        200,
+        "Product was succesfully updated"
+      );
     },
-    deleteProduct: (_, { productID }) => {
-      models.Product.destroy({
-        where: {
-          productID
+    deleteProduct: async (_, { productID }) => {
+      const resolvePathToDir = path.resolve(
+        `./public/photos/products/${productID}`
+      );
+      const isExistDir = await asyncAccessFile(resolvePathToDir)
+        .then(() => true)
+        .catch(() => false);
+      if (isExistDir) {
+        try {
+          await models.Product.destroy({
+            where: {
+              productID
+            }
+          });
+          try {
+            await recursivelyRemoveFiles(resolvePathToDir);
+          } catch (recurRemoveFilesError) {
+            customErrorResponse(_, _, recurRemoveFilesError);
+          }
+        } catch (deleteProductError) {
+          customErrorResponse(
+            `Product with ID ${productID} can't be deleted`,
+            400,
+            deleteProductError
+          );
         }
-      });
+        const objResponse = { product: { productID } };
+        return validationSuccessResponse(
+          objResponse,
+          200,
+          `Product was successfully deleted with ID: ${productID}`
+        );
+      }
+      /* the response should be in if statement
+          but we have mocked data where picture just point out to the web url  not to file system where should be saved when
+          there are performed operation on customer, product etc
+
+      * */
     }
   }
 };

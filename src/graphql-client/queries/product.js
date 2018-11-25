@@ -52,6 +52,11 @@ const CREATE_PRODUCT = gql`
       photoFile {
         photoFile
       }
+      mutationResponse {
+        code
+        message
+        success
+      }
     }
   }
 `;
@@ -67,15 +72,36 @@ const UPDATE_PRODUCT = gql`
         pricewithdph
         barcode
         ProductPhoto {
-         photo
-         name
+          photo
+          name
         }
       }
       photoFile {
         photoFile
       }
+      mutationResponse {
+        code
+        message
+        success
+      }
     }
   }
 `;
 
-export { CREATE_PRODUCT, FETCH_PRODUCTS, FETCH_PRODUCT, UPDATE_PRODUCT };
+const DELETE_PRODUCT = gql`
+  mutation deleteProduct($productID: Int!) {
+    deleteProduct(productID: $productID) {
+      product {
+        productID
+      }
+    }
+  }
+`;
+
+export {
+  FETCH_PRODUCTS,
+  FETCH_PRODUCT,
+  CREATE_PRODUCT,
+  UPDATE_PRODUCT,
+  DELETE_PRODUCT
+};

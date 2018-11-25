@@ -1,4 +1,4 @@
-import { savePhoto } from "../utils/helper";
+import { recursivelyRemoveFiles, savePhoto } from "../utils/helper";
 import {
   validationErrorResponse,
   validationSuccessResponse,
@@ -191,25 +191,9 @@ const CustomerResolvers = {
             }
           });
           try {
-            const files = await asyncReadDir(resolvePathToDir);
-            for (let file = 0; file < files.length; file++) {
-              try {
-                const resolvePathToFile = path.join(
-                  resolvePathToDir,
-                  files[file]
-                );
-                await asyncRemoveFile(resolvePathToFile);
-              } catch (fileRemoveError) {
-                customErrorResponse(
-                  "File can't be removed",
-                  _,
-                  fileRemoveError
-                );
-              }
-            }
-            await asyncRemoveDir(resolvePathToDir);
-          } catch (dirError) {
-            customErrorResponse(_, _, dirError);
+            await recursivelyRemoveFiles(resolvePathToDir);
+          } catch (recurRemoveFilesError) {
+            customErrorResponse(_, _, recurRemoveFilesError);
           }
         } catch (deleteCustomerError) {
           customErrorResponse(

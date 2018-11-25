@@ -1,10 +1,11 @@
 import {
   asyncAccessFile,
   asyncCreateDir,
+  asyncReadDir,
+  asyncRemoveDir,
   asyncRemoveFile,
   asyncStat
 } from "./promisify";
-
 import path from "path";
 import fs from "fs";
 
@@ -73,6 +74,28 @@ function savePhoto(promiseFile, photoDir, previousPhotoPath = "") {
   });
 }
 
-export {
-  savePhoto
-};
+function recursivelyRemoveFiles(resolvePathToDir) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const files = await asyncReadDir(resolvePathToDir);
+      for (let file = 0; file < files.length; file++) {
+        try {
+          const resolvePathToFile = path.join(resolvePathToDir, files[file]);
+          await asyncRemoveFile(resolvePathToFile);
+        } catch (removeFileError) {
+          reject(removeFileError);
+        }
+      }
+      try {
+        await asyncRemoveDir(resolvePathToDir);
+      } catch (removeDirError) {
+        reject(removeDirError);
+      }
+    } catch (readDirError) {
+      reject(readDirError);
+    }
+    resolve(true);
+  });
+}
+
+export { recursivelyRemoveFiles, savePhoto };
