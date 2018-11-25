@@ -23,10 +23,10 @@ import withCustomerForm from "../withCustomerForm";
 import { enhanceWithBaseHoc } from "../../Dialog/dialogHoc";
 
 const initialErrorValues = {
-  firstname: {},
-  lastname: {},
-  email: {},
-  phone: {},
+  firstname: [],
+  lastname: [],
+  email: [],
+  phone: [],
   photo: {}
 };
 const initialFormValues = {
@@ -44,8 +44,8 @@ const initialFormValues = {
 export const enhanceWithCustomerHoc = compose(
   withProps(() => ({ initialErrorValues }), withValidator),
   withProps(() => ({ initialFormValues }), withCustomerForm),
-  withCustomerForm,
-  enhanceWithBaseHoc
+  enhanceWithBaseHoc,
+  withCustomerForm
 );
 const DialogCreateCustomer = props => {
   const {
@@ -130,6 +130,7 @@ const DialogCreateCustomer = props => {
                                   }
                                 });
                                 closeModal();
+                                resetForm();
                                 toast.addToastMessage({
                                   content: message,
                                   type: "success",

@@ -36,9 +36,10 @@ const BaseCustomerForm = ({
             value={firstname}
             fullWidth
             error={Object.keys(validationErrors.firstname).length > 0}
-            onChange={event => {
-              handleInputChange(event);
-              isLength(3, 15)(event.target.id, event.target.value);
+            onChange={({ target: { id, value } }) => {
+              handleInputChange(id, value);
+              isLength(3, 15)(id, value);
+              isRequired({[id]: value});
             }}
             InputProps={{
               startAdornment: (
@@ -59,9 +60,10 @@ const BaseCustomerForm = ({
             value={lastname}
             fullWidth
             error={Object.keys(validationErrors.lastname).length > 0}
-            onChange={event => {
-              handleInputChange(event);
-              isLength(3, 15)(event.target.id, event.target.value);
+            onChange={({ target: { id, value } }) => {
+              handleInputChange(id, value);
+              isLength(3, 15)(id, value);
+              isRequired({[id]: value});
             }}
             InputProps={{
               startAdornment: (
@@ -82,9 +84,10 @@ const BaseCustomerForm = ({
             value={phone}
             fullWidth
             error={Object.keys(validationErrors.phone).length > 0}
-            onChange={event => {
-              handleInputChange(event);
-              isPhoneNumber(event.target.id, event.target.value);
+            onChange={({ target: { id, value } }) => {
+              handleInputChange(id, value);
+              isPhoneNumber(id, value);
+              isRequired({[id]: value});
             }}
             InputProps={{
               startAdornment: (
@@ -106,9 +109,10 @@ const BaseCustomerForm = ({
             value={email}
             fullWidth
             error={Object.keys(validationErrors.email).length > 0}
-            onChange={event => {
-              handleInputChange(event);
-              isEmail(event.target.id, event.target.value);
+            onChange={({ target: { id, value } }) => {
+              handleInputChange(id, value);
+              isEmail(id, value);
+              isRequired({[id]: value});
             }}
             InputProps={{
               startAdornment: (

@@ -31,6 +31,7 @@ export default function withProductForm(WrappedComponent) {
           })
         })
       }),
+      resetErrorValues: PropTypes.func.isRequired,
       validationFunctions: PropTypes.objectOf(PropTypes.func).isRequired
     };
     static defaultProps = {
@@ -71,11 +72,12 @@ export default function withProductForm(WrappedComponent) {
       );
     };
     resetForm = () => {
+      this.props.resetErrorValues();
       this.setState({
         ...this.props.initialFormValues
       });
     };
-    handleInputChange = ({ target: { files, id, value } }) => {
+    handleInputChange = (id, value, files = null) => {
       if (files !== null && typeof files !== "undefined") {
         this.setState({
           product: {
@@ -86,8 +88,7 @@ export default function withProductForm(WrappedComponent) {
             }
           }
         });
-      }
-      else if (id === "pricewithoutdph") {
+      } else if (id === "pricewithoutdph") {
         this.setState(currentState => {
           return {
             product: {
@@ -97,8 +98,7 @@ export default function withProductForm(WrappedComponent) {
             }
           };
         });
-      }
-      else {
+      } else {
         this.setState(currentState => {
           return {
             product: {
@@ -113,7 +113,8 @@ export default function withProductForm(WrappedComponent) {
       const newProps = {
         calculatePriceWithdph: pricewithoutdph =>
           this.calculatePriceWithdph(pricewithoutdph),
-        handleInputChange: event => this.handleInputChange(event),
+        handleInputChange: (id, value, files) =>
+          this.handleInputChange(id, value, files),
         newData: this.state,
         renderBarcode: () => this.renderBarcode(),
         resetForm: () => this.resetForm()

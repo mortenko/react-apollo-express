@@ -27,7 +27,8 @@ export default function withCustomerForm(WrappedComponent) {
             name: PropTypes.string
           })
         })
-      })
+      }),
+      resetErrorValues: PropTypes.func.isRequired
     };
     static defaultProps = {
       initialFormValues: {
@@ -52,29 +53,28 @@ export default function withCustomerForm(WrappedComponent) {
       };
     }
     resetForm = () => {
+      this.props.resetErrorValues();
       this.setState({
         ...this.props.initialFormValues
       });
-    }
-    handleInputChange = event => {
-      if (event.target.files !== null) {
+    };
+    handleInputChange = (id, value, files = null) => {
+      if (files !== null && typeof files !== "undefined") {
         this.setState({
           customer: {
             ...this.state.customer,
             CustomerPhoto: {
-              [event.target.id]: event.target.files[0],
-              name: event.target.files[0].name
+              [id]: files[0],
+              name: files[0].name
             }
           }
         });
       } else {
-        const name = event.target.id;
-        const value = event.target.value;
         this.setState(currentState => {
           return {
             customer: {
               ...currentState.customer,
-              [name]: value
+              [id]: value
             }
           };
         });
@@ -82,7 +82,8 @@ export default function withCustomerForm(WrappedComponent) {
     };
     render() {
       const newProps = {
-        handleInputChange: event => this.handleInputChange(event),
+        handleInputChange: (id, value, files) =>
+          this.handleInputChange(id, value, files),
         newData: this.state,
         resetForm: () => this.resetForm()
       };

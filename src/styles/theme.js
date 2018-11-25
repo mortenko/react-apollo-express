@@ -15,6 +15,9 @@ const theme = createMuiTheme({
     danger: { main: "#FF0000" },
     lightGrey: { main: "#e2e3e5" },
     materialBlue: { main: "#2196f3" }
+  },
+  typography: {
+    useNextVariants: true
   }
 });
 

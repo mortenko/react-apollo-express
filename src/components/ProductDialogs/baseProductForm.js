@@ -51,14 +51,13 @@ const BaseProductForm = ({
                 </InputAdornment>
               )
             }}
-            onChange={event => {
-              handleInputChange(event);
-              isLength(5, 20)(event.target.id, event.target.value);
+            onChange={({ target: { id, value } }) => {
+              handleInputChange(id, value);
+              isLength(5, 20)(id, value);
+              isRequired({ [id]: value });
             }}
           />
-          <Alert>
-            {printErrorMessage(validationErrors.productname)}
-          </Alert>
+          <Alert>{printErrorMessage(validationErrors.productname)}</Alert>
         </Grid>
         <Grid item xs={12}>
           <TextField
@@ -78,14 +77,13 @@ const BaseProductForm = ({
                 </InputAdornment>
               )
             }}
-            onChange={event => {
-              handleInputChange(event);
-              isLength(20, 150)(event.target.id, event.target.value);
+            onChange={({ target: { id, value } }) => {
+              handleInputChange(id, value);
+              isLength(20, 150)(id, value);
+              isRequired({ [id]: value });
             }}
           />
-          <Alert>
-            {printErrorMessage(validationErrors.description)}
-          </Alert>
+          <Alert>{printErrorMessage(validationErrors.description)}</Alert>
         </Grid>
         <Grid item xs={12}>
           <TextField
@@ -93,7 +91,6 @@ const BaseProductForm = ({
             label="Price without DPH:"
             placeholder="price without dph"
             value={pricewithoutdph}
-            type="number"
             margin="normal"
             fullWidth
             error={Object.keys(validationErrors.pricewithoutdph).length > 0}
@@ -104,26 +101,24 @@ const BaseProductForm = ({
                 </InputAdornment>
               )
             }}
-            onChange={event => {
-              handleInputChange(event);
-              isNumber(event.target.id, event.target.value);
+            onChange={({ target: { id, value } }) => {
+              handleInputChange(id, value);
+              isNumber(id, value);
+              isRequired({ [id]: value });
             }}
           />
-          <Alert>
-            {printErrorMessage(validationErrors.pricewithoutdph)}
-          </Alert>
+          <Alert>{printErrorMessage(validationErrors.pricewithoutdph)}</Alert>
         </Grid>
         <Grid item xs={12}>
           <TextField
             id="pricewithdph"
             label="Price with DPH:"
             placeholder="price with dph"
-            type="number"
             value={pricewithdph}
             margin="normal"
             helperText="this field is automatically calculated from  price without dph"
             fullWidth
-            error={validationErrors.pricewithdph.length !== 0}
+            // error={validationErrors.pricewithdph.length > 0}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -132,16 +127,14 @@ const BaseProductForm = ({
               ),
               readOnly: true
             }}
-            onChange={event => {
-              const { target: { id, value } } = event;
-              handleInputChange(event);
-              isGreaterThen({ pricewithoutdph }, { [id]: value });
-              isNumber(id, value);
-            }}
+            // onChange={event => {
+            //   const { target: { id, value } } = event;
+            //   handleInputChange(event);
+            //   isGreaterThen({ pricewithoutdph }, { [id]: value });
+            //   isNumber(id, value);
+            // }}
           />
-          <Alert>
-            {printErrorMessage(validationErrors.pricewithdph)}
-          </Alert>
+          {/*<Alert>{printErrorMessage(validationErrors.pricewithdph)}</Alert>*/}
         </Grid>
         <Grid item xs={12}>
           <div className={styles.barcode}>
@@ -160,18 +153,17 @@ const BaseProductForm = ({
                   </InputAdornment>
                 )
               }}
-              onChange={event => {
-                handleInputChange(event);
-                isUUID(event.target.id, event.target.value);
+              onChange={({ target: { id, value } }) => {
+                handleInputChange(id, value);
+                isUUID(id, value);
+                isRequired({ [id]: value });
               }}
             />
             <div className={styles.barcode__button}>
               <Button onClick={renderBarcode}>Generate UUID</Button>
             </div>
           </div>
-          <Alert>
-            {printErrorMessage(validationErrors.barcode)}
-          </Alert>
+          <Alert>{printErrorMessage(validationErrors.barcode)}</Alert>
         </Grid>
         <Grid item xs={12}>
           <UploadButton

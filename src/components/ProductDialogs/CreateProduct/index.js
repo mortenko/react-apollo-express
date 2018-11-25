@@ -23,11 +23,11 @@ import withProductForm from "../withProductForm";
 import { enhanceWithBaseHoc } from "../../Dialog/dialogHoc";
 
 const initialErrorValues = {
-  productname: {},
-  description: {},
-  pricewithoutdph: {},
-  pricewithdph: [],
-  barcode: {},
+  productname: [],
+  description: [],
+  pricewithoutdph: [],
+  // pricewithdph: [],
+  barcode: [],
   photo: {}
 };
 const initialFormValues = {
@@ -69,6 +69,7 @@ const DialogCreateProduct = props => {
       {toast => (
         <Mutation mutation={CREATE_PRODUCT}>
           {(createProduct, { loading, error, data }) => {
+            if (loading) return <Loader />;
             return (
               <Dialog
                 maxWidth="md"
@@ -106,7 +107,10 @@ const DialogCreateProduct = props => {
                           onClick={async () => {
                             const {
                               ///destruct ProductPhoto from object product
-                              product: { ProductPhoto: { photo }, ...product }
+                              product: {
+                                ProductPhoto: { photo },
+                                ...product
+                              }
                             } = newData;
                             if (isRequired({ ...product, photo }) === false) {
                               try {
@@ -126,10 +130,7 @@ const DialogCreateProduct = props => {
                                   delay: 2500
                                 });
                               } catch (createProductError) {
-                                console.log(
-                                  "createProductError",
-                                  createProductError
-                                );
+                                handleServerErrors(createProductError);
                               }
                             }
                           }}

@@ -18,7 +18,6 @@ import styles from "components/Table/table.scss";
 import { CREATE_CUSTOMER_MODAL } from "components/CustomerDialogs/CreateCustomer";
 import { UPDATE_CUSTOMER_MODAL } from "components/CustomerDialogs/UpdateCustomer";
 import { DELETE_CUSTOMER_MODAL } from "components/CustomerDialogs/DeleteCustomer";
-import Button from "components/Button";
 import Loader from "components/Loader";
 import Alert from "components/Alert";
 import Pagination, { PaginationHoc } from "components/Pagination";

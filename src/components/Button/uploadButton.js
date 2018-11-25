@@ -32,9 +32,9 @@ const UploadButton = ({
         className={classes.uploadInput}
         id="photo"
         type="file"
-        onChange={event => {
-          handleInputChange(event);
-          validate.isRequired({ [event.target.id]: event.target.files[0] });
+        onChange={({ target: { id, value, files } }) => {
+          handleInputChange(id, value, files);
+          validate.isRequired({ [id]: files[0] });
         }}
       />
       <label htmlFor="photo">
@@ -44,20 +44,20 @@ const UploadButton = ({
         </Button>
       </label>
       <div className={styles.uploadButton__text}>
-        {Object.keys(validationPhotoError).length > 0 &&
-          <Alert>
-            {Object.values(validationPhotoError)[0]}
-          </Alert>}
+        {Object.keys(validationPhotoError).length > 0 && (
+          <Alert>{Object.values(validationPhotoError)[0]}</Alert>
+        )}
       </div>
       <div className={styles.uploadButton__image}>
-        {photo !== null &&
+        {photo !== null && (
           <Image
             src={typeof photo === "object" ? URL.createObjectURL(photo) : photo}
             width={127}
             height={127}
             alt={photoName}
             fileName={photoName}
-          />}
+          />
+        )}
       </div>
     </div>
   );

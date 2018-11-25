@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-
+import { forIn } from "lodash";
 function withValidator(WrappedComponent) {
   return class extends Component {
     static propTypes = {
@@ -27,6 +27,22 @@ function withValidator(WrappedComponent) {
         }
       }
       return hasErrors;
+    };
+    resetErrorValues = () => {
+      const validationErrors = forIn(
+        this.props.initialErrorValues,
+        (value, key, obj) => {
+          if (Array.isArray(value)) {
+            obj[key] = [];
+          } else if (typeof value === "object") {
+            obj[key] = {};
+          }
+        }
+      );
+      this.setState({
+        validationErrors,
+        serverErrors: []
+      });
     };
     printErrorMessage = fieldType => {
       if (Array.isArray(fieldType)) {
@@ -178,7 +194,7 @@ function withValidator(WrappedComponent) {
         this.removeValidationMessage(Object.keys(obj2)[0], "isGreaterThen");
       }
     };
-    handleServerErrors = ({ graphQLErrors, networkError }) => {
+    handleServerErrors = ({ graphQLErrors, networkError, ...customError }) => {
       if (networkError) {
         const {
           result: {
@@ -217,6 +233,11 @@ function withValidator(WrappedComponent) {
             }
           });
         }
+      } else {
+        // TODO  handle other errors then networkError or GraphqlError
+        this.setState({
+          serverErrors: this.serverErrors.concat([{ customError }])
+        });
       }
     };
     render() {
@@ -235,6 +256,7 @@ function withValidator(WrappedComponent) {
       };
       return (
         <WrappedComponent
+          resetErrorValues={this.resetErrorValues}
           printErrorMessage={this.printErrorMessage}
           validationErrors={this.state.validationErrors}
           validationFunctions={validationFunctions}
