@@ -118,7 +118,6 @@ const BaseProductForm = ({
             margin="normal"
             helperText="this field is automatically calculated from  price without dph"
             fullWidth
-            // error={validationErrors.pricewithdph.length > 0}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -127,14 +126,7 @@ const BaseProductForm = ({
               ),
               readOnly: true
             }}
-            // onChange={event => {
-            //   const { target: { id, value } } = event;
-            //   handleInputChange(event);
-            //   isGreaterThen({ pricewithoutdph }, { [id]: value });
-            //   isNumber(id, value);
-            // }}
           />
-          {/*<Alert>{printErrorMessage(validationErrors.pricewithdph)}</Alert>*/}
         </Grid>
         <Grid item xs={12}>
           <div className={styles.barcode}>
