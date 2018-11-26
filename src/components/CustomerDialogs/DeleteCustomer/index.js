@@ -15,8 +15,8 @@ import {
 } from "components/Dialog";
 import Loader from "components/Loader";
 import Button from "components/Button";
-import { enhanceWithCustomerHoc } from "../CreateCustomer";
-import { ToastContext } from "../../../context";
+import withCustomerHoc from "../withCustomerHoc";
+import { ToastConsumer } from "../../Dialog/dialogHoc";
 import styles from "./deleteCustomer.scss";
 
 const DialogDeleteCustomer = ({
@@ -25,106 +25,97 @@ const DialogDeleteCustomer = ({
   classes,
   validationFunctions: { handleServerErrors },
   data: { customerID, firstname, lastname },
-  location: { search }
+  location: { search },
+  toast
 }) => {
   return (
-    <ToastContext.Consumer>
-      {toast => (
-        <Mutation
-          mutation={DELETE_CUSTOMER}
-          variables={{ customerID }}
-          update={cache => {
-            const { page } = queryString.parse(search);
-            const parsePageInt = parseInt(page, 10);
-            const {
-              customers: { customers }
-            } = cache.readQuery({
-              query: FETCH_CUSTOMERS,
-              variables: { pageNumber: parsePageInt }
-            });
-            const deleteCustomerFromArray = customers.filter(
-              customerFromCache => {
-                if (customerFromCache.customerID !== customerID) {
-                  return customerFromCache;
-                }
-              }
-            );
-            cache.writeQuery({
-              query: FETCH_CUSTOMERS,
-              variables: { pageNumber: parsePageInt },
-              data: { customers: { customers: deleteCustomerFromArray } }
-            });
-          }}
-        >
-          {(deleteCustomer, { loading, error, data }) => {
-            if (loading) return <Loader />;
-            if (error) return `${error.message}`;
-            return (
-              <Dialog
-                maxWidth="md"
-                open={open}
-                fullWidth={true}
-                className={styles.dialog}
-              >
-                <div className={styles.dialog__container}>
-                  <DialogTitle className={styles.dialog__title}>
-                    Delete Customer
-                  </DialogTitle>
-                  <DialogContent className={styles.dialog__content}>
-                    <DialogContentText className={classes.MuiDialogContentText}>
-                      <span className={styles.dialog__content__text}>
-                        Are you sure you want to delete customer:
-                        <span>
-                          {firstname} {lastname}
-                        </span>
-                      </span>
-                    </DialogContentText>
-                  </DialogContent>
-                  <DialogActions>
-                    <Button
-                      variant="contained"
-                      color="info"
-                      onClick={closeModal}
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      onClick={async () => {
-                        try {
-                          const {
-                            data: {
-                              deleteCustomer: {
-                                customer: { customerID }
-                              }
-                            }
-                          } = await deleteCustomer({
-                            variables: {
-                              customerID
-                            }
-                          });
-                          closeModal();
-                          toast.addToastMessage({
-                            content: `Customer ${firstname} ${lastname} with ID: ${customerID} was deleted successfully`,
-                            type: "success",
-                            delay: 2500
-                          });
-                        } catch (error) {
-                          handleServerErrors(error);
+    <Mutation
+      mutation={DELETE_CUSTOMER}
+      variables={{ customerID }}
+      update={cache => {
+        const { page } = queryString.parse(search);
+        const parsePageInt = parseInt(page, 10);
+        const {
+          customers: { customers }
+        } = cache.readQuery({
+          query: FETCH_CUSTOMERS,
+          variables: { pageNumber: parsePageInt }
+        });
+        const deleteCustomerFromArray = customers.filter(customerFromCache => {
+          if (customerFromCache.customerID !== customerID) {
+            return customerFromCache;
+          }
+        });
+        cache.writeQuery({
+          query: FETCH_CUSTOMERS,
+          variables: { pageNumber: parsePageInt },
+          data: { customers: { customers: deleteCustomerFromArray } }
+        });
+      }}
+    >
+      {(deleteCustomer, { loading, error, data }) => {
+        if (loading) return <Loader />;
+        if (error) return `${error.message}`;
+        return (
+          <Dialog
+            maxWidth="md"
+            open={open}
+            fullWidth={true}
+            className={styles.dialog}
+          >
+            <div className={styles.dialog__container}>
+              <DialogTitle className={styles.dialog__title}>
+                Delete Customer
+              </DialogTitle>
+              <DialogContent className={styles.dialog__content}>
+                <DialogContentText className={classes.MuiDialogContentText}>
+                  <span className={styles.dialog__content__text}>
+                    Are you sure you want to delete customer:
+                    <span>
+                      {firstname} {lastname}
+                    </span>
+                  </span>
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button variant="contained" color="info" onClick={closeModal}>
+                  Cancel
+                </Button>
+                <Button
+                  onClick={async () => {
+                    try {
+                      const {
+                        data: {
+                          deleteCustomer: {
+                            customer: { customerID }
+                          }
                         }
-                      }}
-                      variant="contained"
-                      color="danger"
-                    >
-                      Delete Customer
-                    </Button>
-                  </DialogActions>
-                </div>
-              </Dialog>
-            );
-          }}
-        </Mutation>
-      )}
-    </ToastContext.Consumer>
+                      } = await deleteCustomer({
+                        variables: {
+                          customerID
+                        }
+                      });
+                      closeModal();
+                      toast.addToastMessage({
+                        content: `Customer ${firstname} ${lastname} with ID: ${customerID} was deleted successfully`,
+                        type: "success",
+                        delay: 2500
+                      });
+                    } catch (error) {
+                      handleServerErrors(error);
+                    }
+                  }}
+                  variant="contained"
+                  color="danger"
+                >
+                  Delete Customer
+                </Button>
+              </DialogActions>
+            </div>
+          </Dialog>
+        );
+      }}
+    </Mutation>
   );
 };
 DialogDeleteCustomer.propTypes = {
@@ -137,12 +128,21 @@ DialogDeleteCustomer.propTypes = {
   }).isRequired,
   location: PropTypes.objectOf(PropTypes.object),
   open: PropTypes.bool.isRequired,
+  toast: PropTypes.shape({
+    addToastMessage: PropTypes.func.isRequired,
+    removeToastMessage: PropTypes.func.isRequired,
+    toasts: PropTypes.array
+  }),
   validationFunctions: PropTypes.objectOf(PropTypes.func)
 };
 
 DialogDeleteCustomer.defaultProps = {
-  location: { search: "" }
+  location: { search: "" },
+  toast: {
+    toasts: []
+  },
+  validationFunctions: {}
 };
 
 export const DELETE_CUSTOMER_MODAL = "DELETE_CUSTOMER_MODAL";
-export default enhanceWithCustomerHoc(DialogDeleteCustomer);
+export default withCustomerHoc(DialogDeleteCustomer);
