@@ -40,6 +40,6 @@ export default class RenderPropsToastMessage extends Component {
 }
 
 RenderPropsToastMessage.propTypes = {
-  children: PropTypes.func
+  children: PropTypes.func.isRequired
 };
 
