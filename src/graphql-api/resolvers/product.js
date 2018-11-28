@@ -6,12 +6,7 @@ import {
   validationSuccessResponse,
   customErrorResponse
 } from "../utils/error_handler";
-import {
-  asyncAccessFile,
-  asyncReadDir,
-  asyncRemoveDir,
-  asyncRemoveFile
-} from "../utils/promisify";
+import { asyncAccessFile } from "../utils/promisify";
 const ProductResolvers = {
   Query: {
     products: async (_, { cursor, pageNumber }) => {
@@ -81,9 +76,9 @@ const ProductResolvers = {
             barcode
           }
         } = await models.Product.create(product);
-        const productPhotoDir = path.join(productPath, `${productID}`);
+        const productPhotoDirPath = path.join(productPath, `${productID}`);
         try {
-          const filename = await savePhoto(photoFile, productPhotoDir);
+         const filename = await savePhoto(photoFile, productPhotoDirPath);
           try {
             await models.ProductPhoto.create({
               productID,
@@ -94,7 +89,7 @@ const ProductResolvers = {
             validationErrorResponse(400, productPhotoError);
           }
         } catch (savePhotoError) {
-          customErrorResponse(
+          validationErrorResponse(
             "Cant save photo of product",
             400,
             savePhotoError
@@ -115,7 +110,6 @@ const ProductResolvers = {
           "Product was successfull created"
         );
       } catch (createProductError) {
-        console.log("createProductError", createProductError);
         validationErrorResponse(400, createProductError);
       }
     },

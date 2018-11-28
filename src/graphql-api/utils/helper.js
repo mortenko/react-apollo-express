@@ -9,71 +9,99 @@ import {
 import path from "path";
 import fs from "fs";
 
-async function writeFileWithStream(customerPhotoPath, readableStream) {
+async function writeFileWithStream(photoPath, readableStream) {
   return new Promise((resolve, reject) => {
-    const wstream = fs.createWriteStream(customerPhotoPath);
-    readableStream.on("data", data => {
-      console.log("readableStream", data);
-    });
-    readableStream.on("end", () => {
-      console.log("readableStream ended");
-    });
+    const wstream = fs.createWriteStream(photoPath);
+    readableStream
+      .on("data", data => {
+        console.log("readableStream Data", data);
+      })
+      .on("error", error => {
+        console.log("errorStream", error);
+      })
+      .on("end", () => {
+        console.log("readableStream ended");
+      });
     readableStream.pipe(wstream);
     wstream
       .on("error", readableStreamError => {
         return reject(readableStreamError);
       })
       .on("finish", () => {
-        return resolve(customerPhotoPath);
+        return resolve(photoPath);
       });
   });
 }
 
-function savePhoto(promiseFile, photoDir, previousPhotoPath = "") {
+function savePhoto(file, destinationPhotoDir, previousPhotoPath = "") {
   return new Promise(async (resolve, reject) => {
-    try {
-      const { filename, stream } = await promiseFile;
-      const isDirNoExist = await asyncStat(photoDir)
-        .then(() => false)
-        .catch(() => true);
-      if (isDirNoExist) {
-        try {
-          // create dir with primary key name
-          await asyncCreateDir(photoDir);
-        } catch (createDirError) {
-          reject(createDirError);
-        }
-      }
+    // check if dir exists
+    const isDirNoExist = await asyncStat(destinationPhotoDir)
+      .then(() => false)
+      .catch(() => true);
+    if (isDirNoExist) {
       try {
-        //resolve path to file
-        const photoPath = path.resolve(`${photoDir}/${filename}`);
-        // check if this file exists
-        const isExistFile = await asyncAccessFile(photoPath, fs.constants.F_OK)
-          .then(() => false)
-          .catch(() => true);
-        if (isExistFile) {
-          // create file if already not exist
-          await writeFileWithStream(photoPath, stream);
-        } else {
-          // resolve path to previous photo you want to delete
-          const resolvePreviousPhotoPath = path.resolve(
-            `./public/${previousPhotoPath}`
-          );
-          // delete previous photoFile
-          await asyncRemoveFile(resolvePreviousPhotoPath);
-          // write new photo
-          await writeFileWithStream(photoPath, stream);
-        }
-      } catch (FileError) {
-        reject(FileError);
+        // create dir with name as primary key
+        await asyncCreateDir(destinationPhotoDir);
+      } catch (createDirError) {
+        reject(createDirError);
       }
-      resolve(filename);
-    } catch (photoFileError) {
-      reject(photoFileError);
+    }
+    // create new copy of product and new photo is not uploaded
+    if (typeof file === "string") {
+      const defaultPhotoPath = path.join(path.resolve("./public"), file);
+      const newPhotoPath = `${destinationPhotoDir}/${path.basename(file)}`;
+      // create photo readstream
+      const readableStream = fs.createReadStream(defaultPhotoPath);
+      try {
+        // returned absolute path
+        const filename = await writeFileWithStream(
+          newPhotoPath,
+          readableStream
+        );
+        // I need just name of the photo like photo.png
+        resolve(path.basename(filename));
+      } catch (streamError) {
+        reject(streamError);
+      }
+    } else {
+      // handle new uploaded photo
+      try {
+        const { filename, stream } = await file;
+        try {
+          //resolve path to photo file
+          const photoPath = path.resolve(`${destinationPhotoDir}/${filename}`);
+          // check if photo exists (use case  updating new photo)
+          const isExistFile = await asyncAccessFile(
+            photoPath,
+            fs.constants.F_OK
+          )
+            .then(() => false)
+            .catch(() => true);
+          if (isExistFile) {
+            // create file if already not exist
+            await writeFileWithStream(photoPath, stream);
+          } else {
+            // resolve path to previous photo you want to delete
+            const resolvePreviousPhotoPath = path.resolve(
+              `./public/${previousPhotoPath}`
+            );
+            // delete previous photoFile
+            await asyncRemoveFile(resolvePreviousPhotoPath);
+            // write new photo
+            await writeFileWithStream(photoPath, stream);
+          }
+          resolve(filename);
+        } catch (FileError) {
+          reject(FileError);
+        }
+      } catch (photoFileError) {
+        reject(photoFileError);
+      }
     }
   });
 }
-
+// recursively remove all files in given folder and then folder when customer/product is removed
 function recursivelyRemoveFiles(resolvePathToDir) {
   return new Promise(async (resolve, reject) => {
     try {

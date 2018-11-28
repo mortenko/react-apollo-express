@@ -22,6 +22,7 @@ import Alert from "components/Alert";
 import { CREATE_PRODUCT_MODAL } from "components/ProductDialogs/CreateProduct";
 import { UPDATE_PRODUCT_MODAL } from "components/ProductDialogs/UpdateProduct";
 import { DELETE_PRODUCT_MODAL } from "components/ProductDialogs/DeleteProduct";
+import { COPY_PRODUCT_MODAL } from "components/ProductDialogs/CopyProduct";
 import Pagination from "components/Pagination";
 import { enhanceWithContainerHoc } from "../withContainerHoc";
 import { NoteAdd } from "../../assets/material-ui-icons";
@@ -122,7 +123,11 @@ const ProductPage = ({
                       </TableCell>
                       <TableCell>
                         <CopyButtonAction
-                          copyAction={() => console.log("Copy Product")}
+                          copyAction={() =>
+                            openModal(COPY_PRODUCT_MODAL, {
+                              productID
+                            })
+                          }
                         />
                       </TableCell>
                     </TableRow>
