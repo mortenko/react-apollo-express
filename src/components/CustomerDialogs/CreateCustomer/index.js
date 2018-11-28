@@ -14,7 +14,10 @@ import {
 } from "components/Dialog";
 import styles from "./createCustomer.scss";
 import Loader from "components/Loader";
-import { CREATE_CUSTOMER } from "../../../graphql-client/queries/customer";
+import {
+  CREATE_CUSTOMER,
+  FETCH_CUSTOMERS
+} from "../../../graphql-client/queries/customer";
 import BaseCustomerForm from "../baseCustomerForm";
 import withCustomerHoc from "../withCustomerHoc";
 const DialogCreateCustomer = props => {
@@ -22,6 +25,7 @@ const DialogCreateCustomer = props => {
     open,
     closeModal,
     resetForm,
+    data: { pageNumber, itemsCountPerPage },
     validationFunctions: {
       isRequired,
       hasValidationErrors,
@@ -31,7 +35,6 @@ const DialogCreateCustomer = props => {
     handleInputChange,
     toast
   } = props;
-
   return (
     <Dialog
       maxWidth="md"
@@ -39,7 +42,15 @@ const DialogCreateCustomer = props => {
       open={open}
       className={styles.dialog}
     >
-      <Mutation mutation={CREATE_CUSTOMER} errorPolicy="all">
+      <Mutation
+        mutation={CREATE_CUSTOMER}
+        refetchQueries={[
+          {
+            query: FETCH_CUSTOMERS,
+            variables: { pageNumber, cursor: itemsCountPerPage }
+          }
+        ]}
+      >
         {(createCustomer, { loading, error, data }) => {
           if (loading) return <Loader />;
           return (
@@ -123,6 +134,7 @@ const DialogCreateCustomer = props => {
 };
 DialogCreateCustomer.propTypes = {
   closeModal: PropTypes.func.isRequired,
+  data: PropTypes.object.isRequired,
   handleInputChange: PropTypes.func.isRequired,
   newData: PropTypes.shape({
     customerID: PropTypes.number,

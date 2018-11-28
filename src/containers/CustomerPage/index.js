@@ -27,7 +27,7 @@ import { enhanceWithContainerHoc } from "../withContainerHoc";
 const CustomerPage = ({
   paginationData: { pageNumber, itemsCountPerPage },
   handleChangePage,
-  openModal,
+  openModal
 }) => {
   return (
     <Query
@@ -53,7 +53,12 @@ const CustomerPage = ({
                   <TableCell className={styles.table__head}>
                     <CreateButtonAction
                       title="Customers Table"
-                      createAction={() => openModal(CREATE_CUSTOMER_MODAL)}
+                      createAction={() =>
+                        openModal(CREATE_CUSTOMER_MODAL, {
+                          pageNumber,
+                          itemsCountPerPage
+                        })
+                      }
                     >
                       <PersonAdd />
                     </CreateButtonAction>

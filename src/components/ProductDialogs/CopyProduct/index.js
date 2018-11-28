@@ -4,7 +4,7 @@ import Loader from "components/Loader";
 import { Query } from "react-apollo";
 import { FETCH_PRODUCT } from "../../../graphql-client/queries/product";
 
-const DialogCopyProduct = ({ data: { productID }, ...props }) => (
+const DialogCopyProduct = ({ data: { productID, ...restData }, ...props }) => (
   <Query query={FETCH_PRODUCT} variables={{ productID }}>
     {({ loading, error, data }) => {
       if (loading) return <Loader />;
@@ -12,7 +12,9 @@ const DialogCopyProduct = ({ data: { productID }, ...props }) => (
       const {
         product: { productID, ...product }
       } = data;
-      return <CreateProduct formData={{ product }} {...props} />;
+      return (
+        <CreateProduct formData={{ product }} data={restData} {...props} />
+      );
     }}
   </Query>
 );

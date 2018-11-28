@@ -13,7 +13,10 @@ import {
   TextField
 } from "components/Dialog";
 import styles from "./createProduct.scss";
-import { CREATE_PRODUCT } from "../../../graphql-client/queries/product";
+import {
+  CREATE_PRODUCT,
+  FETCH_PRODUCTS
+} from "../../../graphql-client/queries/product";
 import Loader from "components/Loader";
 import BaseProductForm from "../baseProductForm";
 import withProductHoc from "../withProductHoc";
@@ -22,6 +25,7 @@ const DialogCreateProduct = props => {
   const {
     open,
     closeModal,
+    data: { pageNumber, itemsCountPerPage },
     resetForm,
     validationFunctions: {
       isRequired,
@@ -33,7 +37,15 @@ const DialogCreateProduct = props => {
     toast
   } = props;
   return (
-    <Mutation mutation={CREATE_PRODUCT}>
+    <Mutation
+      mutation={CREATE_PRODUCT}
+      refetchQueries={[
+        {
+          query: FETCH_PRODUCTS,
+          variables: { pageNumber, cursor: itemsCountPerPage }
+        }
+      ]}
+    >
       {(createProduct, { loading, error, data }) => {
         if (loading) return <Loader />;
         return (

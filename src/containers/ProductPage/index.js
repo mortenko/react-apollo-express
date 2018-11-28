@@ -54,7 +54,12 @@ const ProductPage = ({
                   <TableCell className={styles.table__head}>
                     <CreateButtonAction
                       title="Products table"
-                      createAction={() => openModal(CREATE_PRODUCT_MODAL)}
+                      createAction={() =>
+                        openModal(CREATE_PRODUCT_MODAL, {
+                          pageNumber,
+                          itemsCountPerPage
+                        })
+                      }
                     >
                       <NoteAdd />
                     </CreateButtonAction>
@@ -125,7 +130,9 @@ const ProductPage = ({
                         <CopyButtonAction
                           copyAction={() =>
                             openModal(COPY_PRODUCT_MODAL, {
-                              productID
+                              productID,
+                              pageNumber,
+                              itemsCountPerPage
                             })
                           }
                         />
