@@ -5,7 +5,7 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-          type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER,
       },
       productname: {
         type: Sequelize.STRING,
@@ -22,6 +22,7 @@ module.exports = {
       },
       barcode: {
         type: Sequelize.UUID,
+        unique: true
       },
       createdAt: {
         allowNull: false,

@@ -16,8 +16,8 @@ module.exports = (sequelize, DataTypes) => {
         },
         validate: {
           isLength: {
-            args: { min: 5, max: 20 },
-            msg: "product name must have at least 5 and max 20 characters"
+            args: { min: 5, max: 25 },
+            msg: "product name must have at least 5 and max 25 characters"
           }
         }
       },

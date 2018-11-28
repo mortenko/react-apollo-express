@@ -23,7 +23,7 @@ const DialogUpdateProduct = ({ open, closeModal, data: { productID } }) => {
             <div>
               <UpdateProductForm
                 closeModal={closeModal}
-                formData={{ ...data }}
+                formData={data}
               />
             </div>
           );

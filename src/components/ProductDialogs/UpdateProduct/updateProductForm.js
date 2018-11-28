@@ -26,6 +26,7 @@ const UpdateProductForm = props => {
   const {
     closeModal,
     handleInputChange,
+    handleServerErrors,
     location: { search },
     newData,
     toast,
@@ -123,8 +124,7 @@ const UpdateProductForm = props => {
                             delay: 2500
                           });
                         } catch (error) {
-                          console.log("error", error);
-                          // handleServerErrors(error);
+                           handleServerErrors(error);
                         }
                       }
                     }}
@@ -146,6 +146,7 @@ const UpdateProductForm = props => {
 UpdateProductForm.propTypes = {
   closeModal: PropTypes.func.isRequired,
   handleInputChange: PropTypes.func.isRequired,
+  handleServerErrors: PropTypes.func.isRequired,
   location: PropTypes.objectOf(PropTypes.string),
   newData: PropTypes.shape({
     productID: PropTypes.number,

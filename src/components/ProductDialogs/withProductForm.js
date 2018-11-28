@@ -59,6 +59,7 @@ export default function withProductForm(WrappedComponent) {
     }
     renderBarcode = () => {
       const generateUUID = uuid();
+      const { isUUID, isRequired } = this.props.validationFunctions;
       this.setState(
         {
           product: {
@@ -67,15 +68,19 @@ export default function withProductForm(WrappedComponent) {
           }
         },
         () => {
-          this.props.validationFunctions.isUUID("barcode", generateUUID);
+          isUUID("barcode", generateUUID);
+          isRequired({ barcode: generateUUID });
         }
       );
     };
     resetForm = () => {
-      this.props.resetErrorValues();
-      this.setState({
-        ...this.props.initialFormValues
-      });
+      const { formData, resetErrorValues } = this.props;
+      resetErrorValues();
+      if (typeof formData === "undefined") {
+        this.setState({
+          ...this.props.initialFormValues
+        });
+      }
     };
     handleInputChange = (id, value, files = null) => {
       if (files !== null && typeof files !== "undefined") {

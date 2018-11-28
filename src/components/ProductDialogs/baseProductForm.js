@@ -53,7 +53,7 @@ const BaseProductForm = ({
             }}
             onChange={({ target: { id, value } }) => {
               handleInputChange(id, value);
-              isLength(5, 20)(id, value);
+              isLength(5, 25)(id, value);
               isRequired({ [id]: value });
             }}
           />
