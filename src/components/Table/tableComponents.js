@@ -23,6 +23,12 @@ const CreateButtonAction = ({ createAction, title, children }) => (
     </div>
   </Fragment>
 );
+CreateButtonAction.propTypes = {
+  createAction: PropTypes.func,
+  title: PropTypes.string,
+  children: PropTypes.node
+}.isRequired;
+
 const DeleteButtonAction = ({ deleteAction }) => (
   <Button onClick={deleteAction} variant="fab" color="secondary">
     <Delete />
@@ -42,15 +48,9 @@ UpdateButtonAction.propTypes = {
   updateAction: PropTypes.func.isRequired
 };
 
-CreateButtonAction.propTypes = {
-  createAction: PropTypes.func,
-  title: PropTypes.string,
-  children: PropTypes.node
-}.isRequired;
-
 export {
   CreateButtonAction,
   CopyButtonAction,
   DeleteButtonAction,
-  UpdateButtonAction
+  UpdateButtonAction,
 };

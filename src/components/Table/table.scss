@@ -29,3 +29,11 @@
     }
   }
 }
+.table__row__pagination {
+  td {
+    border-bottom: none;
+    &:hover {
+      background-color: transparent;
+    }
+  }
+}

@@ -13,6 +13,7 @@ export { default as NoteAdd } from "@material-ui/icons/NoteAdd";
 export { default as Note } from "@material-ui/icons/Note";
 export { default as Description } from "@material-ui/icons/Description";
 export { default as AttachMoney } from "@material-ui/icons/AttachMoney";
+export { default as AddCircle } from "@material-ui/icons/AddCircle";
 export {
   default as EnhancedEncryption
 } from "@material-ui/icons/EnhancedEncryption";

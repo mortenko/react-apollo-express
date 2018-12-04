@@ -18,6 +18,13 @@ const theme = createMuiTheme({
   },
   typography: {
     useNextVariants: true
+  },
+  overrides: {
+    MuiTableCell: {
+      root: {
+        textAlign: "center"
+      }
+    }
   }
 });
 

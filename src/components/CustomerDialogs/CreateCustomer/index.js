@@ -5,7 +5,6 @@ import Grid from "@material-ui/core/Grid";
 import Button from "components/Button";
 import {
   Dialog,
-  DialogStyles,
   DialogTitle,
   DialogContent,
   DialogActions,

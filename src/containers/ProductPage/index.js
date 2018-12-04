@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { Query } from "react-apollo";
 import PropTypes from "prop-types";
 import Image from "components/Image";
@@ -47,7 +47,7 @@ const ProductPage = ({
           products: { products, count }
         } = data;
         return (
-          <div>
+          <Fragment>
             <Table className={styles.table}>
               <TableHead>
                 <TableRow>
@@ -140,18 +140,22 @@ const ProductPage = ({
                     </TableRow>
                   )
                 )}
+                <TableRow className={styles.table__row__pagination}>
+                  <TableCell colSpan={11}>
+                    <Pagination
+                      totalNumberOfItems={count}
+                      currentPage={pageNumber}
+                      itemsCountPerPage={itemsCountPerPage}
+                      onPageChange={pageNumber => {
+                        refetch({ pageNumber });
+                        handleChangePage(pageNumber);
+                      }}
+                    />
+                  </TableCell>
+                </TableRow>
               </TableBody>
             </Table>
-            <Pagination
-              totalNumberOfItems={count}
-              currentPage={pageNumber}
-              itemsCountPerPage={itemsCountPerPage}
-              onPageChange={pageNumber => {
-                refetch({ pageNumber });
-                handleChangePage(pageNumber);
-              }}
-            />
-          </div>
+          </Fragment>
         );
       }}
     </Query>

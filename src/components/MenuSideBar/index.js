@@ -13,7 +13,7 @@ const activeStyles = {
       color: "#000",
       backgroundColor: "#007bff",
       textDecoration: "underline"
-    }
+    },
   },
   MuiList: {
     padding: 0
