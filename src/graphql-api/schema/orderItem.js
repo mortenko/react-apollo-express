@@ -1,12 +1,13 @@
-const OrderItem =`
+const OrderItem = `
  type OrderItem {
   orderItemID: ID!
   quantity: Int
   totalsumwithdph: Float
   totalsumwithoutdph: Float
-  products: [Product]
-  orders: [Order]
+  createdAt: Date
+  updatedAt: Date
+  product: Product
+  customer: Customer
  }
-
 `;
 export default OrderItem;

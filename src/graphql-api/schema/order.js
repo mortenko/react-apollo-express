@@ -2,15 +2,15 @@ const Order = `
  type Order {
   orderID: ID
   createdAt: Date 
-  Customer: Customer
-  OrderItem: OrderItem
+  customer: Customer
  }
-  extend type Query {
-   orders(cursor: Int!): [Order]
-   order(id: ID!): Order
+ type Orders implements IPagination {
+   orders: [OrderItem] 
+   count: Int!
+   cursor: Int!
   }
-  extend type Mutation {
-    deleteOrder(orderID: ID!): Order
+  extend type Query {
+   orders(cursor: Int!, pageNumber: Int!): Orders
   }
 `;
 

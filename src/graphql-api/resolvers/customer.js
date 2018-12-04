@@ -8,10 +8,6 @@ import path from "path";
 import models from "../../../db/models";
 import {
   asyncAccessFile,
-  asyncCreateDir,
-  asyncRemoveFile,
-  asyncRemoveDir,
-  asyncReadDir
 } from "../utils/promisify";
 
 const CustomerResolvers = {
