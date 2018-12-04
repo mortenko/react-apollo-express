@@ -1,6 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
   const Order = sequelize.define("Order", {
-    timestamps: false,
     orderID: {
       allowNull: false,
       autoIncrement: true,
@@ -29,8 +28,17 @@ module.exports = (sequelize, DataTypes) => {
     }
   });
   Order.associate = models => {
-    Order.belongsTo(models.Customer, { foreignKey: "customerID", onDelete: "cascade", hooks: "true" });
-    Order.hasOne(models.OrderItem, { foreignKey: "orderID", onDelete: "cascade", hooks: "true" });
+    Order.belongsTo(models.Customer, {
+      foreignKey: "customerID",
+      onDelete: "cascade",
+      hooks: "true"
+    });
+    Order.belongsToMany(models.OrderItem, {
+      through: "OrderItem",
+      foreignKey: "orderID",
+      onDelete: "cascade",
+      hooks: "true"
+    });
   };
   return Order;
 };

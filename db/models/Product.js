@@ -82,7 +82,7 @@ module.exports = (sequelize, DataTypes) => {
     });
     Product.belongsToMany(models.OrderItem, {
       foreignKey: "productID",
-      through: "ProductOrderItem",
+      through: "OrderItem",
       onDelete: "cascade",
       hooks: "true"
     });
