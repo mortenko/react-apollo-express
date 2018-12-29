@@ -136,7 +136,6 @@ module.exports = {
     ]
   },
   plugins: [
-    new InterpolateHtmlPlugin(env.raw),
     new HtmlWebpackPlugin({
       inject: true,
       template: paths.appHtml,
@@ -153,6 +152,7 @@ module.exports = {
         minifyURLs: true
       }
     }),
+    new InterpolateHtmlPlugin(HtmlWebpackPlugin, { PUBLIC_URL: env.raw }),
     new webpack.DefinePlugin(env.stringified),
     new MiniCssExtractPlugin({
       filename: cssFilename
