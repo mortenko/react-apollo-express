@@ -18,12 +18,15 @@ import styles from "components/Table/table.scss";
 import Loader from "components/Loader";
 import Alert from "components/Alert";
 import Pagination from "components/Pagination";
+import { CREATE_ORDER_MODAL } from "components/OrderDialogs/createOrder";
 import { FETCH_ORDERS } from "../../graphql-client/queries/order";
 import { AddCircle } from "../../assets/material-ui-icons";
 import { enhanceWithContainerHoc } from "../withContainerHoc";
+
 const ProductPage = ({
   paginationData: { pageNumber, itemsCountPerPage },
   handleChangePage,
+  openModal
 }) => {
   return (
     <Query
@@ -32,8 +35,6 @@ const ProductPage = ({
         cursor: itemsCountPerPage,
         pageNumber
       }}
-      fetchPolicy="network-only"
-      notifyOnNetworkStatusChange
     >
       {({ loading, error, data, variables: { pageNumber }, refetch }) => {
         if (loading) return <Loader />;
@@ -48,8 +49,8 @@ const ProductPage = ({
                 <TableRow>
                   <TableCell className={styles.table__head}>
                     <CreateButtonAction
+                      createAction={() => openModal(CREATE_ORDER_MODAL)}
                       title="Order Table"
-                      createAction={() => console.log("create order")}
                     >
                       <AddCircle />
                     </CreateButtonAction>
@@ -121,9 +122,9 @@ const ProductPage = ({
                 <TableRow className={styles.table__row__pagination}>
                   <TableCell colSpan={13}>
                     <Pagination
-                      totalNumberOfItems={count}
                       currentPage={pageNumber}
                       itemsCountPerPage={itemsCountPerPage}
+                      totalNumberOfItems={count}
                       onPageChange={pageNumber => {
                         refetch({ pageNumber });
                         handleChangePage(pageNumber);
@@ -141,11 +142,12 @@ const ProductPage = ({
 };
 
 ProductPage.propTypes = {
-  handleChangePage: PropTypes.func,
+  handleChangePage: PropTypes.func.isRequired,
+  openModal: PropTypes.func.isRequired,
   paginationData: PropTypes.shape({
     pageNumber: PropTypes.number,
     itemsCountPerPage: PropTypes.number
-  })
-}.isRequired;
+  }).isRequired
+};
 
 export default enhanceWithContainerHoc(ProductPage);

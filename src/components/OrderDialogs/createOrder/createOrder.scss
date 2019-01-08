@@ -1,0 +1,10 @@
+@import "../../../styles/colors";
+@import "../../Dialog/_dialog.scss";
+
+.dialogCreateOrder__title {
+  background-color: $bright_red;
+}
+
+.dialog__title {
+  @extend .dialogCreateOrder__title
+}

@@ -1,6 +1,7 @@
 export { default as Delete } from "@material-ui/icons/Delete";
 export { default as Create } from "@material-ui/icons/Create";
 export { default as Edit } from "@material-ui/icons/Edit";
+export { default as ArrowDropDown } from "@material-ui/icons/ArrowDropDown";
 export { default as FileCopy } from "@material-ui/icons/FileCopy";
 export { default as PersonAdd } from "@material-ui/icons/PersonAdd";
 export { default as LeftArrow } from "@material-ui/icons/ArrowBack";
@@ -14,6 +15,7 @@ export { default as Note } from "@material-ui/icons/Note";
 export { default as Description } from "@material-ui/icons/Description";
 export { default as AttachMoney } from "@material-ui/icons/AttachMoney";
 export { default as AddCircle } from "@material-ui/icons/AddCircle";
+export { default as RemoveCircle } from "@material-ui/icons/RemoveCircle";
 export {
   default as EnhancedEncryption
 } from "@material-ui/icons/EnhancedEncryption";

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { forIn } from "lodash";
+
 function withValidator(WrappedComponent) {
   return class extends Component {
     static propTypes = {
@@ -10,6 +11,7 @@ function withValidator(WrappedComponent) {
       validationErrors: this.props.initialErrorValues,
       serverErrors: []
     };
+
     hasValidationErrors = () => {
       const { validationErrors } = this.state;
       let hasErrors = false;
@@ -28,6 +30,7 @@ function withValidator(WrappedComponent) {
       }
       return hasErrors;
     };
+
     resetErrorValues = () => {
       const validationErrors = forIn(
         this.props.initialErrorValues,
@@ -44,6 +47,7 @@ function withValidator(WrappedComponent) {
         serverErrors: []
       });
     };
+
     printErrorMessage = fieldType => {
       if (Array.isArray(fieldType)) {
         return fieldType.map(obj => {
@@ -53,6 +57,7 @@ function withValidator(WrappedComponent) {
         return Object.values(fieldType)[0];
       }
     };
+
     removeValidationMessage = (fieldName, validationRule = "") => {
       const { validationErrors } = this.state;
       for (let validationField in validationErrors) {
@@ -80,6 +85,7 @@ function withValidator(WrappedComponent) {
         }
       });
     };
+
     addNewValidationMessage = (fieldName = "", errorMessageObj) => {
       const { validationErrors } = this.state;
       const [messageKey, messageValue] = Object.entries(errorMessageObj)[0];
@@ -102,17 +108,23 @@ function withValidator(WrappedComponent) {
             validationErrors[key].push({ [messageKey]: messageValue });
           break;
         } else if (
-          // if validation property is string, just assign error message object
+          // if validation property is object, just assign error message object
           typeof validationErrors[key] === "object" &&
           key === fieldName
         ) {
           validationErrors[key] = { [messageKey]: messageValue };
+        }
+        /* in case you didn't define static error values and new error values arised during runtime
+         f.e. -> product's input */
+        else if (validationErrors[key] !== fieldName) {
+          validationErrors[fieldName] = { [messageKey]: messageValue };
         }
       }
       this.setState({
         validationErrors
       });
     };
+
     isRequired = stateObj => {
       let isEmpty = false;
       for (let fieldName in stateObj) {
@@ -137,6 +149,7 @@ function withValidator(WrappedComponent) {
         this.removeValidationMessage(field, "isEmail");
       }
     };
+
     isLength = (min, max) => (field, value) => {
       if ((value && value.length < min) || value.length > max) {
         this.addNewValidationMessage(field, {
@@ -161,6 +174,7 @@ function withValidator(WrappedComponent) {
         this.removeValidationMessage(field, "isMobilePhone");
       }
     };
+
     isNumber = (field, value) => {
       if ((!isNaN(parseFloat(value)) && isFinite(value)) || value === "") {
         this.removeValidationMessage(field, "isNumber");
@@ -168,6 +182,7 @@ function withValidator(WrappedComponent) {
         this.addNewValidationMessage(field, { isNumber: "It's not a number" });
       }
     };
+
     isUUID = (field, value) => {
       if (
         value &&
@@ -194,6 +209,7 @@ function withValidator(WrappedComponent) {
         this.removeValidationMessage(Object.keys(obj2)[0], "isGreaterThen");
       }
     };
+    //TODO REWRITE THIS.
     handleServerErrors = ({ graphQLErrors, networkError, ...customError }) => {
       if (networkError) {
         const {
@@ -240,6 +256,7 @@ function withValidator(WrappedComponent) {
         });
       }
     };
+
     render() {
       // exclude initialErrorValues
       const { initialErrorValues, ...props } = this.props;
@@ -266,4 +283,5 @@ function withValidator(WrappedComponent) {
     }
   };
 }
+
 export default withValidator;
