@@ -75,9 +75,9 @@ const UPDATE_CUSTOMER = gql`
         photoFile
       }
       mutationResponse {
-       code
-       message
-       success
+        code
+        message
+        success
       }
     }
   }
@@ -96,11 +96,20 @@ const DELETE_CUSTOMER = gql`
     }
   }
 `;
+const FILTER_CUSTOMER = gql`
+  query filter($filterBy: CustomerInputFilter!, $advancedFilterBy: CustomerInputFilter) {
+    filter: customerFilter(filterBy: $filterBy, advancedFilterBy: $advancedFilterBy) {
+      id
+      value
+    }
+  }
+`;
 
 export {
+  CREATE_CUSTOMER,
+  DELETE_CUSTOMER,
   FETCH_CUSTOMERS,
   FETCH_CUSTOMER,
-  CREATE_CUSTOMER,
-  UPDATE_CUSTOMER,
-  DELETE_CUSTOMER
+  FILTER_CUSTOMER,
+  UPDATE_CUSTOMER
 };

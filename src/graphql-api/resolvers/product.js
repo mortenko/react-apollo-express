@@ -1,5 +1,5 @@
-import models from "../../../db/models";
 import path from "path";
+import models from "../../../db/models";
 import { recursivelyRemoveFiles, savePhoto } from "../utils/helper";
 import {
   validationErrorResponse,
@@ -7,6 +7,7 @@ import {
   customErrorResponse
 } from "../utils/error_handler";
 import { asyncAccessFile } from "../utils/promisify";
+
 const ProductResolvers = {
   Query: {
     products: async (_, { cursor, pageNumber }) => {
@@ -59,6 +60,29 @@ const ProductResolvers = {
           productFindByIdError
         );
       }
+    },
+    productFilter: async (_, { filterBy: productname }) => {
+      try {
+        const response = await models.Product.findAll({
+          attributes: [
+            ["productID", "id"],
+            ["productname", "value"],
+            "pricewithoutdph",
+            "pricewithdph"
+          ],
+          orderBy: ["productname"],
+          where: {
+            productname: {
+              [models.Sequelize.Op.iRegexp]: `^${productname}`
+            }
+          }
+        });
+        return response.map(({ dataValues: filter }) => {
+          return filter;
+        });
+      } catch (productFilterError) {
+        console.log("productFilterError", productFilterError);
+      }
     }
   },
   Mutation: {
@@ -78,7 +102,7 @@ const ProductResolvers = {
         } = await models.Product.create(product);
         const productPhotoDirPath = path.join(productPath, `${productID}`);
         try {
-         const filename = await savePhoto(photoFile, productPhotoDirPath);
+          const filename = await savePhoto(photoFile, productPhotoDirPath);
           try {
             await models.ProductPhoto.create({
               productID,

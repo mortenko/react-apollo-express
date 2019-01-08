@@ -1,14 +1,13 @@
+import path from "path";
+import { size, assign } from "lodash";
 import { recursivelyRemoveFiles, savePhoto } from "../utils/helper";
 import {
   validationErrorResponse,
   validationSuccessResponse,
   customErrorResponse
 } from "../utils/error_handler";
-import path from "path";
 import models from "../../../db/models";
-import {
-  asyncAccessFile,
-} from "../utils/promisify";
+import { asyncAccessFile } from "../utils/promisify";
 
 const CustomerResolvers = {
   Query: {
@@ -49,6 +48,43 @@ const CustomerResolvers = {
           404,
           customerFindByIdError
         );
+      }
+    },
+    customerFilter: async (_, { filterBy, advancedFilterBy }) => {
+      const getKey = Object.keys(filterBy)[0];
+      const getValue = Object.values(filterBy)[0];
+      let composeWhereClause = {};
+      if (size(advancedFilterBy) < 1) {
+        composeWhereClause = {
+          [getKey]: {
+            [models.Sequelize.Op.iRegexp]: `^${getValue}`
+          }
+        };
+      } else {
+        assign(composeWhereClause, advancedFilterBy);
+      }
+      try {
+        const response = await models.Customer.findAll({
+          attributes: [
+            [
+              models.Sequelize.fn(
+                "DISTINCT",
+                models.Sequelize.col(`${getKey}`)
+              ),
+              "value"
+            ],
+            ["customerID", "id"]
+          ],
+          order: [`${getKey}`],
+          where: {
+            ...composeWhereClause
+          }
+        });
+        return response.map(({ dataValues: filter }) => {
+          return filter;
+        });
+      } catch (customerFilterError) {
+        console.log("customerFilterError", customerFilterError);
       }
     }
   },

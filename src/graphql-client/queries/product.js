@@ -98,10 +98,22 @@ const DELETE_PRODUCT = gql`
   }
 `;
 
+const FILTER_PRODUCT = gql`
+  query filter($filterBy: String!) {
+    filter: productFilter(filterBy: $filterBy) {
+      id
+      value
+      pricewithoutdph
+      pricewithdph
+    }
+  }
+`;
+
 export {
+  CREATE_PRODUCT,
+  DELETE_PRODUCT,
   FETCH_PRODUCTS,
   FETCH_PRODUCT,
-  CREATE_PRODUCT,
-  UPDATE_PRODUCT,
-  DELETE_PRODUCT
+  FILTER_PRODUCT,
+  UPDATE_PRODUCT
 };

@@ -1,6 +1,6 @@
 import CustomerPhoto from "./customerPhoto";
 
-const Customer = ` 
+const Customer = `
  type Customer {
   customerID: ID!
   firstname: String
@@ -19,6 +19,16 @@ const Customer = `
   type File {
     photoFile: Upload!
   }
+  input CustomerInputFilter {
+   firstname: String
+   lastname: String
+   email: String
+  } 
+ 
+  type CustomerFilterResponse {
+   id: Int!
+   value: String!
+  }
   
   type CustomerResponse {
     customer: Customer
@@ -31,16 +41,17 @@ const Customer = `
    count: Int!
    cursor: Int!
   }
-  
+ 
   type Query {
     customers(cursor: Int!, pageNumber: Int!): Customers
-    customer(customerID: Int!): Customer 
+    customer(customerID: Int!): Customer
+    customerFilter(filterBy: CustomerInputFilter!, advancedFilterBy:CustomerInputFilter): [CustomerFilterResponse] 
   }
   type Mutation {
     createCustomer(photoFile: Upload!, customer: CustomerInput!): CustomerResponse
     updateCustomer(photoFile: Upload!, customer: CustomerInput!): CustomerResponse
     deleteCustomer(customerID: Int!): CustomerResponse
-  }
-`;
+  }`
+
 
 export default [Customer, CustomerPhoto];
