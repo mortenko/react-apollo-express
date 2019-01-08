@@ -37,10 +37,10 @@ const App = ({ modal, toast }) => {
           <Grid item xs={8} sm={10} md={10} lg={11} xl={11}>
             <ModalProvider modal={modal} />
             <ContentBar>
-              <Route exact path="/" component={HomePage} />
-              <Route path="/customers" component={CustomerPage} />
-              <Route path="/products" component={ProductPage} />
-              <Route path="/orders" component={OrderPage} />
+              <Route component={HomePage} exact path="/"  />
+              <Route component={CustomerPage} path="/customers"  />
+              <Route component={ProductPage}  path="/products" />
+              <Route component={OrderPage}  path="/orders" />
             </ContentBar>
           </Grid>
           <ToastProvider {...toast} />
@@ -52,6 +52,7 @@ const App = ({ modal, toast }) => {
     </ModalContext.Provider>
   );
 };
+
 App.propTypes = {
   modal: PropTypes.shape({
     currentModal: PropTypes.string,
@@ -68,7 +69,8 @@ App.propTypes = {
     })
   })
 };
-App.defautlProps = {
+
+App.defaultProps = {
   toast: {
     toasts: []
   }

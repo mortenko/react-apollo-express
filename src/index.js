@@ -3,12 +3,13 @@ import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import { ApolloClient } from "apollo-client";
 import { ApolloLink } from "apollo-link";
-import { HttpLink } from "apollo-link-http";
 import { ErrorLink } from "apollo-link-error";
 import { createUploadLink } from "apollo-upload-client";
 import { withClientState } from "apollo-link-state";
 import { ApolloProvider } from "react-apollo";
-import { InMemoryCache } from "apollo-cache-inmemory";
+import {
+  InMemoryCache
+} from "apollo-cache-inmemory";
 import { MuiThemeProvider } from "@material-ui/core/styles";
 import theme from "./styles/theme";
 import "normalize.css";
@@ -24,22 +25,25 @@ const cache = new InMemoryCache({
 
 const stateLink = withClientState({
   cache,
-  resolvers: {
-    Mutation: {}
-  },
-  defaults: {
-    customers: { customers: [], count: 0 }
-  }
+  defaults: {},
+  resolvers: {}
 });
-const uploadLink = createUploadLink({ uri: "http://localhost:8000/graphql" });
-const httpLink = new HttpLink({
+
+// const stripTypeNameLink = new ApolloLink((operation, forward) => {
+//   if (operation.variables) {
+//     operation.variables = omitDeep(operation.variables, "__typename");
+//   }
+//   return forward(operation);
+// });
+// uploadLink and http-link both are terminating links. You can use only one of them
+const uploadLink = createUploadLink({
   uri: "http://localhost:8000/graphql",
   includeExtensions: true
 });
 const errorLink = new ErrorLink();
 const client = new ApolloClient({
   cache,
-  link: ApolloLink.from([stateLink, uploadLink, errorLink, httpLink]),
+  link: ApolloLink.from([stateLink, errorLink, uploadLink]),
   connectToDevTools: true
 });
 

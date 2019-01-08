@@ -31,7 +31,6 @@ const DialogDeleteCustomer = ({
   return (
     <Mutation
       mutation={DELETE_CUSTOMER}
-      variables={{ customerID }}
       update={cache => {
         const { page } = queryString.parse(search);
         const parsePageInt = parseInt(page, 10);
@@ -52,16 +51,17 @@ const DialogDeleteCustomer = ({
           data: { customers: { customers: deleteCustomerFromArray } }
         });
       }}
+      variables={{ customerID }}
     >
       {(deleteCustomer, { loading, error, data }) => {
         if (loading) return <Loader />;
         if (error) return `${error.message}`;
         return (
           <Dialog
+            className={styles.dialog}
+            fullWidth={true}
             maxWidth="md"
             open={open}
-            fullWidth={true}
-            className={styles.dialog}
           >
             <div className={styles.dialog__container}>
               <DialogTitle className={styles.dialog__title}>
@@ -78,16 +78,18 @@ const DialogDeleteCustomer = ({
                 </DialogContentText>
               </DialogContent>
               <DialogActions>
-                <Button variant="contained" color="info" onClick={closeModal}>
+                <Button color="info" onClick={closeModal} variant="contained">
                   Cancel
                 </Button>
                 <Button
+                  color="danger"
+                  variant="contained"
                   onClick={async () => {
                     try {
                       const {
                         data: {
                           deleteCustomer: {
-                            customer: { customerID }
+                            customer: { customerID: ID }
                           }
                         }
                       } = await deleteCustomer({
@@ -97,7 +99,7 @@ const DialogDeleteCustomer = ({
                       });
                       closeModal();
                       toast.addToastMessage({
-                        content: `Customer ${firstname} ${lastname} with ID: ${customerID} was deleted successfully`,
+                        content: `Customer ${firstname} ${lastname} with ID: ${ID} was deleted successfully`,
                         type: "success",
                         delay: 2500
                       });
@@ -105,8 +107,6 @@ const DialogDeleteCustomer = ({
                       handleServerErrors(error);
                     }
                   }}
-                  variant="contained"
-                  color="danger"
                 >
                   Delete Customer
                 </Button>
@@ -118,6 +118,7 @@ const DialogDeleteCustomer = ({
     </Mutation>
   );
 };
+
 DialogDeleteCustomer.propTypes = {
   classes: PropTypes.object.isRequired,
   closeModal: PropTypes.func.isRequired,

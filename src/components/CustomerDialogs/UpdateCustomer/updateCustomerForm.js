@@ -6,12 +6,8 @@ import Grid from "@material-ui/core/Grid";
 import Loader from "components/Loader";
 import Button from "components/Button";
 import {
-  InputAdornment,
-  TextField,
   DialogActions,
-  DialogContent,
   DialogTitle,
-  DialogStyles
 } from "components/Dialog";
 import BaseCustomerForm from "../baseCustomerForm";
 import withCustomerHoc from "../withCustomerHoc";
@@ -54,29 +50,29 @@ const UpdateCustomerForm = props => {
           query: FETCH_CUSTOMERS,
           variables: { pageNumber: parsePageInt }
         });
-        const updatedCustomersArray = customers.map(customerFromCache => {
-          return customerFromCache.customerID === customer.customerID
-            ? customer
-            : customerFromCache;
-        });
-        // update customer in cache
+         const updatedCustomersArray = customers.map(customerFromCache => {
+           return customerFromCache.customerID === customer.customerID
+             ? customer
+             : customerFromCache;
+         });
         cache.writeQuery({
-          query: FETCH_CUSTOMERS,
+           query: FETCH_CUSTOMERS,
           variables: { pageNumber: parsePageInt },
-          data: { customers: { customers: updatedCustomersArray } }
-        });
-        // update customer's values when clicked on update customer modal
-        cache.writeQuery({
-          query: FETCH_CUSTOMER,
-          variables: {
-            customerID: customer.customerID
-          },
-          data: { customer }
-        });
+           data: { customers: { customers: updatedCustomersArray } }
+         });
+         // update customer's values when clicked on update customer modal
+         cache.writeQuery({
+           query: FETCH_CUSTOMER,
+           variables: {
+             customerID: customer.customerID
+           },
+           data: { customer }
+         });
       }}
     >
       {(updateCustomer, { loading, error, data }) => {
         if (loading) return <Loader />;
+        if(error) return `${error.message}`;
         return (
           <div className={styles.dialog__container}>
             <Grid container>
@@ -85,18 +81,21 @@ const UpdateCustomerForm = props => {
                   Update Customer
                 </DialogTitle>
                 <BaseCustomerForm
-                  handleInputChange={handleInputChange}
                   customerState={{ ...newData }}
+                  handleInputChange={handleInputChange}
                   {...props}
                 />
               </Grid>
               <Grid item xs={12}>
                 <DialogActions>
-                  <Button variant="contained" color="info" onClick={closeModal}>
+                  <Button color="info" onClick={closeModal} variant="contained" >
                     Cancel
                   </Button>
                   <Button
-                    onClick={async () => {
+                   color="primary"
+                   disabled={hasValidationErrors()}
+                   variant="contained"
+                   onClick={async () => {
                       const {
                         newData: {
                           customer: updateCustomerObj,
@@ -129,9 +128,6 @@ const UpdateCustomerForm = props => {
                         }
                       }
                     }}
-                    variant="contained"
-                    color="primary"
-                    disabled={hasValidationErrors()}
                   >
                     Update Customer
                   </Button>
