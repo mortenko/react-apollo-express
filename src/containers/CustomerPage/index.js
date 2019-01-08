@@ -24,6 +24,7 @@ import Pagination from "components/Pagination";
 import { FETCH_CUSTOMERS } from "../../graphql-client/queries/customer";
 import { PersonAdd } from "../../assets/material-ui-icons";
 import { enhanceWithContainerHoc } from "../withContainerHoc";
+
 const CustomerPage = ({
   paginationData: { pageNumber, itemsCountPerPage },
   handleChangePage,
@@ -31,13 +32,12 @@ const CustomerPage = ({
 }) => {
   return (
     <Query
+      notifyOnNetworkStatusChange
       query={FETCH_CUSTOMERS}
       variables={{
         cursor: itemsCountPerPage,
         pageNumber
       }}
-      fetchPolicy="network-only"
-      notifyOnNetworkStatusChange
     >
       {({ loading, error, data, variables: { pageNumber }, refetch }) => {
         if (loading) return <Loader />;
@@ -52,13 +52,13 @@ const CustomerPage = ({
                 <TableRow>
                   <TableCell className={styles.table__head}>
                     <CreateButtonAction
-                      title="Customers Table"
                       createAction={() =>
                         openModal(CREATE_CUSTOMER_MODAL, {
                           pageNumber,
                           itemsCountPerPage
                         })
                       }
+                      title="Customers Table"
                     >
                       <PersonAdd />
                     </CreateButtonAction>
@@ -86,15 +86,15 @@ const CustomerPage = ({
                     CustomerPhoto: { photo }
                   }) => (
                     <TableRow className={styles.table__row} key={customerID}>
-                      <TableCell>{customerID} </TableCell>
                       <TableCell>
                         <Image
-                          width={127}
+                          alt={photo}
                           height={127}
                           src={photo}
-                          alt={photo}
+                          width={127}
                         />
                       </TableCell>
+                      <TableCell>{customerID}</TableCell>
                       <TableCell>{firstname}</TableCell>
                       <TableCell>{lastname}</TableCell>
                       <TableCell>{email}</TableCell>
@@ -125,9 +125,9 @@ const CustomerPage = ({
                 <TableRow className={styles.table__row__pagination}>
                   <TableCell colSpan={8}>
                     <Pagination
-                      totalNumberOfItems={count}
                       currentPage={pageNumber}
                       itemsCountPerPage={itemsCountPerPage}
+                      totalNumberOfItems={count}
                       onPageChange={pageNumber => {
                         refetch({ pageNumber });
                         handleChangePage(pageNumber);
@@ -145,11 +145,12 @@ const CustomerPage = ({
 };
 
 CustomerPage.propTypes = {
-  handleChangePage: PropTypes.func,
+  handleChangePage: PropTypes.func.isRequired,
+  openModal: PropTypes.func.isRequired,
   paginationData: PropTypes.shape({
     pageNumber: PropTypes.number,
     itemsCountPerPage: PropTypes.number
-  })
-}.isRequired;
+  }).isRequired
+};
 
 export default enhanceWithContainerHoc(CustomerPage);

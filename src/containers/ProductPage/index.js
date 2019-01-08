@@ -6,7 +6,6 @@ import {
   Table,
   TableHead,
   TableBody,
-  TableFooter,
   TableCell,
   TableRow
 } from "components/Table";
@@ -29,16 +28,14 @@ import { NoteAdd } from "../../assets/material-ui-icons";
 import { FETCH_PRODUCTS } from "../../graphql-client/queries/product";
 
 const ProductPage = ({
-  paginationData: { pageNumber, itemsCountPerPage },
   handleChangePage,
-  closeModal,
-  openModal
+  openModal,
+  paginationData: { pageNumber, itemsCountPerPage }
 }) => {
   return (
     <Query
       query={FETCH_PRODUCTS}
       variables={{ cursor: itemsCountPerPage, pageNumber }}
-      fetchPolicy="network-only"
     >
       {({ loading, error, data, variables: { pageNumber }, refetch }) => {
         if (loading) return <Loader />;
@@ -96,10 +93,10 @@ const ProductPage = ({
                       <TableCell>{productname}</TableCell>
                       <TableCell>
                         <Image
-                          width={127}
+                          alt={photo}
                           height={127}
                           src={photo}
-                          alt={photo}
+                          width={127}
                         />
                       </TableCell>
                       <TableCell>{description}</TableCell>
@@ -143,9 +140,9 @@ const ProductPage = ({
                 <TableRow className={styles.table__row__pagination}>
                   <TableCell colSpan={11}>
                     <Pagination
-                      totalNumberOfItems={count}
                       currentPage={pageNumber}
                       itemsCountPerPage={itemsCountPerPage}
+                      totalNumberOfItems={count}
                       onPageChange={pageNumber => {
                         refetch({ pageNumber });
                         handleChangePage(pageNumber);
@@ -161,11 +158,14 @@ const ProductPage = ({
     </Query>
   );
 };
+
 ProductPage.propTypes = {
-  handleChangePage: PropTypes.func,
+  handleChangePage: PropTypes.func.isRequired,
+  openModal: PropTypes.func.isRequired,
   paginationData: PropTypes.shape({
     pageNumber: PropTypes.number,
     itemsCountPerPage: PropTypes.number
-  })
-}.isRequired;
+  }).isRequired
+};
+
 export default enhanceWithContainerHoc(ProductPage);
