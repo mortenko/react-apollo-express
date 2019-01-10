@@ -1,37 +1,35 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Button as MaterialButton } from "@material-ui/core";
-import { withTheme } from "@material-ui/core/styles";
+import { Fab as MaterialFab } from "@material-ui/core";
+import withTheme from "@material-ui/core/styles/withTheme";
 
-const Button = ({
+const Fab = ({
   children,
   color,
-  style,
   variant,
   onClick,
+  style,
   theme: { palette },
   ...props
 }) => {
-  const { danger, info, warning, ...rest } = props;
   let btnBackground = {};
-  if (danger) btnBackground = palette.danger;
-  if (info) btnBackground = palette.info;
-  if (warning) btnBackground = palette.warning;
+  if (props.danger) btnBackground = palette.danger;
+  if (props.info) btnBackground = palette.info;
+  if (props.warning) btnBackground = palette.warning;
   return (
-    <MaterialButton
-      color={color}
+    <MaterialFab
       style={{ ...btnBackground }}
+      color={color}
       variant={variant}
       onClick={onClick}
-      {...rest}
     >
       {children}
-    </MaterialButton>
+    </MaterialFab>
   );
 };
 
-Button.propTypes = {
-  children: PropTypes.node.isRequired,
+Fab.propTypes = {
+  children: PropTypes.node,
   color: PropTypes.string,
   danger: PropTypes.bool,
   info: PropTypes.bool,
@@ -42,14 +40,15 @@ Button.propTypes = {
   warning: PropTypes.bool
 };
 
-Button.defaultProps = {
+Fab.defaultProps = {
+  children: PropTypes.element,
   color: "default",
   danger: false,
   info: false,
   onClick: () => {},
   style: {},
-  variant: "contained",
+  variant: "round",
   warning: false
 };
 
-export default withTheme()(Button);
+export default withTheme()(Fab);

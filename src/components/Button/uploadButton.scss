@@ -11,6 +11,15 @@
     color: $font-color-danger;
     font-size: 20px;
   }
+
+}
+.uploadButton__icon {
+  padding-right: 7px;
+  font-size: 20px;
+}
+
+.uploadButton__input {
+  display: none;
 }
 .uploadButton__image {
   margin-top: 10px;
