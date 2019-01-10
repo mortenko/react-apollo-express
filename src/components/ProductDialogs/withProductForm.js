@@ -1,53 +1,26 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import uuid from "uuid/v4";
+import { productDefaultProps, productPropTypes } from "./propTypes";
 
 export default function withProductForm(WrappedComponent) {
   return class extends Component {
     static propTypes = {
       formData: PropTypes.shape({
-        product: PropTypes.shape({
-          name: PropTypes.string,
-          description: PropTypes.number,
-          pricewithoutdph: PropTypes.number,
-          pricewithdph: PropTypes.number,
-          barcode: PropTypes.string,
-          ProductPhoto: PropTypes.shape({
-            photo: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-            name: PropTypes.string
-          })
-        })
+        product: productPropTypes
       }),
       initialFormValues: PropTypes.shape({
-        product: PropTypes.shape({
-          name: PropTypes.string,
-          description: PropTypes.number,
-          pricewithoutdph: PropTypes.number,
-          pricewithdph: PropTypes.number,
-          barcode: PropTypes.string,
-          ProductPhoto: PropTypes.shape({
-            photo: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-            name: PropTypes.string
-          })
-        })
+        product: productPropTypes
       }),
       resetErrorValues: PropTypes.func.isRequired,
       validationFunctions: PropTypes.objectOf(PropTypes.func).isRequired
     };
+
     static defaultProps = {
-      initialFormValues: {
-        productname: "",
-        description: "",
-        pricewithoutdph: "",
-        pricewithdph: "",
-        barcode: "",
-        ProductPhoto: {
-          photo: null,
-          name: ""
-        }
-      },
+      initialFormValues: productDefaultProps,
       formData: undefined
     };
+
     constructor(props) {
       super(props);
       const setInitialFormValues = props.formData
@@ -57,6 +30,7 @@ export default function withProductForm(WrappedComponent) {
         ...setInitialFormValues
       };
     }
+
     renderBarcode = () => {
       const generateUUID = uuid();
       const { isUUID, isRequired } = this.props.validationFunctions;
@@ -73,6 +47,7 @@ export default function withProductForm(WrappedComponent) {
         }
       );
     };
+
     resetForm = () => {
       const { formData, resetErrorValues } = this.props;
       resetErrorValues();
@@ -82,6 +57,7 @@ export default function withProductForm(WrappedComponent) {
         });
       }
     };
+
     handleInputChange = (id, value, files = null) => {
       if (files !== null && typeof files !== "undefined") {
         this.setState({
@@ -114,17 +90,22 @@ export default function withProductForm(WrappedComponent) {
         });
       }
     };
+
     render() {
-      const newProps = {
+      const stateProps = {
+        newData: this.state
+      };
+      const funcProps = {
         calculatePriceWithdph: pricewithoutdph =>
           this.calculatePriceWithdph(pricewithoutdph),
         handleInputChange: (id, value, files) =>
           this.handleInputChange(id, value, files),
-        newData: this.state,
         renderBarcode: () => this.renderBarcode(),
         resetForm: () => this.resetForm()
       };
-      return <WrappedComponent {...this.props} {...newProps} />;
+      return (
+        <WrappedComponent {...this.props} {...stateProps} {...funcProps} />
+      );
     }
   };
 }

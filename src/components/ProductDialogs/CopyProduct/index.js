@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import CreateProduct from "../CreateProduct";
 import Loader from "components/Loader";
 import { Query } from "react-apollo";
@@ -13,11 +14,23 @@ const DialogCopyProduct = ({ data: { productID, ...restData }, ...props }) => (
         product: { productID, ...product }
       } = data;
       return (
-        <CreateProduct formData={{ product }} data={restData} {...props} />
+        <CreateProduct
+          formData={{ product }}
+          title="Copy Product"
+          data={restData}
+          {...props}
+        />
       );
     }}
   </Query>
 );
+
+DialogCopyProduct.propTypes = {
+  data: PropTypes.shape({
+    productID: PropTypes.number,
+    restData: PropTypes.object
+  }).isRequired
+};
 
 export const COPY_PRODUCT_MODAL = "COPY_PRODUCT_MODAL";
 export default DialogCopyProduct;

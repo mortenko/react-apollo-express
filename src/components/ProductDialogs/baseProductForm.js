@@ -5,6 +5,7 @@ import Alert from "components/Alert";
 import Grid from "@material-ui/core/Grid";
 import UploadButton from "components/Button/uploadButton";
 import styles from "./baseProductForm.scss";
+import { productDefaultProps, productPropTypes } from "./propTypes";
 import {
   Note,
   Description,
@@ -25,12 +26,10 @@ const BaseProductForm = ({
     }
   },
   handleInputChange,
-  resetForm,
   validationErrors,
   renderBarcode,
-  calculatePriceWithdph,
   printErrorMessage,
-  validationFunctions: { isGreaterThen, isLength, isRequired, isNumber, isUUID }
+  validationFunctions: { isLength, isRequired, isNumber, isUUID }
 }) => {
   return (
     <Grid container>
@@ -152,7 +151,7 @@ const BaseProductForm = ({
               }}
             />
             <div className={styles.barcode__button}>
-              <Button onClick={renderBarcode}>Generate UUID</Button>
+              <Button warning onClick={renderBarcode}>Generate UUID</Button>
             </div>
           </div>
           <Alert>{printErrorMessage(validationErrors.barcode)}</Alert>
@@ -170,41 +169,21 @@ const BaseProductForm = ({
     </Grid>
   );
 };
+
 BaseProductForm.propTypes = {
-  calculatePriceWithdph: PropTypes.func.isRequired,
   handleInputChange: PropTypes.func.isRequired,
   printErrorMessage: PropTypes.func.isRequired,
   productState: PropTypes.shape({
-    product: PropTypes.shape({
-      productname: PropTypes.string,
-      description: PropTypes.string,
-      pricewithoutdph: PropTypes.number,
-      pricewithdph: PropTypes.number,
-      barcode: PropTypes.string,
-      ProductPhoto: PropTypes.shape({
-        photo: PropTypes.object,
-        name: PropTypes.string
-      })
-    })
+    product: productPropTypes
   }),
   renderBarcode: PropTypes.func.isRequired,
-  resetForm: PropTypes.func.isRequired,
   validationErrors: PropTypes.object,
   validationFunctions: PropTypes.objectOf(PropTypes.func)
 };
+
 BaseProductForm.defaultProps = {
   productState: PropTypes.shape({
-    product: PropTypes.shape({
-      productname: "",
-      description: "",
-      pricewithoutdph: 0,
-      pricewithdph: 0,
-      barcode: "",
-      ProductPhoto: PropTypes.shape({
-        photo: PropTypes.object,
-        name: PropTypes.string
-      })
-    })
+    product: productDefaultProps
   }),
   validationErrors: {},
   validationFunctions: {}

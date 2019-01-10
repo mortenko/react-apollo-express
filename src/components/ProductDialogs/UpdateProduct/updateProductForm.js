@@ -5,17 +5,16 @@ import queryString from "query-string";
 import Grid from "@material-ui/core/Grid";
 import Loader from "components/Loader";
 import Button from "components/Button";
-import {
-  InputAdornment,
-  TextField,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  DialogStyles
-} from "components/Dialog";
+import { DialogActions, DialogTitle } from "components/Dialog";
 import BaseProductForm from "../baseProductForm";
 import withProductHoc from "../withProductHoc";
 import styles from "./updateProduct.scss";
+import {
+  productDefaultProps,
+  productPropTypes,
+  toastPropTypes,
+  toastDefaultProps
+} from "../propTypes";
 import {
   FETCH_PRODUCTS,
   FETCH_PRODUCT,
@@ -91,10 +90,13 @@ const UpdateProductForm = props => {
               </Grid>
               <Grid item xs={12}>
                 <DialogActions>
-                  <Button variant="contained" color="info" onClick={closeModal}>
+                  <Button danger variant="contained" onClick={closeModal}>
                     Cancel
                   </Button>
                   <Button
+                    color="primary"
+                    disabled={hasValidationErrors()}
+                    variant="contained"
                     onClick={async () => {
                       const {
                         newData: {
@@ -124,13 +126,10 @@ const UpdateProductForm = props => {
                             delay: 2500
                           });
                         } catch (error) {
-                           handleServerErrors(error);
+                          handleServerErrors(error);
                         }
                       }
                     }}
-                    variant="contained"
-                    color="primary"
-                    disabled={hasValidationErrors()}
                   >
                     Update Product
                   </Button>
@@ -143,34 +142,22 @@ const UpdateProductForm = props => {
     </Mutation>
   );
 };
+
 UpdateProductForm.propTypes = {
   closeModal: PropTypes.func.isRequired,
   handleInputChange: PropTypes.func.isRequired,
-  handleServerErrors: PropTypes.func.isRequired,
+  handleServerErrors: PropTypes.func,
   location: PropTypes.objectOf(PropTypes.string),
-  newData: PropTypes.shape({
-    productID: PropTypes.number,
-    productname: PropTypes.string,
-    description: PropTypes.string,
-    pricewithoutdph: PropTypes.number,
-    pricewithdph: PropTypes.number,
-    ProductPhoto: PropTypes.shape({
-      photo: PropTypes.object,
-      name: PropTypes.string
-    })
-  }).isRequired,
-  toast: PropTypes.shape({
-    addToastMessage: PropTypes.func.isRequired,
-    removeToastMessage: PropTypes.func.isRequired,
-    toasts: PropTypes.array
-  }),
+  newData: productPropTypes,
+  toast: toastPropTypes,
   validationFunctions: PropTypes.objectOf(PropTypes.func)
 };
+
 UpdateProductForm.defaultProps = {
+  handleServerErrors: () => {},
   location: { search: "" },
-  toast: {
-    toasts: []
-  },
+  toast: toastDefaultProps,
+  newData: productDefaultProps,
   validationFunctions: {}
 };
 export default withProductHoc(UpdateProductForm);

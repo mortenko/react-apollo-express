@@ -15,8 +15,8 @@ const initialFormValues = {
   product: {
     productname: "",
     description: "",
-    pricewithoutdph: "",
-    pricewithdph: "",
+    pricewithoutdph: 0,
+    pricewithdph: 0,
     barcode: "",
     ProductPhoto: {
       photo: null,

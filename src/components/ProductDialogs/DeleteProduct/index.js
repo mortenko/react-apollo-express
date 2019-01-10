@@ -17,6 +17,7 @@ import Loader from "components/Loader";
 import Button from "components/Button";
 import withProductHoc from "../withProductHoc";
 import styles from "./deleteProduct.scss";
+import { toastPropTypes, toastDefaultProps } from "../propTypes";
 
 const DialogDeleteProduct = ({
   open,
@@ -52,7 +53,7 @@ const DialogDeleteProduct = ({
         });
       }}
     >
-      {(deleteProduct, { loading, error, data }) => {
+      {(deleteProduct, { loading, error }) => {
         if (loading) return <Loader />;
         return (
           <Dialog
@@ -76,10 +77,12 @@ const DialogDeleteProduct = ({
                 </DialogContentText>
               </DialogContent>
               <DialogActions>
-                <Button variant="contained" color="info" onClick={closeModal}>
+                <Button danger variant="contained" onClick={closeModal}>
                   Cancel
                 </Button>
                 <Button
+                  color="primary"
+                  variant="contained"
                   onClick={async () => {
                     try {
                       await deleteProduct({
@@ -97,8 +100,6 @@ const DialogDeleteProduct = ({
                       handleServerErrors(error);
                     }
                   }}
-                  variant="contained"
-                  color="danger"
                 >
                   Delete Product
                 </Button>
@@ -110,6 +111,7 @@ const DialogDeleteProduct = ({
     </Mutation>
   );
 };
+
 DialogDeleteProduct.propTypes = {
   classes: PropTypes.object.isRequired,
   closeModal: PropTypes.func.isRequired,
@@ -118,21 +120,15 @@ DialogDeleteProduct.propTypes = {
     firstname: PropTypes.string,
     lastname: PropTypes.string
   }).isRequired,
-  location: PropTypes.objectOf(PropTypes.object),
+  location: PropTypes.objectOf(PropTypes.string),
   open: PropTypes.bool.isRequired,
-  toast: PropTypes.shape({
-    addToastMessage: PropTypes.func.isRequired,
-    removeToastMessage: PropTypes.func.isRequired,
-    toasts: PropTypes.array
-  }),
+  toast: toastPropTypes,
   validationFunctions: PropTypes.objectOf(PropTypes.func).isRequired
 };
 
 DialogDeleteProduct.defaultProps = {
   location: { search: "" },
-  toast: {
-    toasts: []
-  }
+  toast: toastDefaultProps
 };
 
 export const DELETE_PRODUCT_MODAL = "DELETE_PRODUCT_MODAL";

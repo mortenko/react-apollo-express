@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Query } from "react-apollo";
-import { Dialog, DialogStyles } from "components/Dialog";
+import { Dialog } from "components/Dialog";
 import Loader from "components/Loader";
 import styles from "./updateProduct.scss";
 import { FETCH_PRODUCT } from "../../../graphql-client/queries/product";
@@ -32,11 +32,12 @@ const DialogUpdateProduct = ({ open, closeModal, data: { productID } }) => {
     </Dialog>
   );
 };
+
 DialogUpdateProduct.propTypes = {
-  closeModal: PropTypes.func,
-  data: PropTypes.shape({ productID: PropTypes.number }),
-  open: PropTypes.bool
-}.isRequired;
+  closeModal: PropTypes.func.isRequired,
+  data: PropTypes.shape({ productID: PropTypes.number }).isRequired,
+  open: PropTypes.bool.isRequired
+};
 
 export const UPDATE_PRODUCT_MODAL = "UPDATE_PRODUCT_MODAL";
 export default DialogUpdateProduct;

@@ -4,14 +4,11 @@ import PropTypes from "prop-types";
 import Grid from "@material-ui/core/Grid";
 import Button from "components/Button";
 import {
-  Dialog,
-  DialogStyles,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  InputAdornment,
-  TextField
-} from "components/Dialog";
+  productPropTypes,
+  toastPropTypes,
+  toastDefaultProps
+} from "../propTypes";
+import { Dialog, DialogTitle, DialogActions } from "components/Dialog";
 import styles from "./createProduct.scss";
 import {
   CREATE_PRODUCT,
@@ -34,6 +31,7 @@ const DialogCreateProduct = props => {
     },
     newData,
     handleInputChange,
+    title,
     toast
   } = props;
   return (
@@ -54,7 +52,7 @@ const DialogCreateProduct = props => {
               <Grid container>
                 <Grid item xs={12}>
                   <DialogTitle className={styles.dialog__title}>
-                    Create Product
+                    {title}
                   </DialogTitle>
                 </Grid>
                 <Grid item xs={12}>
@@ -68,7 +66,7 @@ const DialogCreateProduct = props => {
                   <DialogActions>
                     <Button
                       variant="contained"
-                      color="info"
+                      danger
                       onClick={() => {
                         closeModal();
                         resetForm();
@@ -108,7 +106,7 @@ const DialogCreateProduct = props => {
                         }
                       }}
                       variant="contained"
-                      color="success"
+                      color="primary"
                       disabled={hasValidationErrors()}
                     >
                       Create Product
@@ -123,36 +121,27 @@ const DialogCreateProduct = props => {
     </Mutation>
   );
 };
+
 DialogCreateProduct.propTypes = {
   closeModal: PropTypes.func.isRequired,
-  handleInputChange: PropTypes.func.isRequired,
-  newData: PropTypes.shape({
-    productname: PropTypes.string,
-    description: PropTypes.string,
-    pricewithoutdph: PropTypes.number,
-    pricewithdph: PropTypes.number,
-    barcode: PropTypes.string,
-    ProductPhoto: PropTypes.shape({
-      photo: PropTypes.object,
-      name: PropTypes.string
-    })
+  data: PropTypes.shape({
+    pageNumber: PropTypes.number,
+    itemsCountPerPage: PropTypes.number
   }).isRequired,
+  handleInputChange: PropTypes.func.isRequired,
+  newData: productPropTypes.isRequired,
   open: PropTypes.bool.isRequired,
   resetForm: PropTypes.func.isRequired,
-  toast: PropTypes.shape({
-    addToastMessage: PropTypes.func.isRequired,
-    removeToastMessage: PropTypes.func.isRequired,
-    toasts: PropTypes.array
-  }),
+  title: PropTypes.string,
+  toast: toastPropTypes,
   validationFunctions: PropTypes.objectOf(PropTypes.func)
 };
+
 DialogCreateProduct.defaultProps = {
-  toast: {
-    toasts: []
-  },
+  title: "Create Product",
+  toast: toastDefaultProps,
   validationFunctions: {}
 };
 
 export const CREATE_PRODUCT_MODAL = "CREATE_PRODUCT_MODAL";
-
 export default withProductHoc(DialogCreateProduct);
