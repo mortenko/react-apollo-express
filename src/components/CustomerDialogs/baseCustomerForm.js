@@ -139,7 +139,6 @@ const BaseCustomerForm = ({
 };
 
 BaseCustomerForm.propTypes = {
-  classes: PropTypes.object.isRequired,
   customerState: customerPropTypes,
   handleInputChange: PropTypes.func.isRequired,
   printErrorMessage: PropTypes.func.isRequired,

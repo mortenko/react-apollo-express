@@ -60,7 +60,7 @@ export default function withCustomerForm(WrappedComponent) {
     };
 
     render() {
-      const state = {
+      const stateProps = {
         newData: this.state
       };
       const funcProps = {
@@ -68,7 +68,9 @@ export default function withCustomerForm(WrappedComponent) {
           this.handleInputChange(id, value, files),
         resetForm: () => this.resetForm()
       };
-      return <WrappedComponent {...state} {...funcProps} />;
+      return (
+        <WrappedComponent {...this.props} {...stateProps} {...funcProps} />
+      );
     }
   };
 }

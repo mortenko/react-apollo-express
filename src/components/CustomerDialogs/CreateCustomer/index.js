@@ -32,7 +32,7 @@ const DialogCreateCustomer = props => {
     },
     newData,
     handleInputChange,
-    toast
+    toast,
   } = props;
   return (
     <Dialog

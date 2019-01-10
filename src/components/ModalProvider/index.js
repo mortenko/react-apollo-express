@@ -1,4 +1,6 @@
 import React from "react";
+import PropTypes from "prop-types";
+
 import DialogCreateCustomer, {
   CREATE_CUSTOMER_MODAL
 } from "components/CustomerDialogs/CreateCustomer";
@@ -46,4 +48,9 @@ function ModalProvider({ modal: { currentModal, isOpen, ...props } }) {
       return null;
   }
 }
+
+ModalProvider.propTypes = {
+  modal: PropTypes.object.isRequired
+};
+
 export default ModalProvider;
