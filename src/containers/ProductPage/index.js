@@ -87,55 +87,58 @@ const ProductPage = ({
                     barcode,
                     createdAt,
                     ProductPhoto: { photo }
-                  }) => (
-                    <TableRow key={productID} className={styles.table__row}>
-                      <TableCell>{productID}</TableCell>
-                      <TableCell>{productname}</TableCell>
-                      <TableCell>
-                        <Image
-                          alt={photo}
-                          height={127}
-                          src={photo}
-                          width={127}
-                        />
-                      </TableCell>
-                      <TableCell>{description}</TableCell>
-                      <TableCell>{pricewithoutdph}</TableCell>
-                      <TableCell>{pricewithdph}</TableCell>
-                      <TableCell>{barcode}</TableCell>
-                      <TableCell>{createdAt}</TableCell>
-                      <TableCell>
-                        <UpdateButtonAction
-                          updateAction={() =>
-                            openModal(UPDATE_PRODUCT_MODAL, {
-                              productID
-                            })
-                          }
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <DeleteButtonAction
-                          deleteAction={() =>
-                            openModal(DELETE_PRODUCT_MODAL, {
-                              productID,
-                              productname
-                            })
-                          }
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <CopyButtonAction
-                          copyAction={() =>
-                            openModal(COPY_PRODUCT_MODAL, {
-                              productID,
-                              pageNumber,
-                              itemsCountPerPage
-                            })
-                          }
-                        />
-                      </TableCell>
-                    </TableRow>
-                  )
+                  }) => {
+                    const parseProductID = parseInt(productID);
+                    return (
+                      <TableRow key={parseProductID} className={styles.table__row}>
+                        <TableCell>{parseProductID}</TableCell>
+                        <TableCell>{productname}</TableCell>
+                        <TableCell>
+                          <Image
+                            alt={photo}
+                            height={127}
+                            src={photo}
+                            width={127}
+                          />
+                        </TableCell>
+                        <TableCell>{description}</TableCell>
+                        <TableCell>{pricewithoutdph}</TableCell>
+                        <TableCell>{pricewithdph}</TableCell>
+                        <TableCell>{barcode}</TableCell>
+                        <TableCell>{createdAt}</TableCell>
+                        <TableCell>
+                          <UpdateButtonAction
+                            updateAction={() =>
+                              openModal(UPDATE_PRODUCT_MODAL, {
+                                productID: parseProductID
+                              })
+                            }
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <DeleteButtonAction
+                            deleteAction={() =>
+                              openModal(DELETE_PRODUCT_MODAL, {
+                                productID: parseProductID,
+                                productname
+                              })
+                            }
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <CopyButtonAction
+                            copyAction={() =>
+                              openModal(COPY_PRODUCT_MODAL, {
+                                productID: parseProductID,
+                                pageNumber,
+                                itemsCountPerPage
+                              })
+                            }
+                          />
+                        </TableCell>
+                      </TableRow>
+                    );
+                  }
                 )}
                 <TableRow className={styles.table__row__pagination}>
                   <TableCell colSpan={11}>

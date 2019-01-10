@@ -85,7 +85,7 @@ const CustomerPage = ({
                     phone,
                     CustomerPhoto: { photo }
                   }) => (
-                    <TableRow className={styles.table__row} key={customerID}>
+                    <TableRow key={customerID} className={styles.table__row}>
                       <TableCell>
                         <Image
                           alt={photo}
@@ -103,7 +103,7 @@ const CustomerPage = ({
                         <UpdateButtonAction
                           updateAction={() =>
                             openModal(UPDATE_CUSTOMER_MODAL, {
-                              customerID
+                              customerID: parseInt(customerID)
                             })
                           }
                         />
@@ -112,7 +112,7 @@ const CustomerPage = ({
                         <DeleteButtonAction
                           deleteAction={() =>
                             openModal(DELETE_CUSTOMER_MODAL, {
-                              customerID,
+                              customerID: parseInt(customerID),
                               firstname,
                               lastname
                             })

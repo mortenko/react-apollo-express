@@ -1,56 +1,61 @@
 import React, { Fragment } from "react";
-import Button from "components/Button";
+import Fab from "components/Button/fab";
 import PropTypes from "prop-types";
 import styles from "./table.scss";
 import { Delete, Edit, FileCopy } from "../../assets/material-ui-icons";
-
-const CopyButtonAction = ({ copyAction }) => (
-  <Button onClick={copyAction} variant="fab" color="lightGrey">
-    <FileCopy />
-  </Button>
-);
-CopyButtonAction.propTypes = {
-  copyAction: PropTypes.func.isRequired
-};
 
 const CreateButtonAction = ({ createAction, title, children }) => (
   <Fragment>
     <div className={styles.table__title}>{title}</div>
     <div>
-      <Button onClick={createAction} color="success" variant="fab">
+      <Fab color="primary" onClick={createAction} variant="round">
         {children}
-      </Button>
+      </Fab>
     </div>
   </Fragment>
 );
+
 CreateButtonAction.propTypes = {
-  createAction: PropTypes.func,
-  title: PropTypes.string,
-  children: PropTypes.node
-}.isRequired;
-
-const DeleteButtonAction = ({ deleteAction }) => (
-  <Button onClick={deleteAction} variant="fab" color="secondary">
-    <Delete />
-  </Button>
-);
-
-DeleteButtonAction.propTypes = {
-  deleteAction: PropTypes.func.isRequired
+  children: PropTypes.node.isRequired,
+  createAction: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired
 };
+
 const UpdateButtonAction = ({ updateAction }) => (
-  <Button onClick={updateAction} variant="fab" color="primary">
+  <Fab variant="round" color="secondary" onClick={updateAction}>
     <Edit />
-  </Button>
+  </Fab>
 );
 
 UpdateButtonAction.propTypes = {
   updateAction: PropTypes.func.isRequired
 };
 
+const DeleteButtonAction = ({ deleteAction }) => {
+  return (
+    <Fab danger variant="round" onClick={deleteAction}>
+      <Delete />
+    </Fab>
+  );
+};
+
+DeleteButtonAction.propTypes = {
+  deleteAction: PropTypes.func.isRequired
+};
+
+const CopyButtonAction = ({ copyAction }) => (
+  <Fab variant="round" color="inherit" onClick={copyAction}>
+    <FileCopy />
+  </Fab>
+);
+
+CopyButtonAction.propTypes = {
+  copyAction: PropTypes.func.isRequired
+};
+
 export {
   CreateButtonAction,
   CopyButtonAction,
   DeleteButtonAction,
-  UpdateButtonAction,
+  UpdateButtonAction
 };

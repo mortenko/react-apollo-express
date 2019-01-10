@@ -1,20 +1,22 @@
-import React from "react";
 import { createMuiTheme } from "@material-ui/core/styles";
 
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: "#cce5ff"
+      main: "#d4edda" //success
     },
     secondary: {
-      main: "#f8d7da"
+      main: "#cce5ff" //materialBlue
     },
-    success: {
-      main: "#d4edda"
+    danger: {
+      backgroundColor: "#f8d7da" //danger
     },
-    danger: { main: "#FF0000" },
-    lightGrey: { main: "#e2e3e5" },
-    materialBlue: { main: "#2196f3" }
+    info: {
+      backgroundColor: "#d1ecf1"
+    },
+    warning: {
+      backgroundColor: "#fff3cd"
+    }
   },
   typography: {
     useNextVariants: true

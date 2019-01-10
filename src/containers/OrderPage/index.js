@@ -84,7 +84,7 @@ const ProductPage = ({
                     product: { productname },
                     customer: { firstname, lastname, email }
                   }) => (
-                    <TableRow className={styles.table__row} key={orderItemID}>
+                    <TableRow key={orderItemID} className={styles.table__row}>
                       <TableCell>{orderItemID} </TableCell>
                       <TableCell>{productname}</TableCell>
                       <TableCell>{totalsumwithoutdph}</TableCell>
