@@ -11,14 +11,13 @@ import {
   InMemoryCache
 } from "apollo-cache-inmemory";
 import { MuiThemeProvider } from "@material-ui/core/styles";
-import theme from "./styles/theme";
 import "normalize.css";
 import "./index.scss";
 import App from "./App";
+import theme from "./styles/theme";
 import registerServiceWorker from "./registerServiceWorker";
 
 //TODO for re-authentication use apollo-link-error
-
 const cache = new InMemoryCache({
   addTypename: false
 });
@@ -29,17 +28,12 @@ const stateLink = withClientState({
   resolvers: {}
 });
 
-// const stripTypeNameLink = new ApolloLink((operation, forward) => {
-//   if (operation.variables) {
-//     operation.variables = omitDeep(operation.variables, "__typename");
-//   }
-//   return forward(operation);
-// });
 // uploadLink and http-link both are terminating links. You can use only one of them
 const uploadLink = createUploadLink({
   uri: "http://localhost:8000/graphql",
   includeExtensions: true
 });
+
 const errorLink = new ErrorLink();
 const client = new ApolloClient({
   cache,
@@ -50,9 +44,9 @@ const client = new ApolloClient({
 ReactDOM.render(
   <BrowserRouter>
     <ApolloProvider client={client}>
-      <MuiThemeProvider theme={theme}>
+    <MuiThemeProvider theme={theme}>
         <App />
-      </MuiThemeProvider>
+      </MuiThemeProvider>  
     </ApolloProvider>
   </BrowserRouter>,
   document.getElementById("root")

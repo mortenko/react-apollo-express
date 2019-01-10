@@ -1,17 +1,10 @@
 import React from "react";
 import noop from "lodash/noop";
+import Fab from "@material-ui/core/Fab";
 import styles from "./pagination.scss";
 import Page from "./Page";
 import PropTypes from "prop-types";
-import Button from "components/Button";
 import { LeftArrow, RightArrow } from "../../assets/material-ui-icons";
-
-// export const defaultPaginationValues = {
-//   pageNumber: 1,
-//   itemsCountPerPage: 12
-// };
-
-
 class Pagination extends React.Component {
   static buildPages(pagination) {
     const {
@@ -132,9 +125,9 @@ class Pagination extends React.Component {
           className={styles.pagination__arrow}
           onClick={() => onPageChange(currentPage - 1)}
         >
-          <Button variant="fab" mini color="lightGrey">
+          <Fab color="inherit" size="medium" variant="round">
             <LeftArrow />
-          </Button>
+          </Fab>
         </div>
       );
     }
@@ -144,13 +137,12 @@ class Pagination extends React.Component {
           className={styles.pagination__arrow}
           onClick={() => onPageChange(currentPage + 1)}
         >
-          <Button variant="fab" color="lightGrey" mini>
+          <Fab color="inherit" size="medium" variant="round">
             <RightArrow />
-          </Button>
+          </Fab>
         </div>
       );
     }
-
     return (
       Number(totalPages) > 0 && (
         <div className={styles.pagination}>
@@ -170,8 +162,9 @@ Pagination.defaultProps = {
 Pagination.propTypes = {
   currentPage: PropTypes.number.isRequired,
   itemsCountPerPage: PropTypes.number.isRequired,
-  totalNumberOfItems: PropTypes.number.isRequired,
-  onPageChange: PropTypes.func
+  onPageChange: PropTypes.func.isRequired,
+  totalNumberOfItems: PropTypes.number.isRequired
 };
+
 export default Pagination;
 export { default as PaginationHoc } from "./paginationHoc";

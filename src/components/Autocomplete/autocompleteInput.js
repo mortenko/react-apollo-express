@@ -51,7 +51,7 @@ AutoCompleteInput.propTypes = {
   handleInputChange: PropTypes.func.isRequired,
   handleKeyPressed: PropTypes.func.isRequired,
   id: PropTypes.string.isRequired,
-  inputRef: PropTypes.instanceOf(Element).isRequired,
+  inputRef: PropTypes.func.isRequired,
   label: PropTypes.string.isRequired,
   showAllResults: PropTypes.func.isRequired,
   value: PropTypes.string.isRequired

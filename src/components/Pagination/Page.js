@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import noop from "lodash/noop";
 import styles from "./pagination.scss";
 import classnames from "classnames";
-
 class PaginationPage extends React.Component {
   constructor() {
     super();
@@ -20,7 +19,13 @@ class PaginationPage extends React.Component {
   render() {
     const { isActive, pageText } = this.props;
     return (
-      <div className={classnames(styles.page, isActive ? styles["page--active"]:styles["page--noactive"])} onClick={this.handleClick} isActive={isActive}>
+      <div
+        className={classnames(
+          styles.page,
+          isActive ? styles["page--active"] : styles["page--noactive"]
+        )}
+        onClick={this.handleClick}
+      >
         {pageText}
       </div>
     );
@@ -33,10 +38,10 @@ PaginationPage.defaultProps = {
 };
 
 PaginationPage.propTypes = {
-  onClick: PropTypes.func.isRequired,
-  pageText: PropTypes.string.isRequired,
   isActive: PropTypes.bool,
-  pageNumber: PropTypes.number
+  onClick: PropTypes.func.isRequired,
+  pageNumber: PropTypes.number,
+  pageText: PropTypes.string.isRequired,
 };
 
 export default PaginationPage;

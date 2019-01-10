@@ -15,12 +15,14 @@ import RenderPropsModal from "components/ModalProvider/renderPropsModal";
 import RenderPropsToastMessage from "components/ToastProvider/renderPropsToastMessage";
 import ModalProvider from "components/ModalProvider";
 import ToastProvider from "components/ToastProvider";
+import withTheme from "@material-ui/core/styles/withTheme";
 import { ModalContext, ToastContext } from "./context";
 import styles from "./App.scss";
 
 const enhanceFromRenderPropsHoc = compose(
   fromRenderProps(RenderPropsModal, modal => ({ modal })),
-  fromRenderProps(RenderPropsToastMessage, toast => ({ toast }))
+  fromRenderProps(RenderPropsToastMessage, toast => ({ toast })),
+  withTheme()
 );
 
 const App = ({ modal, toast }) => {
@@ -37,10 +39,10 @@ const App = ({ modal, toast }) => {
           <Grid item xs={8} sm={10} md={10} lg={11} xl={11}>
             <ModalProvider modal={modal} />
             <ContentBar>
-              <Route component={HomePage} exact path="/"  />
-              <Route component={CustomerPage} path="/customers"  />
-              <Route component={ProductPage}  path="/products" />
-              <Route component={OrderPage}  path="/orders" />
+              <Route component={HomePage} exact path="/" />
+              <Route component={CustomerPage} path="/customers" />
+              <Route component={ProductPage} path="/products" />
+              <Route component={OrderPage} path="/orders" />
             </ContentBar>
           </Grid>
           <ToastProvider {...toast} />

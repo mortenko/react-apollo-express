@@ -12,7 +12,6 @@ export default class AutoComplete extends Component {
     handleInputChange: PropTypes.func.isRequired,
     handleSelectChange: PropTypes.func.isRequired,
     label: PropTypes.string.isRequired,
-    query: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired
   };
 
