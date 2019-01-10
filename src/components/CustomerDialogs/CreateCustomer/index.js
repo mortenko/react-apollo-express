@@ -3,14 +3,7 @@ import { Mutation } from "react-apollo";
 import PropTypes from "prop-types";
 import Grid from "@material-ui/core/Grid";
 import Button from "components/Button";
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  InputAdornment,
-  TextField
-} from "components/Dialog";
+import { Dialog, DialogTitle, DialogActions } from "components/Dialog";
 import styles from "./createCustomer.scss";
 import Loader from "components/Loader";
 import {
@@ -19,6 +12,13 @@ import {
 } from "../../../graphql-client/queries/customer";
 import BaseCustomerForm from "../baseCustomerForm";
 import withCustomerHoc from "../withCustomerHoc";
+import {
+  customerPropTypes,
+  customerDefaultProps,
+  customerToastPropTypes,
+  customerToastDefaultProps
+} from "../propTypes";
+
 const DialogCreateCustomer = props => {
   const {
     open,
@@ -50,7 +50,7 @@ const DialogCreateCustomer = props => {
           }
         ]}
       >
-        {(createCustomer, { loading, error, data }) => {
+        {(createCustomer, { loading, error }) => {
           if (loading) return <Loader />;
           return (
             <div className={styles.dialog__container}>
@@ -70,8 +70,8 @@ const DialogCreateCustomer = props => {
                 <Grid item xs={12}>
                   <DialogActions>
                     <Button
+                      danger
                       variant="contained"
-                      color="info"
                       onClick={() => {
                         closeModal();
                         resetForm();
@@ -79,10 +79,9 @@ const DialogCreateCustomer = props => {
                     >
                       Cancel
                     </Button>
-
                     <Button
                       variant="contained"
-                      color="success"
+                      color="primary"
                       disabled={hasValidationErrors()}
                       onClick={async () => {
                         const {
@@ -131,37 +130,23 @@ const DialogCreateCustomer = props => {
     </Dialog>
   );
 };
+
 DialogCreateCustomer.propTypes = {
   closeModal: PropTypes.func.isRequired,
   data: PropTypes.object.isRequired,
   handleInputChange: PropTypes.func.isRequired,
-  newData: PropTypes.shape({
-    customerID: PropTypes.number,
-    firstname: PropTypes.string,
-    lastname: PropTypes.string,
-    phone: PropTypes.string,
-    email: PropTypes.string,
-    CustomerPhoto: PropTypes.shape({
-      photo: PropTypes.object,
-      name: PropTypes.string
-    })
-  }).isRequired,
+  newData: customerPropTypes,
   open: PropTypes.bool.isRequired,
   resetForm: PropTypes.func.isRequired,
-  toast: PropTypes.shape({
-    addToastMessage: PropTypes.func.isRequired,
-    removeToastMessage: PropTypes.func.isRequired,
-    toasts: PropTypes.array
-  }),
+  toast: customerToastPropTypes,
   validationFunctions: PropTypes.objectOf(PropTypes.func)
 };
+
 DialogCreateCustomer.defaultProps = {
-  toast: {
-    toasts: []
-  },
+  newData: customerDefaultProps,
+  toast: customerToastDefaultProps,
   validationFunctions: {}
 };
 
 export const CREATE_CUSTOMER_MODAL = "CREATE_CUSTOMER_MODAL";
-
 export default withCustomerHoc(DialogCreateCustomer);

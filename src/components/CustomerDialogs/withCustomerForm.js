@@ -1,48 +1,24 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { customerPropTypes, customerDefaultProps } from "./propTypes";
 
 export default function withCustomerForm(WrappedComponent) {
   return class extends Component {
     static propTypes = {
       formData: PropTypes.shape({
-        customer: PropTypes.shape({
-          firstname: PropTypes.string,
-          lastname: PropTypes.string,
-          phone: PropTypes.string,
-          email: PropTypes.string,
-          CustomerPhoto: PropTypes.shape({
-            photo: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-            name: PropTypes.string
-          })
-        })
+        customer: customerPropTypes
       }),
       initialFormValues: PropTypes.shape({
-        customer: PropTypes.shape({
-          firstname: PropTypes.string,
-          lastname: PropTypes.string,
-          phone: PropTypes.string,
-          email: PropTypes.string,
-          CustomerPhoto: PropTypes.shape({
-            photo: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-            name: PropTypes.string
-          })
-        })
+        customer: customerDefaultProps
       }),
       resetErrorValues: PropTypes.func.isRequired
     };
+
     static defaultProps = {
-      initialFormValues: {
-        firstname: "",
-        lastname: "",
-        phone: "",
-        email: "",
-        CustomerPhoto: {
-          photo: null,
-          name: ""
-        }
-      },
+      initialFormValues: customerDefaultProps,
       formData: undefined
     };
+
     constructor(props) {
       super(props);
       const setInitialFormValues = props.formData
@@ -52,12 +28,14 @@ export default function withCustomerForm(WrappedComponent) {
         ...setInitialFormValues
       };
     }
+
     resetForm = () => {
       this.props.resetErrorValues();
       this.setState({
         ...this.props.initialFormValues
       });
     };
+
     handleInputChange = (id, value, files = null) => {
       if (files !== null && typeof files !== "undefined") {
         this.setState({
@@ -80,14 +58,17 @@ export default function withCustomerForm(WrappedComponent) {
         });
       }
     };
+
     render() {
-      const newProps = {
+      const state = {
+        newData: this.state
+      };
+      const funcProps = {
         handleInputChange: (id, value, files) =>
           this.handleInputChange(id, value, files),
-        newData: this.state,
         resetForm: () => this.resetForm()
       };
-      return <WrappedComponent {...this.props} {...newProps} />;
+      return <WrappedComponent {...state} {...funcProps} />;
     }
   };
 }

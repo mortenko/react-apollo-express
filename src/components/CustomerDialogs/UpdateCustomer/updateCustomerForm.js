@@ -5,10 +5,7 @@ import queryString from "query-string";
 import Grid from "@material-ui/core/Grid";
 import Loader from "components/Loader";
 import Button from "components/Button";
-import {
-  DialogActions,
-  DialogTitle,
-} from "components/Dialog";
+import { DialogActions, DialogTitle } from "components/Dialog";
 import BaseCustomerForm from "../baseCustomerForm";
 import withCustomerHoc from "../withCustomerHoc";
 import styles from "./updateCustomer.scss";
@@ -17,6 +14,12 @@ import {
   FETCH_CUSTOMER,
   UPDATE_CUSTOMER
 } from "../../../graphql-client/queries/customer";
+import {
+  customerPropTypes,
+  customerDefaultProps,
+  customerToastPropTypes,
+  customerToastDefaultProps
+} from "../propTypes";
 
 const UpdateCustomerForm = props => {
   const {
@@ -50,29 +53,29 @@ const UpdateCustomerForm = props => {
           query: FETCH_CUSTOMERS,
           variables: { pageNumber: parsePageInt }
         });
-         const updatedCustomersArray = customers.map(customerFromCache => {
-           return customerFromCache.customerID === customer.customerID
-             ? customer
-             : customerFromCache;
-         });
+        const updatedCustomersArray = customers.map(customerFromCache => {
+          return customerFromCache.customerID === customer.customerID
+            ? customer
+            : customerFromCache;
+        });
         cache.writeQuery({
-           query: FETCH_CUSTOMERS,
+          query: FETCH_CUSTOMERS,
           variables: { pageNumber: parsePageInt },
-           data: { customers: { customers: updatedCustomersArray } }
-         });
-         // update customer's values when clicked on update customer modal
-         cache.writeQuery({
-           query: FETCH_CUSTOMER,
-           variables: {
-             customerID: customer.customerID
-           },
-           data: { customer }
-         });
+          data: { customers: { customers: updatedCustomersArray } }
+        });
+        // update customer's values when clicked on update customer modal
+        cache.writeQuery({
+          query: FETCH_CUSTOMER,
+          variables: {
+            customerID: customer.customerID
+          },
+          data: { customer }
+        });
       }}
     >
       {(updateCustomer, { loading, error, data }) => {
         if (loading) return <Loader />;
-        if(error) return `${error.message}`;
+        if (error) return `${error.message}`;
         return (
           <div className={styles.dialog__container}>
             <Grid container>
@@ -88,14 +91,18 @@ const UpdateCustomerForm = props => {
               </Grid>
               <Grid item xs={12}>
                 <DialogActions>
-                  <Button color="info" onClick={closeModal} variant="contained" >
+                  <Button
+                    danger
+                    variant="contained"
+                    onClick={closeModal}
+                  >
                     Cancel
                   </Button>
                   <Button
-                   color="primary"
-                   disabled={hasValidationErrors()}
-                   variant="contained"
-                   onClick={async () => {
+                    color="primary"
+                    disabled={hasValidationErrors()}
+                    variant="contained"
+                    onClick={async () => {
                       const {
                         newData: {
                           customer: updateCustomerObj,
@@ -140,33 +147,21 @@ const UpdateCustomerForm = props => {
     </Mutation>
   );
 };
+
 UpdateCustomerForm.propTypes = {
   closeModal: PropTypes.func.isRequired,
   handleInputChange: PropTypes.func.isRequired,
   location: PropTypes.objectOf(PropTypes.string),
-  newData: PropTypes.shape({
-    customerID: PropTypes.number,
-    firstname: PropTypes.string,
-    lastname: PropTypes.string,
-    phone: PropTypes.string,
-    email: PropTypes.string,
-    CustomerPhoto: PropTypes.shape({
-      photo: PropTypes.object,
-      name: PropTypes.string
-    })
-  }).isRequired,
-  toast: PropTypes.shape({
-    addToastMessage: PropTypes.func.isRequired,
-    removeToastMessage: PropTypes.func.isRequired,
-    toasts: PropTypes.array
-  }),
+  newData: customerPropTypes,
+  toast: customerToastPropTypes,
   validationFunctions: PropTypes.objectOf(PropTypes.func)
 };
+
 UpdateCustomerForm.defaultProps = {
   location: { search: "" },
+  newData: customerDefaultProps,
   validationFunctions: {},
-  toast: {
-    toasts: []
-  }
+  toast: customerToastDefaultProps
 };
+
 export default withCustomerHoc(UpdateCustomerForm);

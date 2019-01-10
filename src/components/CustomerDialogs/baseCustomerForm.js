@@ -6,6 +6,7 @@ import Alert from "components/Alert";
 import styles from "./baseCustomerForm.scss";
 import UploadButton from "components/Button/uploadButton";
 import { Email, Person, Phone } from "../../assets/material-ui-icons";
+import { customerPropTypes, customerDefaultProps } from "./propTypes";
 
 const BaseCustomerForm = ({
   customerState,
@@ -139,16 +140,7 @@ const BaseCustomerForm = ({
 
 BaseCustomerForm.propTypes = {
   classes: PropTypes.object.isRequired,
-  customerState: PropTypes.shape({
-    firstname: PropTypes.string,
-    lastname: PropTypes.string,
-    phone: PropTypes.string,
-    email: PropTypes.string,
-    CustomerPhoto: PropTypes.shape({
-      photo: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-      name: PropTypes.string
-    })
-  }),
+  customerState: customerPropTypes,
   handleInputChange: PropTypes.func.isRequired,
   printErrorMessage: PropTypes.func.isRequired,
   validationErrors: PropTypes.object,
@@ -156,16 +148,7 @@ BaseCustomerForm.propTypes = {
 };
 
 BaseCustomerForm.defaultProps = {
-  customerState: PropTypes.shape({
-    firstname: "",
-    lastname: "",
-    phone: "",
-    email: "",
-    CustomerPhoto: {
-      photo: {},
-      name: ""
-    }
-  }),
+  customerState: customerDefaultProps,
   validationErrors: {},
   validationFunctions: {}
 };

@@ -16,8 +16,8 @@ import {
 import Loader from "components/Loader";
 import Button from "components/Button";
 import withCustomerHoc from "../withCustomerHoc";
-import { ToastConsumer } from "../../Dialog/dialogHoc";
 import styles from "./deleteCustomer.scss";
+import { customerToastPropTypes, customerDefaultProps } from "../propTypes";
 
 const DialogDeleteCustomer = ({
   open,
@@ -78,11 +78,11 @@ const DialogDeleteCustomer = ({
                 </DialogContentText>
               </DialogContent>
               <DialogActions>
-                <Button color="info" onClick={closeModal} variant="contained">
+                <Button danger variant="contained" onClick={closeModal}>
                   Cancel
                 </Button>
                 <Button
-                  color="danger"
+                  color="primary"
                   variant="contained"
                   onClick={async () => {
                     try {
@@ -127,21 +127,15 @@ DialogDeleteCustomer.propTypes = {
     firstname: PropTypes.string,
     lastname: PropTypes.string
   }).isRequired,
-  location: PropTypes.objectOf(PropTypes.object),
+  location: PropTypes.objectOf(PropTypes.string),
   open: PropTypes.bool.isRequired,
-  toast: PropTypes.shape({
-    addToastMessage: PropTypes.func.isRequired,
-    removeToastMessage: PropTypes.func.isRequired,
-    toasts: PropTypes.array
-  }),
+  toast: customerToastPropTypes,
   validationFunctions: PropTypes.objectOf(PropTypes.func)
 };
 
 DialogDeleteCustomer.defaultProps = {
   location: { search: "" },
-  toast: {
-    toasts: []
-  },
+  toast: customerDefaultProps,
   validationFunctions: {}
 };
 

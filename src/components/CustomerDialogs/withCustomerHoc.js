@@ -1,4 +1,5 @@
 import { compose, withProps } from "recompose";
+import withTheme from "@material-ui/core/styles/withTheme";
 import withValidator from "../../utils/validation";
 import withCustomerForm from "./withCustomerForm";
 import { enhanceWithBaseHoc } from "../Dialog/dialogHoc";
@@ -26,6 +27,7 @@ const initialFormValues = {
 const enhanceWithCustomerHoc = compose(
   withProps(() => ({ initialErrorValues }), withValidator),
   withProps(() => ({ initialFormValues }), withCustomerForm),
+  withTheme(),
   enhanceWithBaseHoc,
   withCustomerForm
 );
