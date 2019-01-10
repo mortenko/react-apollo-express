@@ -36,8 +36,8 @@ const DialogCreateOrder = ({
           <Grid item xs={12}>
             <DialogActions>
               <Button
+                danger
                 variant="contained"
-                color="info"
                 onClick={() => {
                   closeModal();
                   resetForm();
@@ -45,11 +45,10 @@ const DialogCreateOrder = ({
               >
                 Cancel
               </Button>
-
               <Button
-                variant="contained"
-                color="success"
+                color="primary"
                 disabled={hasValidationErrors()}
+                variant="contained"
                 onClick={() => {
                   const {
                     order: { firstname, lastname, email, products }

@@ -7,6 +7,7 @@ import { DialogContent, InputAdornment, TextField } from "components/Dialog";
 import styles from "./baseOrderForm.scss";
 import RenderProduct from "./renderProduct";
 import { AttachMoney } from "../../assets/material-ui-icons";
+import { orderPropTypes, orderDefaultProps } from "./propTypes";
 
 const BaseOrderForm = props => {
   const {
@@ -141,6 +142,12 @@ const BaseOrderForm = props => {
 };
 
 BaseOrderForm.defaultProps = {
+  orderState: {
+    advancedFilterBy: {},
+    customerFilterResult: [],
+    order: orderDefaultProps,
+    productFilterResult: []
+  },
   validationErrors: {}
 };
 
@@ -152,16 +159,11 @@ BaseOrderForm.propTypes = {
   handleInputChange: PropTypes.func.isRequired,
   handleSelectChange: PropTypes.func.isRequired,
   orderState: PropTypes.shape({
-    order: PropTypes.shape({
-      firstname: PropTypes.string,
-      lastname: PropTypes.string,
-      email: PropTypes.string,
-      products: PropTypes.arrayOf(PropTypes.object),
-      totalsumwithoutdph: PropTypes.number,
-      totalsumwithdph: PropTypes.number
-    }),
+    order: orderPropTypes,
+    customerFilterResult: PropTypes.array,
+    productFilterResult: PropTypes.array,
     advancedFilterBy: PropTypes.object
-  }).isRequired,
+  }),
   printErrorMessage: PropTypes.func.isRequired,
   productFilterChange: PropTypes.func.isRequired,
   removeProduct: PropTypes.func.isRequired,
@@ -169,8 +171,3 @@ BaseOrderForm.propTypes = {
 };
 
 export default BaseOrderForm;
-
-// match name of object property key (product name) it should be productname_x where x is a number
-// const getProductName = Object.keys(product).find(product =>
-//   /^productname_[1-9]$/.test(product)
-// );

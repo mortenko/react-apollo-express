@@ -7,7 +7,7 @@ import { enhanceWithBaseHoc } from "../Dialog/dialogHoc";
 const initialErrorValues = {
   firstname: {},
   lastname: {},
-  email: {},
+  email: {}
 };
 
 const initialFormValues = {

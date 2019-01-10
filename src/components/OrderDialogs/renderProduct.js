@@ -3,6 +3,7 @@ import AutoComplete from "components/Autocomplete";
 import PropTypes from "prop-types";
 import { Grid, TextField, Fab } from "@material-ui/core";
 import { RemoveCircle, AddCircle } from "../../assets/material-ui-icons";
+import { orderProductPropTypes } from "./propTypes";
 
 const RenderProduct = props => {
   const {
@@ -34,7 +35,6 @@ const RenderProduct = props => {
           fullWidth
           id="selectedQuantity"
           label="Select Quantity:"
-          defaultValue={`${0}`}
           value={selectedQuantity}
           select
           SelectProps={{
@@ -82,10 +82,9 @@ RenderProduct.propTypes = {
   debounceInputChange: PropTypes.func.isRequired,
   handleDynamicInputChange: PropTypes.func.isRequired,
   handleDynamicSelectChange: PropTypes.func.isRequired,
-  product: PropTypes.object.isRequired,
-  productFilterResult: PropTypes.func.isRequired,
+  product: orderProductPropTypes.isRequired,
+  productFilterResult: PropTypes.array.isRequired,
   productsLength: PropTypes.number.isRequired,
-  removeNextProduct: PropTypes.func.isRequired,
   removeProduct: PropTypes.func.isRequired
 };
 

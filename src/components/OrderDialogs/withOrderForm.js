@@ -3,38 +3,24 @@ import PropTypes from "prop-types";
 import { has, isEmpty, debounce, range } from "lodash";
 import { FILTER_CUSTOMER } from "../../graphql-client/queries/customer";
 import { FILTER_PRODUCT } from "../../graphql-client/queries/product";
+import { orderPropTypes, orderDefaultProps } from "./propTypes";
 
 export default function withOrderForm(WrappedComponent) {
   return class extends Component {
     static propTypes = {
-      formData: PropTypes.shape({}),
-      initialFormValues: PropTypes.shape({}),
+      formData: orderPropTypes,
+      initialFormValues: orderPropTypes,
       resetErrorValues: PropTypes.func.isRequired,
       validationFunctions: PropTypes.objectOf(PropTypes.func)
     };
 
     static defaultProps = {
       initialFormValues: {
-        order: {
-          firstname: "",
-          lastname: "",
-          email: "",
-          incrementProductID: 2,
-          products: [
-            {
-              productID: 1,
-              productname: "",
-              quantity: "",
-              selectedQuantity: 0,
-              totalsumwithoutdph: 0,
-              totalsumwithdph: 0
-            }
-          ]
-        },
+        order: orderDefaultProps,
         advancedFilterBy: {},
-        customerFilterResult: []
+        customerFilterResult: [],
+        productFilterResult: []
       },
-
       formData: undefined,
       validationFunctions: {}
     };
