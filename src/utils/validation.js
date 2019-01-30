@@ -1,15 +1,20 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { forIn } from "lodash";
+import { forIn, has } from "lodash";
+import { toastPropTypes, toastDefaultProps } from "../globalProps";
 
 function withValidator(WrappedComponent) {
   return class extends Component {
     static propTypes = {
-      initialErrorValues: PropTypes.object.isRequired
+      initialErrorValues: PropTypes.object.isRequired,
+      toast: toastPropTypes
     };
+    static defaultProps = {
+      toast: toastDefaultProps
+    };
+
     state = {
-      validationErrors: this.props.initialErrorValues,
-      serverErrors: []
+      validationErrors: this.props.initialErrorValues
     };
 
     hasValidationErrors = () => {
@@ -43,8 +48,7 @@ function withValidator(WrappedComponent) {
         }
       );
       this.setState({
-        validationErrors,
-        serverErrors: []
+        validationErrors
       });
     };
 
@@ -88,6 +92,12 @@ function withValidator(WrappedComponent) {
 
     addNewValidationMessage = (fieldName = "", errorMessageObj) => {
       const { validationErrors } = this.state;
+      /* if valdiationErrors object does not contain error property add it 
+       f.e if you add new product into order ... you need to add new fieldName into validationErrors  
+      */
+      if (!has(validationErrors, fieldName)) {
+        validationErrors[fieldName] = [];
+      }
       const [messageKey, messageValue] = Object.entries(errorMessageObj)[0];
       // loop through the initial validationError object
       for (let key in validationErrors) {
@@ -113,11 +123,6 @@ function withValidator(WrappedComponent) {
           key === fieldName
         ) {
           validationErrors[key] = { [messageKey]: messageValue };
-        }
-        /* in case you didn't define static error values and new error values arised during runtime
-         f.e. -> product's input */
-        else if (validationErrors[key] !== fieldName) {
-          validationErrors[fieldName] = { [messageKey]: messageValue };
         }
       }
       this.setState({
@@ -209,50 +214,59 @@ function withValidator(WrappedComponent) {
         this.removeValidationMessage(Object.keys(obj2)[0], "isGreaterThen");
       }
     };
-    //TODO REWRITE THIS.
-    handleServerErrors = ({ graphQLErrors, networkError, ...customError }) => {
-      if (networkError) {
-        const {
-          result: {
-            errors: [
-              {
-                message,
-                extensions: { code }
-              }
-            ]
-          },
-          response,
-          statusCode
-        } = networkError;
-        this.setState({
-          serverErrors: this.serverErrors.concat([
-            { message, code, statusCode }
-          ])
-        });
-      } else if (graphQLErrors) {
+    /**
+     * handle server errors
+     * @param errors - error (it could be networkError, graphqlError or general error)
+     * I'm distinguish three errors types:
+     * 1) graphqlErrors -> 1) validationErrors or all other graphQLErrors
+     * 2)networkErrors due to some network connection
+     * 3) all other errors f.e. some errors that happen on frontend
+     */
+
+    handleServerErrors = errors => {
+      const { toast } = this.props;
+      if (errors.graphQLErrors) {
         const [
           {
             message,
+            path,
             extensions: {
-              exception: { response }
+              code,
+              exception: { serverResponse }
             }
           }
-        ] = graphQLErrors;
-        if (
-          message === "SequelizeUniqueConstraintError" ||
-          message === "SequelizeValidationError"
-        ) {
+        ] = errors.graphQLErrors;
+
+        if (code === "BAD_USER_INPUT") {
+          const { validationErrors } = serverResponse;
           this.setState({
             validationErrors: {
               ...this.state.validationErrors,
-              ...response
+              ...validationErrors
             }
           });
+        } else {
+          toast.addToastMessage({
+            content: `[graphQLErrors]: Message: ${message}, code: ${code}, path: ${path}`,
+            delay: 5000,
+            type: "danger"
+          });
         }
-      } else {
-        // TODO  handle other errors then networkError or GraphqlError
-        this.setState({
-          serverErrors: this.serverErrors.concat([{ customError }])
+      }
+      if (errors.networkError) {
+        const { name, message } = errors.networkError;
+        toast.addToastMessage({
+          content: `[NetworkError]: ErrorType: ${name}, Message: ${message} `,
+          delay: 5000,
+          type: "danger"
+        });
+      }
+      if (errors) {
+        const { name, message } = errors;
+        toast.addToastMessage({
+          content: `ErrorType: ${name}, Message: ${message}`,
+          delay: 5000,
+          type: "danger"
         });
       }
     };
@@ -260,6 +274,9 @@ function withValidator(WrappedComponent) {
     render() {
       // exclude initialErrorValues
       const { initialErrorValues, ...props } = this.props;
+      const validationState = {
+        validationErrors: this.state.validationErrors
+      };
       const validationFunctions = {
         isEmail: this.isEmail,
         isGreaterThen: this.isGreaterThen,
@@ -275,8 +292,8 @@ function withValidator(WrappedComponent) {
         <WrappedComponent
           resetErrorValues={this.resetErrorValues}
           printErrorMessage={this.printErrorMessage}
-          validationErrors={this.state.validationErrors}
           validationFunctions={validationFunctions}
+          validationState={validationState}
           {...props}
         />
       );
