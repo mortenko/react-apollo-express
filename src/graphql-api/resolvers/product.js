@@ -1,11 +1,7 @@
 import path from "path";
 import models from "../../../db/models";
 import { recursivelyRemoveFiles, savePhoto } from "../utils/helper";
-import {
-  validationErrorResponse,
-  validationSuccessResponse,
-  customErrorResponse
-} from "../utils/error_handler";
+import { errorResponse, successResponse } from "../utils/response_handler";
 import { asyncAccessFile } from "../utils/promisify";
 
 const ProductResolvers = {
@@ -34,9 +30,14 @@ const ProductResolvers = {
         });
         return { products, count };
       } catch (fetchProductsError) {
-        customErrorResponse("Can't fetch products", 404, fetchProductsError);
+        return errorResponse(
+          "Can't fetch products from DB",
+          500,
+          fetchProductsError
+        );
       }
     },
+
     product: async (_, { productID }) => {
       try {
         return await models.Product.findById(productID, {
@@ -54,13 +55,14 @@ const ProductResolvers = {
           ]
         });
       } catch (productFindByIdError) {
-        customErrorResponse(
+        return errorResponse(
           `Can't find product with ID: ${productID}`,
           404,
           productFindByIdError
         );
       }
     },
+
     productFilter: async (_, { filterBy: productname }) => {
       try {
         const response = await models.Product.findAll({
@@ -81,10 +83,11 @@ const ProductResolvers = {
           return filter;
         });
       } catch (productFilterError) {
-        console.log("productFilterError", productFilterError);
+        return errorResponse("Can't filter products", 500, productFilterError);
       }
     }
   },
+
   Mutation: {
     createProduct: async (_, { photoFile, product }) => {
       const rootPath = path.resolve("./public");
@@ -109,17 +112,21 @@ const ProductResolvers = {
               photo: `/photos/products/${productID}/${filename}`,
               name: `${filename}`
             });
-          } catch (productPhotoError) {
-            validationErrorResponse(400, productPhotoError);
+          } catch (productPhotoDBerror) {
+            return errorResponse(
+              "Can't insert new product photo in DB",
+              500,
+              productPhotoDBerror
+            );
           }
-        } catch (savePhotoError) {
-          validationErrorResponse(
-            "Cant save photo of product",
-            400,
-            savePhotoError
+        } catch (savePhotoFSerror) {
+          return errorResponse(
+            "Cant save photo of product into FS",
+            500,
+            savePhotoFSerror
           );
         }
-        return validationSuccessResponse(
+        return successResponse(
           {
             product: {
               productID,
@@ -133,8 +140,12 @@ const ProductResolvers = {
           200,
           "Product was successfull created"
         );
-      } catch (createProductError) {
-        validationErrorResponse(400, createProductError);
+      } catch (createProductDBerror) {
+        return errorResponse(
+          "Can insert new product into DB",
+          500,
+          createProductDBerror
+        );
       }
     },
     updateProduct: async (
@@ -194,28 +205,32 @@ const ProductResolvers = {
                   photo,
                   name: filename
                 };
-              } catch (updatePhotoError) {
-                validationErrorResponse(400, updatePhotoError);
+              } catch (updatePhotoDBerror) {
+                return errorResponse(
+                  "Can't update product photo in DB",
+                  500,
+                  updatePhotoDBerror
+                );
               }
-            } catch (saveUpdatedProductPhotoError) {
-              customErrorResponse(
-                "Cant update product photo",
-                _,
-                saveUpdatedProductPhotoError
+            } catch (updatedPhotoFSerror) {
+              return errorResponse(
+                "Cant update product photo in FS",
+                500,
+                updatedPhotoFSerror
               );
             }
           }
         } catch (productPhotoFindError) {
-          customErrorResponse(
+          return errorResponse(
             `Cant find photo with id: ${productID}`,
             404,
             productPhotoFindError
           );
         }
       } catch (updateProductError) {
-        validationErrorResponse(400, updateProductError);
+        return errorResponse("Can't update product", 500, updateProductError);
       }
-      return validationSuccessResponse(
+      return successResponse(
         updateProductResponse,
         200,
         "Product was succesfully updated"
@@ -238,27 +253,30 @@ const ProductResolvers = {
           try {
             await recursivelyRemoveFiles(resolvePathToDir);
           } catch (recurRemoveFilesError) {
-            customErrorResponse(_, _, recurRemoveFilesError);
+            return errorResponse(
+              "Can't recursively remove product's photo from FS",
+              500,
+              recurRemoveFilesError
+            );
           }
         } catch (deleteProductError) {
-          customErrorResponse(
+          return errorResponse(
             `Product with ID ${productID} can't be deleted`,
-            400,
+            500,
             deleteProductError
           );
         }
         const objResponse = { product: { productID } };
-        return validationSuccessResponse(
+        /* the response should be in if statement
+            but we have mocked data where picture just point out to the web url  not to file system where should be saved when
+            there are performed operation on customer, product etc
+        */
+        return successResponse(
           objResponse,
           200,
           `Product was successfully deleted with ID: ${productID}`
         );
       }
-      /* the response should be in if statement
-          but we have mocked data where picture just point out to the web url  not to file system where should be saved when
-          there are performed operation on customer, product etc
-
-      * */
     }
   }
 };

@@ -1,11 +1,7 @@
 import path from "path";
 import { size, assign } from "lodash";
 import { recursivelyRemoveFiles, savePhoto } from "../utils/helper";
-import {
-  validationErrorResponse,
-  validationSuccessResponse,
-  customErrorResponse
-} from "../utils/error_handler";
+import { errorResponse, successResponse } from "../utils/response_handler";
 import models from "../../../db/models";
 import { asyncAccessFile } from "../utils/promisify";
 
@@ -30,7 +26,7 @@ const CustomerResolvers = {
         });
         return { customers, count };
       } catch (fetchCustomerError) {
-        customErrorResponse("Customers not founded", 404, fetchCustomerError);
+        return errorResponse("Customers not founded", 404, fetchCustomerError);
       }
     },
     customer: async (_, { customerID }) => {
@@ -43,7 +39,7 @@ const CustomerResolvers = {
           attributes: ["customerID", "firstname", "lastname", "phone", "email"]
         });
       } catch (customerFindByIdError) {
-        customErrorResponse(
+        return errorResponse(
           `Customer with ${customerID} was not found`,
           404,
           customerFindByIdError
@@ -84,7 +80,11 @@ const CustomerResolvers = {
           return filter;
         });
       } catch (customerFilterError) {
-        console.log("customerFilterError", customerFilterError);
+        return errorResponse(
+          "Can't find any customer followed by given criterion",
+          404,
+          customerFilterError
+        );
       }
     }
   },
@@ -109,19 +109,31 @@ const CustomerResolvers = {
               // key of object must be the same as the graphql name query
               customer: { firstname, lastname, email, phone }
             };
-            return validationSuccessResponse(
+            return successResponse(
               objResponse,
               200,
               `Customer ${firstname} ${lastname} was created successfully`
             );
-          } catch (customerPhotoError) {
-            validationErrorResponse(400, customerPhotoError);
+          } catch (customerPhotoDBerror) {
+            return errorResponse(
+              "Unable to inserto customerPhoto into DB",
+              400,
+              customerPhotoDBerror
+            );
           }
-        } catch (photoFileError) {
-          customErrorResponse("Cant't save photo of User", _, photoFileError);
+        } catch (photoFileFSerror) {
+          return errorResponse(
+            "Cant't save photo of Customer into FS",
+            500,
+            photoFileFSerror
+          );
         }
-      } catch (createCustomerError) {
-        validationErrorResponse(400, createCustomerError);
+      } catch (createCustomerDBerror) {
+        return errorResponse(
+          "Can't create new Customer",
+          _,
+          createCustomerDBerror
+        );
       }
     },
     updateCustomer: async (
@@ -181,31 +193,39 @@ const CustomerResolvers = {
                   photo,
                   name: filename
                 };
-              } catch (customerPhotoUpdateError) {
-                validationErrorResponse(400, customerPhotoUpdateError);
+              } catch (photoUpdateDBerror) {
+                return errorResponse(
+                  "Photo was not updated in DB",
+                  500,
+                  photoUpdateDBerror
+                );
               }
-            } catch (savePhotoError) {
-              customErrorResponse(
-                "Can't save new photo from updateCustomer",
-                "400",
-                savePhotoError
+            } catch (savePhotoFSerror) {
+              return errorResponse(
+                "Can't save updated customer photo into FS",
+                500,
+                savePhotoFSerror
               );
             }
           }
-        } catch (queryFindPhotoError) {
-          customErrorResponse(
+        } catch (findCustomerPhotoError) {
+          return errorResponse(
             `Cant't find customer with ${customerID}`,
             404,
-            queryFindPhotoError
+            findCustomerPhotoError
           );
         }
-        return validationSuccessResponse(
+        return successResponse(
           updateCustomerResponse,
           200,
           "Customer was updated successfully"
         );
-      } catch (updateCustomerError) {
-        validationErrorResponse(400, updateCustomerError);
+      } catch (updateCustomerDBerror) {
+        return errorResponse(
+          "Can't update Customer in DB",
+          400,
+          updateCustomerDBerror
+        );
       }
     },
     deleteCustomer: async (_, { customerID }) => {
@@ -225,18 +245,22 @@ const CustomerResolvers = {
           try {
             await recursivelyRemoveFiles(resolvePathToDir);
           } catch (recurRemoveFilesError) {
-            customErrorResponse(_, _, recurRemoveFilesError);
+            return errorResponse(
+              "Customer files can't be removed recursively from FS",
+              500,
+              recurRemoveFilesError
+            );
           }
-        } catch (deleteCustomerError) {
-          customErrorResponse(
-            `User with ID ${customerID} can't be deleted`,
+        } catch (deleteCustomerDBerror) {
+          return errorResponse(
+            `Customer with ID ${customerID} can't be deleted from DB`,
             400,
-            deleteCustomerError
+            deleteCustomerDBerror
           );
         }
       }
       const objResponse = { customer: { customerID } };
-      return validationSuccessResponse(
+      return successResponse(
         objResponse,
         200,
         `Customer was successfully deleted with ID: ${customerID}`
