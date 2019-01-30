@@ -47,6 +47,7 @@ const Customer = `
     customer(customerID: Int!): Customer
     customerFilter(filterBy: CustomerInputFilter!, advancedFilterBy:CustomerInputFilter): [CustomerFilterResponse] 
   }
+  
   type Mutation {
     createCustomer(photoFile: Upload!, customer: CustomerInput!): CustomerResponse
     updateCustomer(photoFile: Upload!, customer: CustomerInput!): CustomerResponse

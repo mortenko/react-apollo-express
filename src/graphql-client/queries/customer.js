@@ -96,6 +96,7 @@ const DELETE_CUSTOMER = gql`
     }
   }
 `;
+
 const FILTER_CUSTOMER = gql`
   query filter($filterBy: CustomerInputFilter!, $advancedFilterBy: CustomerInputFilter) {
     filter: customerFilter(filterBy: $filterBy, advancedFilterBy: $advancedFilterBy) {

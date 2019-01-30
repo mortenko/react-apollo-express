@@ -24,4 +24,25 @@ const FETCH_ORDERS = gql`
     }
   }
 `;
-export { FETCH_ORDERS };
+
+const CREATE_ORDER = gql`
+  mutation createOrder($order: CreateOrderInput) {
+    createOrder(order: $order) {
+      order {
+        productID
+        productname
+        orderID
+        quantity
+        totalsumwithoutdph
+        totalsumwithdph
+      }
+      mutationResponse {
+        code
+        message
+        success
+      }
+    }
+  }
+`;
+
+export { FETCH_ORDERS, CREATE_ORDER };

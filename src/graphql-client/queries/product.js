@@ -21,6 +21,7 @@ const FETCH_PRODUCTS = gql`
     }
   }
 `;
+
 const FETCH_PRODUCT = gql`
   query product($productID: Int!) {
     product(productID: $productID)
