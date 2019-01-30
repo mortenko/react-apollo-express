@@ -9,12 +9,8 @@ import { DialogActions, DialogTitle } from "components/Dialog";
 import BaseProductForm from "../baseProductForm";
 import withProductHoc from "../withProductHoc";
 import styles from "./updateProduct.scss";
-import {
-  productDefaultProps,
-  productPropTypes,
-  toastPropTypes,
-  toastDefaultProps
-} from "../propTypes";
+import { productDefaultProps, productPropTypes } from "../propTypes";
+import { toastDefaultProps, toastPropTypes } from "../../../globalProps";
 import {
   FETCH_PRODUCTS,
   FETCH_PRODUCT,

@@ -22,19 +22,4 @@ const customerDefaultProps = {
   }
 };
 
-const customerToastPropTypes = PropTypes.shape({
-  addToastMessage: PropTypes.func.isRequired,
-  removeToastMessage: PropTypes.func.isRequired,
-  toasts: PropTypes.array
-});
-
-const customerToastDefaultProps = {
-  toasts: []
-};
-
-export {
-  customerPropTypes,
-  customerDefaultProps,
-  customerToastPropTypes,
-  customerToastDefaultProps
-};
+export { customerPropTypes, customerDefaultProps };

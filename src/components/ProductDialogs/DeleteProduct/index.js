@@ -17,7 +17,7 @@ import Loader from "components/Loader";
 import Button from "components/Button";
 import withProductHoc from "../withProductHoc";
 import styles from "./deleteProduct.scss";
-import { toastPropTypes, toastDefaultProps } from "../propTypes";
+import { toastPropTypes, toastDefaultProps } from "../../../globalProps";
 
 const DialogDeleteProduct = ({
   open,

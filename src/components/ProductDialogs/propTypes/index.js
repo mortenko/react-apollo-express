@@ -26,19 +26,4 @@ const productDefaultProps = PropTypes.shape({
   })
 });
 
-const toastPropTypes = PropTypes.shape({
-  addToastMessage: PropTypes.func.isRequired,
-  removeToastMessage: PropTypes.func.isRequired,
-  toasts: PropTypes.array
-});
-
-const toastDefaultProps = {
-  toasts: []
-};
-
-export {
-  productDefaultProps,
-  productPropTypes,
-  toastPropTypes,
-  toastDefaultProps
-};
+export { productDefaultProps, productPropTypes };

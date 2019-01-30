@@ -12,12 +12,8 @@ import {
 } from "../../../graphql-client/queries/customer";
 import BaseCustomerForm from "../baseCustomerForm";
 import withCustomerHoc from "../withCustomerHoc";
-import {
-  customerPropTypes,
-  customerDefaultProps,
-  customerToastPropTypes,
-  customerToastDefaultProps
-} from "../propTypes";
+import { customerPropTypes, customerDefaultProps } from "../propTypes";
+import { toastPropTypes, toastDefaultProps } from "../../../globalProps";
 
 const DialogCreateCustomer = props => {
   const {
@@ -32,7 +28,7 @@ const DialogCreateCustomer = props => {
     },
     newData,
     handleInputChange,
-    toast,
+    toast
   } = props;
   return (
     <Dialog
@@ -138,13 +134,13 @@ DialogCreateCustomer.propTypes = {
   newData: customerPropTypes,
   open: PropTypes.bool.isRequired,
   resetForm: PropTypes.func.isRequired,
-  toast: customerToastPropTypes,
+  toast: toastPropTypes,
   validationFunctions: PropTypes.objectOf(PropTypes.func)
 };
 
 DialogCreateCustomer.defaultProps = {
   newData: customerDefaultProps,
-  toast: customerToastDefaultProps,
+  toast: toastDefaultProps,
   validationFunctions: {}
 };
 

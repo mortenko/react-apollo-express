@@ -18,6 +18,7 @@ import ToastProvider from "components/ToastProvider";
 import withTheme from "@material-ui/core/styles/withTheme";
 import { ModalContext, ToastContext } from "./context";
 import styles from "./App.scss";
+import { toastPropTypes, toastDefaultProps } from "./globalProps";
 
 const enhanceFromRenderPropsHoc = compose(
   fromRenderProps(RenderPropsModal, modal => ({ modal })),
@@ -63,18 +64,11 @@ App.propTypes = {
     openModal: PropTypes.func,
     closeModal: PropTypes.func
   }).isRequired,
-  toast: PropTypes.shape({
-    toast: PropTypes.shape({
-      addToastMessage: PropTypes.func.isRequired,
-      removeToastMessage: PropTypes.func.isRequired,
-      toasts: PropTypes.array
-    })
-  })
+  toast: toastPropTypes
 };
 
 App.defaultProps = {
-  toast: {
-    toasts: []
-  }
+  toast: toastDefaultProps
 };
+
 export default enhanceFromRenderPropsHoc(App);

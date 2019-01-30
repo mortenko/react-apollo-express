@@ -3,12 +3,9 @@ import { Mutation } from "react-apollo";
 import PropTypes from "prop-types";
 import Grid from "@material-ui/core/Grid";
 import Button from "components/Button";
-import {
-  productPropTypes,
-  toastPropTypes,
-  toastDefaultProps
-} from "../propTypes";
 import { Dialog, DialogTitle, DialogActions } from "components/Dialog";
+import { productPropTypes } from "../propTypes";
+import { toastDefaultProps, toastPropTypes } from "../../../globalProps";
 import styles from "./createProduct.scss";
 import {
   CREATE_PRODUCT,

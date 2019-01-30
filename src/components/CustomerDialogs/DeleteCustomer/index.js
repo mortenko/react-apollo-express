@@ -17,7 +17,7 @@ import Loader from "components/Loader";
 import Button from "components/Button";
 import withCustomerHoc from "../withCustomerHoc";
 import styles from "./deleteCustomer.scss";
-import { customerToastPropTypes, customerDefaultProps } from "../propTypes";
+import { toastPropTypes, toastDefaultProps } from "../../../globalProps";
 
 const DialogDeleteCustomer = ({
   open,
@@ -129,13 +129,13 @@ DialogDeleteCustomer.propTypes = {
   }).isRequired,
   location: PropTypes.objectOf(PropTypes.string),
   open: PropTypes.bool.isRequired,
-  toast: customerToastPropTypes,
+  toast: toastPropTypes,
   validationFunctions: PropTypes.objectOf(PropTypes.func)
 };
 
 DialogDeleteCustomer.defaultProps = {
   location: { search: "" },
-  toast: customerDefaultProps,
+  toast: toastDefaultProps,
   validationFunctions: {}
 };
 

@@ -14,12 +14,8 @@ import {
   FETCH_CUSTOMER,
   UPDATE_CUSTOMER
 } from "../../../graphql-client/queries/customer";
-import {
-  customerPropTypes,
-  customerDefaultProps,
-  customerToastPropTypes,
-  customerToastDefaultProps
-} from "../propTypes";
+import { customerPropTypes, customerDefaultProps } from "../propTypes";
+import { toastPropTypes, toastDefaultProps } from "../../../globalProps";
 
 const UpdateCustomerForm = props => {
   const {
@@ -91,11 +87,7 @@ const UpdateCustomerForm = props => {
               </Grid>
               <Grid item xs={12}>
                 <DialogActions>
-                  <Button
-                    danger
-                    variant="contained"
-                    onClick={closeModal}
-                  >
+                  <Button danger variant="contained" onClick={closeModal}>
                     Cancel
                   </Button>
                   <Button
@@ -153,7 +145,7 @@ UpdateCustomerForm.propTypes = {
   handleInputChange: PropTypes.func.isRequired,
   location: PropTypes.objectOf(PropTypes.string),
   newData: customerPropTypes,
-  toast: customerToastPropTypes,
+  toast: toastPropTypes,
   validationFunctions: PropTypes.objectOf(PropTypes.func)
 };
 
@@ -161,7 +153,7 @@ UpdateCustomerForm.defaultProps = {
   location: { search: "" },
   newData: customerDefaultProps,
   validationFunctions: {},
-  toast: customerToastDefaultProps
+  toast: toastDefaultProps
 };
 
 export default withCustomerHoc(UpdateCustomerForm);
