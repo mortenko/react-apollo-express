@@ -49,7 +49,12 @@ const ProductPage = ({
                 <TableRow>
                   <TableCell className={styles.table__head}>
                     <CreateButtonAction
-                      createAction={() => openModal(CREATE_ORDER_MODAL)}
+                      createAction={() =>
+                        openModal(CREATE_ORDER_MODAL, {
+                          pageNumber,
+                          itemsCountPerPage
+                        })
+                      }
                       title="Order Table"
                     >
                       <AddCircle />
