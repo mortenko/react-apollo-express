@@ -34,6 +34,11 @@
     "react/sort-prop-types":1,
     "react/no-find-dom-node": 0,
     "react/no-array-index-key":1,
+    "react/jsx-sort-props":[1,{
+      "ignoreCase": 1,
+      "callbacksLast": 1,
+      "reservedFirst": 1
+    }],
     "react/sort-comp": 1,
     "react/display-name": 0,
     "import/first":1,
