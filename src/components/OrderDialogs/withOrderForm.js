@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { has, isEmpty, debounce, range } from "lodash";
+import { has, isEmpty, debounce, range, uniqBy } from "lodash";
 import { FILTER_CUSTOMER } from "../../graphql-client/queries/customer";
 import { FILTER_PRODUCT } from "../../graphql-client/queries/product";
 import { orderPropTypes, orderDefaultProps } from "./propTypes";
@@ -89,8 +89,8 @@ export default function withOrderForm(WrappedComponent) {
           incrementProductID: incrementProductID + 1,
           products: order.products.concat([
             {
-              productID: incrementProductID,
-              [`productname_${incrementProductID}`]: "",
+              productID: `productname_${incrementProductID}`,
+              productname: "",
               selectedQuantity: 0,
               quantityRange: range(1, 11),
               pricewithoutdph: 0,
@@ -131,9 +131,8 @@ export default function withOrderForm(WrappedComponent) {
         order: { products }
       } = this.state;
       const updateProduct = products.map(product => {
-        const productName = `productname_${product.productID}`;
-        return productName === id
-          ? { ...product, [productName]: value }
+        return product.productID === id
+          ? { ...product, productname: value }
           : product;
       });
       this.setState({
@@ -171,8 +170,7 @@ export default function withOrderForm(WrappedComponent) {
     // extract product names (this is needed to pass result to validation func isRequired)
     extractProductName = products => {
       return products.reduce((acc, product) => {
-        acc[`productname_${product.productID}`] =
-          product[`productname_${product.productID}`];
+        acc[product.productID] = product.productname;
         return acc;
       }, {});
     };
@@ -206,23 +204,67 @@ export default function withOrderForm(WrappedComponent) {
         if (product.value === value) return product;
       });
       this.props.validationFunctions.isRequired({ [productIdnf]: value });
-      // update selected product and add its price
-      return this.state.order.products.map(product => {
-        const { selectedQuantity } = product;
-        const setDefaultQuantity = selectedQuantity == 0 ? 1 : selectedQuantity;
-
-        return Object.keys(product).includes(productIdnf)
-          ? {
+      /* update selected product and add its price 
+        if you choose the same product again function uniqBy remove the duplicity
+      */
+      return uniqBy(
+        this.state.order.products.map(product => {
+          const { selectedQuantity } = product;
+          const setDefaultQuantity =
+            selectedQuantity == 0 ? 1 : selectedQuantity;
+          if (Object.values(product).includes(value)) {
+            return {
               ...product,
-              [productIdnf]: value,
+              selectedQuantity: setDefaultQuantity + 1
+            };
+          } else if (Object.values(product).includes(productIdnf)) {
+            return {
+              ...product,
+              productname: value,
               selectedQuantity: setDefaultQuantity,
               pricewithoutdph,
               pricewithdph,
               totalpricewithoutdph: pricewithoutdph * setDefaultQuantity,
               totalpricewithdph: pricewithdph * setDefaultQuantity
-            }
-          : product;
-      });
+            };
+          } else {
+            return product;
+          }
+        }),
+        "productname"
+      );
+    };
+
+    formatOrderResponse = order => {
+      return (
+        <div>
+          <h1 style="text-align:center;">New Order created!</h1>
+          {order.map(
+            (
+              {
+                productID,
+                productname,
+                quantity,
+                totalsumwithoutdph,
+                totalsumwithdph
+              },
+              index
+            ) => (
+              <div key={productID}>
+                <strong>Product: {productname} </strong> with totalQuantity:
+                <strong>{quantity} </strong>
+                {order.length - 1 === index && (
+                  <p>
+                    <strong>totalsumwithoutdph: </strong> {totalsumwithoutdph}$
+                    <br />
+                    <strong> totalsumwithdph: </strong> {totalsumwithdph}$
+                  </p>
+                )}
+              </div>
+            )
+          )}
+        </div>
+      );
     };
 
     handleDynamicSelectChange = (productIdnf, value) => {
@@ -236,12 +278,22 @@ export default function withOrderForm(WrappedComponent) {
       const { totalsumwithoutdph, totalsumwithdph } = this.calculateTotalSum(
         updateProduct
       );
+      // check if number is float and format its price with two fixed point notation
+      const roundSumWithoutDph =
+        totalsumwithoutdph % 1 === 0
+          ? totalsumwithoutdph
+          : Number(Number(totalsumwithoutdph).toFixed(2)); // toFixed() return string ..its needs to be cast on Number
+      const roundSumWitDph =
+        totalsumwithdph % 1 === 0
+          ? totalsumwithdph
+          : Number(Number(totalsumwithdph).toFixed(2));
+
       this.setState({
         order: {
           ...this.state.order,
           products: updateProduct,
-          totalsumwithoutdph,
-          totalsumwithdph
+          totalsumwithoutdph: roundSumWithoutDph,
+          totalsumwithdph: roundSumWitDph
         }
       });
     };
@@ -258,9 +310,8 @@ export default function withOrderForm(WrappedComponent) {
         this.setState({
           customerFilterResult: filter
         });
-      } catch (ApolloError) {
-        //TODO handling error this will be fix in another commit same for productFilterChange
-        console.log("ApolloError", ApolloError);
+      } catch (customerFilterError) {
+        this.props.validationFunctions.handleServerErrors(customerFilterError);
       }
     }, 200);
 
@@ -275,8 +326,8 @@ export default function withOrderForm(WrappedComponent) {
         this.setState({
           productFilterResult: filter
         });
-      } catch (ApolloError) {
-        console.log("ApolloError", ApolloError);
+      } catch (productFilterError) {
+        this.props.validationFunctions.handleServerErrors(productFilterError);
       }
     });
 
@@ -288,6 +339,7 @@ export default function withOrderForm(WrappedComponent) {
         addProduct: () => this.addProduct(),
         customerFilterChange: (client, id, value) =>
           this.customerFilterChange(client, id, value),
+        formatOrderResponse: order => this.formatOrderResponse(order),
         handleInputChange: event => this.handleInputChange(event),
         handleDynamicInputChange: event => this.handleDynamicInputChange(event),
         handleDynamicSelectChange: (nextProductID, value) =>

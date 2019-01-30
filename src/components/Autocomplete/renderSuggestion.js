@@ -18,8 +18,8 @@ const Suggestions = ({
           const isSelected = selected === value;
           return (
             <div
-              id={index}
               key={id}
+              id={index}
               className={classnames(
                 styles.autocomplete__result__item,
                 isSelected && styles["autocomplete__result__item--selected"],
@@ -42,10 +42,10 @@ Suggestions.propTypes = {
   cursor: PropTypes.number.isRequired,
   filterBy: PropTypes.string.isRequired,
   handleSelectChange: PropTypes.func.isRequired,
-  selected: PropTypes.bool.isRequired,
+  selected: PropTypes.string.isRequired,
   suggestions: PropTypes.arrayOf(
-    PropTypes.shape({ id: PropTypes.string, value: PropTypes.string })
-  ).isRequired,
+    PropTypes.shape({ id: PropTypes.number, value: PropTypes.string })
+  ).isRequired
 };
 
 export default Suggestions;

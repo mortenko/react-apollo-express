@@ -16,13 +16,13 @@ const RenderProduct = props => {
     removeProduct,
     product: { productID, selectedQuantity, quantityRange, ...product }
   } = props;
-  const productValue = product[`productname_${productID}`];
+  const productValue = product["productname"];
   return (
     <Fragment>
       <Grid item xs={7}>
         <AutoComplete
           debounceInputChange={debounceInputChange}
-          filterBy={`productname_${productID}`}
+          filterBy={productID}
           filterResult={productFilterResult}
           handleInputChange={handleDynamicInputChange}
           handleSelectChange={handleDynamicSelectChange}
@@ -59,7 +59,7 @@ const RenderProduct = props => {
         </TextField>
       </Grid>
       <Grid item>
-        {productID === 1 ? (
+        {productID === "productname_1" ? (
           <Fab
             color="primary"
             disabled={productsLength === 9}

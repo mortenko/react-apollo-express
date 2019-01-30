@@ -7,7 +7,8 @@ import { enhanceWithBaseHoc } from "../Dialog/dialogHoc";
 const initialErrorValues = {
   firstname: {},
   lastname: {},
-  email: {}
+  email: {},
+  productname_1: []
 };
 
 const initialFormValues = {
@@ -18,8 +19,8 @@ const initialFormValues = {
     incrementProductID: 2,
     products: [
       {
-        productID: 1,
-        productname_1: "",
+        productID: "productname_1",
+        productname: "",
         quantityRange: range(1, 11),
         selectedQuantity: 0,
         pricewithoutdph: 0,

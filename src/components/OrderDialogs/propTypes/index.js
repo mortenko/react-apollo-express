@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 
 const orderProductPropTypes = PropTypes.shape({
-  productID: PropTypes.number,
+  productID: PropTypes.string,
   productname: PropTypes.string,
   quantity: PropTypes.arrayOf(PropTypes.number),
   selectedQuantity: PropTypes.number,
@@ -27,7 +27,7 @@ const orderDefaultProps = {
   incrementProductID: 2,
   products: [
     {
-      productID: 1,
+      productID: "productname_1",
       productname: "",
       quantity: [1, 2, 3, 4, 5],
       selectedQuantity: 0,
