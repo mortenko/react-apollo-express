@@ -13,7 +13,7 @@ const BaseCustomerForm = ({
   handleInputChange,
   printErrorMessage,
   validationFunctions: { isEmail, isPhoneNumber, isLength, isRequired },
-  validationErrors
+  validationState: { validationErrors }
 }) => {
   const {
     customer: {
@@ -142,13 +142,15 @@ BaseCustomerForm.propTypes = {
   customerState: customerPropTypes,
   handleInputChange: PropTypes.func.isRequired,
   printErrorMessage: PropTypes.func.isRequired,
-  validationErrors: PropTypes.object,
-  validationFunctions: PropTypes.objectOf(PropTypes.func)
+  validationFunctions: PropTypes.objectOf(PropTypes.func),
+  validationState: PropTypes.shape({
+    validationErrors: PropTypes.object
+  })
 };
 
 BaseCustomerForm.defaultProps = {
   customerState: customerDefaultProps,
-  validationErrors: {},
+  validationState: {},
   validationFunctions: {}
 };
 

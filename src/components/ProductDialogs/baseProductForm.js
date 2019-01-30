@@ -26,10 +26,10 @@ const BaseProductForm = ({
     }
   },
   handleInputChange,
-  validationErrors,
   renderBarcode,
   printErrorMessage,
-  validationFunctions: { isLength, isRequired, isNumber, isUUID }
+  validationFunctions: { isLength, isRequired, isNumber, isUUID },
+  validationState: { validationErrors }
 }) => {
   return (
     <Grid container>
@@ -151,7 +151,9 @@ const BaseProductForm = ({
               }}
             />
             <div className={styles.barcode__button}>
-              <Button warning onClick={renderBarcode}>Generate UUID</Button>
+              <Button warning onClick={renderBarcode}>
+                Generate UUID
+              </Button>
             </div>
           </div>
           <Alert>{printErrorMessage(validationErrors.barcode)}</Alert>
@@ -177,15 +179,17 @@ BaseProductForm.propTypes = {
     product: productPropTypes
   }),
   renderBarcode: PropTypes.func.isRequired,
-  validationErrors: PropTypes.object,
-  validationFunctions: PropTypes.objectOf(PropTypes.func)
+  validationFunctions: PropTypes.objectOf(PropTypes.func),
+  validationState: PropTypes.shape({
+    validationErrors: PropTypes.object
+  })
 };
 
 BaseProductForm.defaultProps = {
   productState: PropTypes.shape({
     product: productDefaultProps
   }),
-  validationErrors: {},
+  validationState: {},
   validationFunctions: {}
 };
 

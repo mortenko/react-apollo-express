@@ -21,7 +21,7 @@ const BaseOrderForm = props => {
     productFilterChange,
     printErrorMessage,
     removeProduct,
-    validationErrors
+    validationState: { validationErrors }
   } = props;
   const {
     order: {
@@ -93,9 +93,7 @@ const BaseOrderForm = props => {
                   removeProduct={removeProduct}
                 />
                 <Alert>
-                  {printErrorMessage(
-                    validationErrors[`productname_${product.productID}`]
-                  )}
+                  {printErrorMessage(validationErrors[product.productID])}
                 </Alert>
               </Fragment>
             ))}
@@ -148,7 +146,7 @@ BaseOrderForm.defaultProps = {
     order: orderDefaultProps,
     productFilterResult: []
   },
-  validationErrors: {}
+  validationState: {}
 };
 
 BaseOrderForm.propTypes = {
@@ -167,7 +165,9 @@ BaseOrderForm.propTypes = {
   printErrorMessage: PropTypes.func.isRequired,
   productFilterChange: PropTypes.func.isRequired,
   removeProduct: PropTypes.func.isRequired,
-  validationErrors: PropTypes.object
+  validationState: PropTypes.shape({
+    validationErrors: PropTypes.object
+  })
 };
 
 export default BaseOrderForm;
