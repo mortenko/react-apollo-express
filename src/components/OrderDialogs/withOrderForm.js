@@ -235,38 +235,6 @@ export default function withOrderForm(WrappedComponent) {
       );
     };
 
-    formatOrderResponse = order => {
-      return (
-        <div>
-          <h1 style="text-align:center;">New Order created!</h1>
-          {order.map(
-            (
-              {
-                productID,
-                productname,
-                quantity,
-                totalsumwithoutdph,
-                totalsumwithdph
-              },
-              index
-            ) => (
-              <div key={productID}>
-                <strong>Product: {productname} </strong> with totalQuantity:
-                <strong>{quantity} </strong>
-                {order.length - 1 === index && (
-                  <p>
-                    <strong>totalsumwithoutdph: </strong> {totalsumwithoutdph}$
-                    <br />
-                    <strong> totalsumwithdph: </strong> {totalsumwithdph}$
-                  </p>
-                )}
-              </div>
-            )
-          )}
-        </div>
-      );
-    };
-
     handleDynamicSelectChange = (productIdnf, value) => {
       let updateProduct = [];
       if (typeof value === "number") {
@@ -339,7 +307,6 @@ export default function withOrderForm(WrappedComponent) {
         addProduct: () => this.addProduct(),
         customerFilterChange: (client, id, value) =>
           this.customerFilterChange(client, id, value),
-        formatOrderResponse: order => this.formatOrderResponse(order),
         handleInputChange: event => this.handleInputChange(event),
         handleDynamicInputChange: event => this.handleDynamicInputChange(event),
         handleDynamicSelectChange: (nextProductID, value) =>

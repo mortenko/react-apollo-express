@@ -1,0 +1,19 @@
+@import "../../../styles/colors";
+@import "../../../styles/shared";
+
+.formatOrderResponse__block {
+  span {
+    @include padding(3px, 3px, 3px, 3px);
+  }
+  margin-top: 10px;
+  div:last-child {
+    padding-bottom: 10px;
+  }
+}
+
+.formatOrderResponse__title {
+  @include color($black);
+}
+.formatOrderResponse__value {
+  @include color($danger);
+}

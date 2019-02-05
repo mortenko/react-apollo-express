@@ -12,6 +12,7 @@ import {
   FETCH_ORDERS
 } from "../../../graphql-client/queries/order";
 import { toastDefaultProps, toastPropTypes } from "../../../globalProps";
+import FormatOrderResponse from "../formatOrderResponse";
 
 const DialogCreateOrder = ({
   open,
@@ -19,7 +20,6 @@ const DialogCreateOrder = ({
   data: { pageNumber, itemsCountPerPage },
   newData,
   extractProductName,
-  formatOrderResponse,
   resetForm,
   toast,
   validationFunctions: { isRequired, hasValidationErrors, handleServerErrors },
@@ -82,9 +82,9 @@ const DialogCreateOrder = ({
                             order: { incrementProductID, products, ...order }
                           } = newData;
                           const {
-                            // data: {
-                            createOrder: { order: orderResponse }
-                            // }
+                            data: {
+                              createOrder: { order: orderCreateResponse }
+                            }
                           } = await createOrder({
                             variables: {
                               order: {
@@ -105,9 +105,13 @@ const DialogCreateOrder = ({
                           });
                           closeModal();
                           resetForm();
-                          const message = formatOrderResponse(orderResponse);
                           toast.addToastMessage({
-                            content: message,
+                            content: (
+                              <FormatOrderResponse
+                                title="New Order was succesfully created"
+                                body={orderCreateResponse}
+                              />
+                            ),
                             type: "success",
                             delay: 3000
                           });
@@ -136,7 +140,6 @@ DialogCreateOrder.propTypes = {
     itemsCountPerPage: PropTypes.number
   }).isRequired,
   extractProductName: PropTypes.func.isRequired,
-  formatOrderResponse: PropTypes.func.isRequired,
   newData: PropTypes.object.isRequired,
   open: PropTypes.bool.isRequired,
   resetForm: PropTypes.func.isRequired,
