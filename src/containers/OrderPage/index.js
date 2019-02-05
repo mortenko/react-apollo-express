@@ -22,6 +22,7 @@ import { CREATE_ORDER_MODAL } from "components/OrderDialogs/createOrder";
 import { FETCH_ORDERS } from "../../graphql-client/queries/order";
 import { AddCircle } from "../../assets/material-ui-icons";
 import { enhanceWithContainerHoc } from "../withContainerHoc";
+import { DELETE_ORDER_MODAL } from "components/OrderDialogs/deleteOrder";
 
 const ProductPage = ({
   paginationData: { pageNumber, itemsCountPerPage },
@@ -81,6 +82,7 @@ const ProductPage = ({
                 {orders.map(
                   ({
                     orderItemID,
+                    orderID,
                     totalsumwithoutdph,
                     totalsumwithdph,
                     quantity,
@@ -110,7 +112,9 @@ const ProductPage = ({
                       <TableCell>
                         <DeleteButtonAction
                           deleteAction={() => {
-                            console.log("delete Order");
+                            openModal(DELETE_ORDER_MODAL, {
+                              orderID,
+                            });
                           }}
                         />
                       </TableCell>

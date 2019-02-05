@@ -1,6 +1,7 @@
 const OrderItem = `
  type OrderItem {
   orderItemID: ID!
+  orderID: Int
   quantity: Int
   totalsumwithdph: Float
   totalsumwithoutdph: Float
@@ -16,7 +17,7 @@ const OrderItem = `
   cursor: Int! 
 }
 
- input OrderProduct {
+ input CreateOrderProduct {
    productID: String!
    productname: String!
    selectedQuantity: Int!
@@ -26,30 +27,39 @@ const OrderItem = `
   firstname: String!
   lastname: String!
   email:String!
-  products:[OrderProduct]
+  products:[CreateOrderProduct]
   totalsumwithoutdph: Float!
   totalsumwithdph: Float! 
  }
-
-  type OrderItemResponse {
+ 
+  type OrderItemProduct {
     productID: Int!
     productname: String!
-    orderID: Int!
     quantity: Int!
-    totalsumwithoutdph: Float
-    totalsumwithdph: Float
+    pricewithoutdph: Float
+    pricewithdph: Float  
+  }
+
+  type OrderResponse {
+    orderID: Int!
+    products:[OrderItemProduct]
+    totalsumwithoutdph: Float!
+    totalsumwithdph: Float!
   } 
 
-  type OrderResponse {  
-    order: [OrderItemResponse]
+  type OrderItemResponse {  
+    order: OrderResponse
     mutationResponse: MutationResponse  
   }
-
+ 
   extend type Query {
    orders(cursor: Int!, pageNumber: Int!): Orders
+   fetchOrdersByID(orderID: Int!): OrderItemResponse
   }
+
   extend type Mutation {
-   createOrder(order: CreateOrderInput) : OrderResponse
+   createOrder(order: CreateOrderInput) : OrderItemResponse
+   deleteOrder(orderID: Int!): OrderItemResponse
   }
 `;
 export default OrderItem;

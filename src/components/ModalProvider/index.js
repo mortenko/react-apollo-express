@@ -25,6 +25,9 @@ import DialogCopyProduct, {
 import DialogCreateOrder, {
   CREATE_ORDER_MODAL
 } from "components/OrderDialogs/createOrder";
+import DialogDeleteOrder, {
+  DELETE_ORDER_MODAL
+} from "components/OrderDialogs/deleteOrder";
 
 function ModalProvider({ modal: { currentModal, isOpen, ...props } }) {
   switch (currentModal) {
@@ -44,6 +47,8 @@ function ModalProvider({ modal: { currentModal, isOpen, ...props } }) {
       return <DialogCopyProduct open={isOpen} {...props} />;
     case CREATE_ORDER_MODAL:
       return <DialogCreateOrder open={isOpen} {...props} />;
+    case DELETE_ORDER_MODAL:
+      return <DialogDeleteOrder open={isOpen} {...props} />;
     default:
       return null;
   }

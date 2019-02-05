@@ -69,6 +69,86 @@ const OrderResolvers = {
           fetchOrdersError
         );
       }
+    },
+    fetchOrdersByID: async (_, { orderID }) => {
+      try {
+        const getProductsByOrderID = await models.OrderItem.findAll({
+          attributes: [
+            "orderID",
+            "quantity",
+            "totalsumwithoutdph",
+            "totalsumwithdph"
+          ],
+          include: [
+            {
+              model: models.Product,
+              required: true,
+              attributes: [
+                "productID",
+                "productname",
+                "pricewithoutdph",
+                "pricewithdph"
+              ]
+            }
+          ],
+          where: {
+            orderID
+          },
+          order: ["orderItemID"]
+        });
+        const formatProductsByOrderID = getProductsByOrderID.reduce(
+          (
+            acc,
+            {
+              dataValues: {
+                orderID,
+                quantity,
+                totalsumwithoutdph,
+                totalsumwithdph,
+                Product: {
+                  dataValues: {
+                    productID,
+                    productname,
+                    pricewithoutdph,
+                    pricewithdph
+                  }
+                }
+              }
+            }
+          ) => {
+            acc["orderID"] = orderID;
+            if (!acc["products"]) {
+              acc["products"] = [];
+            }
+            acc["products"] = acc["products"].concat([
+              {
+                productID,
+                productname,
+                pricewithoutdph,
+                pricewithdph,
+                quantity
+              }
+            ]);
+            acc["totalsumwithoutdph"] = totalsumwithoutdph;
+            acc["totalsumwithdph"] = totalsumwithdph;
+            return acc;
+          },
+          {}
+        );
+        return successResponse(
+          {
+            order: formatProductsByOrderID
+          },
+          200,
+          "Fetched orders by orderID was successfull"
+        );
+      } catch (fetchOrdersByIDError) {
+        return errorResponse(
+          "Cant fetch orders by orderID from DB",
+          404,
+          fetchOrdersByIDError
+        );
+      }
     }
     // order: (_, { id }) => {
     //   return models.Order.find({
@@ -94,7 +174,6 @@ const OrderResolvers = {
   Mutation: {
     createOrder: async (_, { order }) => {
       const { email, totalsumwithdph, totalsumwithoutdph, products } = order;
-
       try {
         // find customerID by email
         const {
@@ -147,7 +226,7 @@ const OrderResolvers = {
             );
           }
           try {
-            const order = productsFromDB.map(
+            const bulkOrder = productsFromDB.map(
               ({ dataValues: { productID, productname } }, index) => {
                 return {
                   productID,
@@ -159,9 +238,25 @@ const OrderResolvers = {
                 };
               }
             );
-            await models.OrderItem.bulkCreate(order);
+            await models.OrderItem.bulkCreate(bulkOrder);
+            const formatProductsResponse = productsFromDB.map(
+              ({ productID, productname }, index) => {
+                return {
+                  productID,
+                  productname,
+                  quantity: products[index]["selectedQuantity"]
+                };
+              }
+            );
             return successResponse(
-              { order },
+              {
+                order: {
+                  orderID,
+                  products: formatProductsResponse,
+                  totalsumwithoutdph,
+                  totalsumwithdph
+                }
+              },
               200,
               "New order was successfully created"
             );
@@ -186,6 +281,30 @@ const OrderResolvers = {
             email: { isEmail: "Email address does not exist or is not valid" }
           },
           findByEmailError
+        );
+      }
+    },
+    deleteOrder: async (_, { orderID }) => {
+      try {
+        await models.Order.destroy({
+          where: {
+            orderID
+          }
+        });
+        return successResponse(
+          {
+            order: {
+              orderID
+            }
+          },
+          200,
+          "Order was successfully deleted"
+        );
+      } catch (deleteOrderError) {
+        return errorResponse(
+          "Can't delete order from DB",
+          500,
+          deleteOrderError
         );
       }
     }

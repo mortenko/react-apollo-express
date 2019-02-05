@@ -6,6 +6,7 @@ const FETCH_ORDERS = gql`
       @connection(key: "orders", filter: ["pageNumber"]) {
       orders {
         orderItemID
+        orderID
         quantity
         totalsumwithoutdph
         totalsumwithdph
@@ -29,10 +30,12 @@ const CREATE_ORDER = gql`
   mutation createOrder($order: CreateOrderInput) {
     createOrder(order: $order) {
       order {
-        productID
-        productname
         orderID
-        quantity
+        products {
+          productID
+          productname
+          quantity
+        }
         totalsumwithoutdph
         totalsumwithdph
       }
@@ -45,4 +48,43 @@ const CREATE_ORDER = gql`
   }
 `;
 
-export { FETCH_ORDERS, CREATE_ORDER };
+const DELETE_ORDER = gql`
+  mutation deleteOrder($orderID: Int!) {
+    deleteOrder(orderID: $orderID) {
+      order {
+        orderID
+      }
+      mutationResponse {
+        code
+        message
+        success
+      }
+    }
+  }
+`;
+
+const FETCH_ORDERS_BY_ID = gql`
+  query fetchOrdersByID($orderID: Int!) {
+    fetchOrdersByID(orderID: $orderID) {
+      order {
+        orderID
+        products {
+          productID,
+          productname
+          pricewithoutdph
+          pricewithdph
+          quantity
+        }
+        totalsumwithoutdph
+        totalsumwithdph
+      }
+      mutationResponse {
+        code
+        message
+        success
+      }
+    }
+  }
+`;
+
+export { FETCH_ORDERS, CREATE_ORDER, DELETE_ORDER, FETCH_ORDERS_BY_ID };
