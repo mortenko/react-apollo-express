@@ -4,7 +4,6 @@ import Grid from "@material-ui/core/Grid";
 import AutoComplete from "components/Autocomplete";
 import Alert from "components/Alert";
 import { DialogContent, InputAdornment, TextField } from "components/Dialog";
-import styles from "./baseOrderForm.scss";
 import RenderProduct from "./renderProduct";
 import { AttachMoney } from "../../assets/material-ui-icons";
 import { orderPropTypes, orderDefaultProps } from "./propTypes";

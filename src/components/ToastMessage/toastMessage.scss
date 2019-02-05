@@ -1,15 +1,16 @@
 @import "../../styles/colors";
 
 .toaster {
- border-radius: 4px;
- padding: 10px;
- z-index: 100;
+  border-radius: 4px;
+  padding: 10px;
+  z-index: 100;
 }
 
 .toaster--success {
   background-color: $success;
-  color: $font-color-success
+  color: $font-color-success;
 }
+
 .toaster--danger {
   background-color: $danger;
   color: $font-color-danger;
