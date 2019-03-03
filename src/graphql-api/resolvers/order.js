@@ -1,3 +1,4 @@
+import { differenceBy, range } from "lodash";
 import models from "../../../db/models";
 import { SELECT_ORDERS, COUNT_ALL_ORDERS } from "../raw-queries/order";
 import {
@@ -5,7 +6,6 @@ import {
   successResponse,
   customErrorValidationResponse
 } from "../utils/response_handler";
-import { differenceBy } from "lodash";
 
 const OrderResolvers = {
   Query: {
@@ -72,13 +72,27 @@ const OrderResolvers = {
     },
     fetchOrdersByID: async (_, { orderID }) => {
       try {
-        const getProductsByOrderID = await models.OrderItem.findAll({
+        const getTotalSum = models.OrderItem.findOne({
           attributes: [
-            "orderID",
-            "quantity",
-            "totalsumwithoutdph",
-            "totalsumwithdph"
+            [
+              models.sequelize.fn(
+                "sum",
+                models.sequelize.col("totalsumwithoutdph")
+              ),
+              "totalsumwithouthdph"
+            ],
+            [
+              models.sequelize.fn(
+                "sum",
+                models.sequelize.col("totalsumwithdph")
+              ),
+              "totalsumwithdph"
+            ]
           ],
+          where: { orderID }
+        });
+        const getProductsByOrderID = models.OrderItem.findAll({
+          attributes: [["quantity", "selectedQuantity"]],
           include: [
             {
               model: models.Product,
@@ -89,6 +103,21 @@ const OrderResolvers = {
                 "pricewithoutdph",
                 "pricewithdph"
               ]
+            },
+            {
+              model: models.Order,
+              required: true,
+              attributes: ["customerID"],
+              include: [
+                {
+                  model: models.Customer,
+                  required: true,
+                  attributes: ["firstname", "lastname", "email"]
+                }
+              ],
+              where: {
+                orderID
+              }
             }
           ],
           where: {
@@ -96,15 +125,19 @@ const OrderResolvers = {
           },
           order: ["orderItemID"]
         });
-        const formatProductsByOrderID = getProductsByOrderID.reduce(
+        const [
+          {
+            dataValues: { totalsumwithouthdph, totalsumwithdph }
+          },
+          productsByOrderID
+        ] = await Promise.all([getTotalSum, getProductsByOrderID]);
+
+        const formatProductsByOrderID = productsByOrderID.reduce(
           (
             acc,
             {
               dataValues: {
-                orderID,
-                quantity,
-                totalsumwithoutdph,
-                totalsumwithdph,
+                selectedQuantity,
                 Product: {
                   dataValues: {
                     productID,
@@ -112,24 +145,41 @@ const OrderResolvers = {
                     pricewithoutdph,
                     pricewithdph
                   }
-                }
+                },
+                Orders
               }
             }
           ) => {
-            acc["orderID"] = orderID;
             if (!acc["products"]) {
               acc["products"] = [];
             }
             acc["products"] = acc["products"].concat([
               {
-                productID,
+                productID: `productname_ ${productID}`,
                 productname,
                 pricewithoutdph,
                 pricewithdph,
-                quantity
+                totalpricewithoutdph: pricewithoutdph * selectedQuantity,
+                totalpricewithdph: pricewithdph * selectedQuantity,
+                selectedQuantity,
+                quantityRange: range(1, 10)
               }
             ]);
-            acc["totalsumwithoutdph"] = totalsumwithoutdph;
+            Orders.forEach(
+              ({
+                dataValues: {
+                  Customer: {
+                    dataValues: { firstname, lastname, email }
+                  }
+                }
+              }) => {
+                acc["firstname"] = firstname;
+                acc["lastname"] = lastname;
+                acc["email"] = email;
+                // return acc;
+              }
+            );
+            acc["totalsumwithoutdph"] = totalsumwithouthdph;
             acc["totalsumwithdph"] = totalsumwithdph;
             return acc;
           },
@@ -244,7 +294,7 @@ const OrderResolvers = {
                 return {
                   productID,
                   productname,
-                  quantity: products[index]["selectedQuantity"]
+                  selectedQuantity: products[index]["selectedQuantity"]
                 };
               }
             );

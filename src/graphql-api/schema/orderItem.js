@@ -31,17 +31,23 @@ const OrderItem = `
   totalsumwithoutdph: Float!
   totalsumwithdph: Float! 
  }
- 
+
   type OrderItemProduct {
-    productID: Int!
+    productID: String!
     productname: String!
-    quantity: Int!
+    selectedQuantity: Int!
+    quantityRange: [Int]!
     pricewithoutdph: Float
     pricewithdph: Float  
+    totalpricewithoutdph: Float,
+    totalpricewithdph: Float
   }
 
   type OrderResponse {
     orderID: Int!
+    firstname: String
+    lastname: String
+    email: String
     products:[OrderItemProduct]
     totalsumwithoutdph: Float!
     totalsumwithdph: Float!

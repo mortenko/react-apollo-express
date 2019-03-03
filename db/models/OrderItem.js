@@ -42,8 +42,17 @@ module.exports = (sequelize, DataTypes) => {
     }
   });
   OrderItem.associate = models => {
-    OrderItem.belongsTo(models.Product, { foreignKey: "productID", onDelete: "cascade", hooks: "true" });
-    OrderItem.hasMany(models.Order, { foreignKey: "orderID", onDelete: "cascade", hooks: "true" });
+    OrderItem.belongsTo(models.Product, {
+      foreignKey: "productID",
+      onDelete: "cascade",
+      hooks: "true"
+    });
+    OrderItem.hasMany(models.Order, {
+      foreignKey: "orderID",
+      onDelete: "cascade",
+      hooks: "true",
+      sourceKey: "orderID" // join according to orderID not orderItemID
+    });
   };
   return OrderItem;
 };
