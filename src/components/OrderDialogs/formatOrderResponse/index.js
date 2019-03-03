@@ -8,14 +8,14 @@ const FormatOrderResponse = ({
 }) => (
   <div className={styles.formatOrderResponse__block}>
     {title && <h5>{title}</h5>}
-    {products.map(({ productID, productname, quantity }) => (
+    {products.map(({ productID, productname, selectedQuantity }) => (
       <div key={productID}>
         <span className={styles.formatOrderResponse__title}>Product:</span>
         <span className={styles.formatOrderResponse__value}>{productname}</span>
         <span className={styles.formatOrderResponse__title}>
           with total Quantity:
         </span>
-        <span className={styles.formatOrderResponse__value}>{quantity}</span>
+        <span className={styles.formatOrderResponse__value}>{selectedQuantity}</span>
       </div>
     ))}
     <div className={styles.formatOrderResponse__block}>

@@ -4,7 +4,8 @@ const SELECT_ORDERS =
   'INNER JOIN "Orders" ON "oi"."orderID" = "Orders"."orderID"' +
   'INNER JOIN "Products" ON "oi"."productID" = "Products"."productID" ' +
   'INNER JOIN "Customers" as "c" ON "Orders"."customerID" = "c"."customerID"' +
-  'LIMIT :limit OFFSET :offset ';
+  'ORDER BY "oi"."orderItemID"'+
+  'LIMIT :limit OFFSET :offset';
 const COUNT_ALL_ORDERS =
   'SELECT count("OrderItem"."orderItemID") AS "count"' +
   'FROM "OrderItems" AS "OrderItem" ' +

@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import CreateProduct from "../CreateProduct";
+import DialogCreateProduct from "../CreateProduct";
 import Loader from "components/Loader";
 import { Query } from "react-apollo";
 import { FETCH_PRODUCT } from "../../../graphql-client/queries/product";
@@ -14,7 +14,7 @@ const DialogCopyProduct = ({ data: { productID, ...restData }, ...props }) => (
         product: { productID, ...product }
       } = data;
       return (
-        <CreateProduct
+        <DialogCreateProduct
           formData={{ product }}
           title="Copy Product"
           data={restData}

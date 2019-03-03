@@ -23,6 +23,7 @@ import { FETCH_ORDERS } from "../../graphql-client/queries/order";
 import { AddCircle } from "../../assets/material-ui-icons";
 import { enhanceWithContainerHoc } from "../withContainerHoc";
 import { DELETE_ORDER_MODAL } from "components/OrderDialogs/deleteOrder";
+import { COPY_ORDER_MODAL } from "components/OrderDialogs/copyOrder";
 
 const ProductPage = ({
   paginationData: { pageNumber, itemsCountPerPage },
@@ -113,7 +114,7 @@ const ProductPage = ({
                         <DeleteButtonAction
                           deleteAction={() => {
                             openModal(DELETE_ORDER_MODAL, {
-                              orderID,
+                              orderID
                             });
                           }}
                         />
@@ -121,7 +122,11 @@ const ProductPage = ({
                       <TableCell>
                         <CopyButtonAction
                           copyAction={() => {
-                            console.log("copy  Order");
+                            openModal(COPY_ORDER_MODAL, {
+                              orderID,
+                              pageNumber,
+                              itemsCountPerPage
+                            });
                           }}
                         />
                       </TableCell>

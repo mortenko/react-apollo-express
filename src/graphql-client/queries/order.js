@@ -34,7 +34,7 @@ const CREATE_ORDER = gql`
         products {
           productID
           productname
-          quantity
+          selectedQuantity
         }
         totalsumwithoutdph
         totalsumwithdph
@@ -67,13 +67,18 @@ const FETCH_ORDERS_BY_ID = gql`
   query fetchOrdersByID($orderID: Int!) {
     fetchOrdersByID(orderID: $orderID) {
       order {
-        orderID
+        firstname
+        lastname
+        email
         products {
-          productID,
+          productID
           productname
           pricewithoutdph
           pricewithdph
-          quantity
+          totalpricewithoutdph
+          totalpricewithdph
+          selectedQuantity
+          quantityRange
         }
         totalsumwithoutdph
         totalsumwithdph

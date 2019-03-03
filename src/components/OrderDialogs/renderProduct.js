@@ -43,7 +43,7 @@ const RenderProduct = props => {
           helperText={
             productValue === "" && (
               <span style={{ color: "red" }}>
-                Please select product before quantity{" "}
+                Please select product before quantity
               </span>
             )
           }
@@ -77,13 +77,17 @@ const RenderProduct = props => {
   );
 };
 
+RenderProduct.defaultProps = {
+  productFilterResult: []
+};
+
 RenderProduct.propTypes = {
   addProduct: PropTypes.func.isRequired,
   debounceInputChange: PropTypes.func.isRequired,
   handleDynamicInputChange: PropTypes.func.isRequired,
   handleDynamicSelectChange: PropTypes.func.isRequired,
   product: orderProductPropTypes.isRequired,
-  productFilterResult: PropTypes.array.isRequired,
+  productFilterResult: PropTypes.array,
   productsLength: PropTypes.number.isRequired,
   removeProduct: PropTypes.func.isRequired
 };

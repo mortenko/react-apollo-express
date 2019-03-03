@@ -21,6 +21,7 @@ const DialogCreateOrder = ({
   newData,
   extractProductName,
   resetForm,
+  title,
   toast,
   validationFunctions: { isRequired, hasValidationErrors, handleServerErrors },
   ...props
@@ -41,7 +42,7 @@ const DialogCreateOrder = ({
             <Grid container>
               <Grid item xs={12}>
                 <DialogTitle className={styles.dialog__title}>
-                  Create Order
+                  {title}
                 </DialogTitle>
               </Grid>
               <Grid item xs={12}>
@@ -143,11 +144,13 @@ DialogCreateOrder.propTypes = {
   newData: PropTypes.object.isRequired,
   open: PropTypes.bool.isRequired,
   resetForm: PropTypes.func.isRequired,
+  title: PropTypes.string,
   toast: toastPropTypes,
   validationFunctions: PropTypes.objectOf(PropTypes.func)
 };
 
 DialogCreateOrder.defaultProps = {
+  title: "CREATE ORDER",
   toast: toastDefaultProps,
   validationFunctions: {}
 };

@@ -24,14 +24,14 @@ const ToastProvider = ({ toasts, removeToastMessage }) => {
 export default ToastProvider;
 
 ToastProvider.propTypes = {
+  removeToastMessage: PropTypes.func.isRequired,
   toasts: PropTypes.arrayOf(
     PropTypes.shape({
-      content: PropTypes.string,
+      content: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
       type: PropTypes.string,
       delay: PropTypes.number
     })
-  ),
-  removeToastMessage: PropTypes.func.isRequired
+  )
 };
 
 ToastProvider.defaultProps = {

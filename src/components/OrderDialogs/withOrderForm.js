@@ -176,10 +176,13 @@ export default function withOrderForm(WrappedComponent) {
     };
 
     resetForm = () => {
-      this.props.resetErrorValues();
-      this.setState({
-        ...this.props.initialFormValues
-      });
+      const { formData, resetErrorValues } = this.props;
+      resetErrorValues();
+      if (typeof formData === "undefined") {
+        this.setState({
+          ...this.props.initialFormValues
+        });
+      }
     };
 
     calculateTotalSum = product => {
