@@ -1,3 +1,5 @@
+@import "../../styles/colors";
+
 .dialog {
   border-radius: 5%;
 }
@@ -15,4 +17,11 @@
 }
 .dialog__upload__text {
   margin-top: 8px;
+}
+.dialog__disable {
+  input,
+  * {
+    pointer-events: none;
+    color: rgba(0, 0, 0, 0.38);
+  }
 }

@@ -3,8 +3,12 @@ import PropTypes from "prop-types";
 import Grid from "@material-ui/core/Grid";
 import AutoComplete from "components/Autocomplete";
 import Alert from "components/Alert";
+import styles from "./baseOrderForm.scss";
 import { DialogContent, InputAdornment, TextField } from "components/Dialog";
-import RenderProduct from "./renderProduct";
+import RenderProduct, {
+  AddProductIcon,
+  RemoveProductIcon
+} from "./renderProduct";
 import { AttachMoney } from "../../assets/material-ui-icons";
 import { orderPropTypes, orderDefaultProps } from "./propTypes";
 
@@ -12,6 +16,7 @@ const BaseOrderForm = props => {
   const {
     addProduct,
     customerFilterChange,
+    disabled,
     handleInputChange,
     handleSelectChange,
     handleDynamicInputChange,
@@ -37,7 +42,7 @@ const BaseOrderForm = props => {
   } = orderState;
   return (
     <Grid container>
-      <DialogContent>
+      <DialogContent className={disabled && styles.dialog__disable}>
         <Grid item xs={12}>
           <AutoComplete
             filterBy="firstname"
@@ -79,18 +84,26 @@ const BaseOrderForm = props => {
         </Grid>
         <Grid container alignItems="center" justify="space-between">
           {products.length > 0 &&
-            products.map(product => (
+            products.map((product, index, array) => (
               <Fragment key={product.productID}>
                 <RenderProduct
-                  addProduct={addProduct}
                   debounceInputChange={productFilterChange}
                   handleDynamicInputChange={handleDynamicInputChange}
                   handleDynamicSelectChange={handleDynamicSelectChange}
-                  productsLength={products.length}
                   productFilterResult={productFilterResult}
                   product={product}
-                  removeProduct={removeProduct}
                 />
+                {index === 0 ? (
+                  <AddProductIcon
+                    addProduct={addProduct}
+                    productSize={array.length}
+                  />
+                ) : (
+                  <RemoveProductIcon
+                    removeProduct={removeProduct}
+                    productID={product.productID}
+                  />
+                )}
                 <Alert>
                   {printErrorMessage(validationErrors[product.productID])}
                 </Alert>
@@ -106,7 +119,6 @@ const BaseOrderForm = props => {
             margin="normal"
             fullWidth
             InputProps={{
-              readOnly: true,
               startAdornment: (
                 <InputAdornment position="start">
                   <AttachMoney />
@@ -124,7 +136,6 @@ const BaseOrderForm = props => {
             margin="normal"
             fullWidth
             InputProps={{
-              readOnly: true,
               startAdornment: (
                 <InputAdornment position="start">
                   <AttachMoney />
@@ -139,6 +150,7 @@ const BaseOrderForm = props => {
 };
 
 BaseOrderForm.defaultProps = {
+  disabled: false,
   orderState: {
     advancedFilterBy: {},
     customerFilterResult: [],
@@ -151,6 +163,7 @@ BaseOrderForm.defaultProps = {
 BaseOrderForm.propTypes = {
   addProduct: PropTypes.func.isRequired,
   customerFilterChange: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
   handleDynamicInputChange: PropTypes.func.isRequired,
   handleDynamicSelectChange: PropTypes.func.isRequired,
   handleInputChange: PropTypes.func.isRequired,

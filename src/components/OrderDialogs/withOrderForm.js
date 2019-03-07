@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { has, isEmpty, debounce, range, uniqBy } from "lodash";
+import { has, isEmpty, debounce, range, uniqBy, isEqual } from "lodash";
 import { FILTER_CUSTOMER } from "../../graphql-client/queries/customer";
 import { FILTER_PRODUCT } from "../../graphql-client/queries/product";
 import { orderPropTypes, orderDefaultProps } from "./propTypes";
@@ -25,13 +25,21 @@ export default function withOrderForm(WrappedComponent) {
       validationFunctions: {}
     };
 
+    static getDerivedStateFromProps(props, state) {
+      if (props.formData && !isEqual(props.formData, state.defaultOrderProps)) {
+        return {
+          defaultOrderProps: props.formData,
+          ...props.formData
+        };
+      }
+      return null;
+    }
+
     constructor(props) {
       super(props);
-      const setInitialFormValues = props.formData
-        ? { ...props.formData }
-        : { ...props.initialFormValues };
       this.state = {
-        ...setInitialFormValues
+        defaultOrderProps: props.initialFormValues,
+        ...props.initialFormValues
       };
     }
 

@@ -5,15 +5,38 @@ import { Grid, TextField, Fab } from "@material-ui/core";
 import { RemoveCircle, AddCircle } from "../../assets/material-ui-icons";
 import { orderProductPropTypes } from "./propTypes";
 
+export const AddProductIcon = ({ productSize, addProduct }) => (
+  <Grid item>
+    <Fab color="primary" disabled={productSize == 9} onClick={addProduct}>
+      <AddCircle />
+    </Fab>
+  </Grid>
+);
+
+AddProductIcon.propTypes = {
+  addProduct: PropTypes.func.isRequired,
+  productSize: PropTypes.number.isRequired
+};
+
+export const RemoveProductIcon = ({ removeProduct, productID }) => (
+  <Grid item>
+    <Fab onClick={() => removeProduct(productID)} color="secondary">
+      <RemoveCircle />
+    </Fab>
+  </Grid>
+);
+
+RemoveProductIcon.propTypes = {
+  productID: PropTypes.string.isRequired,
+  removeProduct: PropTypes.func.isRequired
+};
+
 const RenderProduct = props => {
   const {
-    addProduct,
     debounceInputChange,
     handleDynamicInputChange,
     handleDynamicSelectChange,
-    productsLength,
     productFilterResult,
-    removeProduct,
     product: { productID, selectedQuantity, quantityRange, ...product }
   } = props;
   const productValue = product["productname"];
@@ -58,21 +81,6 @@ const RenderProduct = props => {
           ))}
         </TextField>
       </Grid>
-      <Grid item>
-        {productID === "productname_1" ? (
-          <Fab
-            color="primary"
-            disabled={productsLength === 9}
-            onClick={addProduct}
-          >
-            <AddCircle />
-          </Fab>
-        ) : (
-          <Fab onClick={() => removeProduct(productID)} color="secondary">
-            <RemoveCircle />
-          </Fab>
-        )}
-      </Grid>
     </Fragment>
   );
 };
@@ -82,14 +90,11 @@ RenderProduct.defaultProps = {
 };
 
 RenderProduct.propTypes = {
-  addProduct: PropTypes.func.isRequired,
   debounceInputChange: PropTypes.func.isRequired,
   handleDynamicInputChange: PropTypes.func.isRequired,
   handleDynamicSelectChange: PropTypes.func.isRequired,
   product: orderProductPropTypes.isRequired,
-  productFilterResult: PropTypes.array,
-  productsLength: PropTypes.number.isRequired,
-  removeProduct: PropTypes.func.isRequired
+  productFilterResult: PropTypes.array
 };
 
 export default RenderProduct;

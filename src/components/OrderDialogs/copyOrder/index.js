@@ -11,7 +11,6 @@ export const DialogCopyOrder = ({
 }) => (
   <Query
     query={FETCH_ORDERS_BY_ID}
-    fetchPolicy="network-only"
     variables={{ orderID }}
   >
     {({ loading, data, error }) => {
@@ -26,6 +25,7 @@ export const DialogCopyOrder = ({
           data={restData}
           formData={{ order }}
           {...props}
+          disabled={true}
         />
       );
     }}

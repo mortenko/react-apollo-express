@@ -19,6 +19,7 @@ const DialogCopyProduct = ({ data: { productID, ...restData }, ...props }) => (
           title="Copy Product"
           data={restData}
           {...props}
+          disabled={true}
         />
       );
     }}

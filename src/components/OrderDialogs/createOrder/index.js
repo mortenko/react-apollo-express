@@ -5,7 +5,7 @@ import Grid from "@material-ui/core/Grid";
 import Button from "components/Button";
 import { Dialog, DialogTitle, DialogActions } from "components/Dialog";
 import withOrderHoc from "../withOrderHoc";
-import styles from "./createOrder.scss";
+import styles from "./createorder.scss";
 import BaseOrderForm from "../baseOrderForm";
 import {
   CREATE_ORDER,

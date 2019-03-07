@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import uuid from "uuid/v4";
+import { isEqual } from "lodash";
 import { productDefaultProps, productPropTypes } from "./propTypes";
 
 export default function withProductForm(WrappedComponent) {
@@ -20,14 +21,25 @@ export default function withProductForm(WrappedComponent) {
       initialFormValues: productDefaultProps,
       formData: undefined
     };
-
+    
+    static getDerivedStateFromProps(props, state) {
+      if (
+        props.formData &&
+        !isEqual(props.formData, state.defaultProductProps)
+      ) {
+        return {
+          defaultProductProps: props.formData,
+          ...props.formData
+        };
+      }
+      return null;
+    }
+    
     constructor(props) {
       super(props);
-      const setInitialFormValues = props.formData
-        ? { ...props.formData }
-        : { ...props.initialFormValues };
       this.state = {
-        ...setInitialFormValues
+        defaultProductProps: props.initialFormValues,
+        ...props.initialFormValues
       };
     }
 

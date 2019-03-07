@@ -15,6 +15,7 @@ import {
 import Button from "components/Button";
 
 const BaseProductForm = ({
+  disabled,
   productState: {
     product: {
       productname,
@@ -58,7 +59,7 @@ const BaseProductForm = ({
           />
           <Alert>{printErrorMessage(validationErrors.productname)}</Alert>
         </Grid>
-        <Grid item xs={12}>
+        <Grid className={disabled && styles.dialog__disable} item xs={12}>
           <TextField
             id="description"
             label="Description:"
@@ -84,7 +85,7 @@ const BaseProductForm = ({
           />
           <Alert>{printErrorMessage(validationErrors.description)}</Alert>
         </Grid>
-        <Grid item xs={12}>
+        <Grid className={disabled && styles.dialog__disable} item xs={12}>
           <TextField
             id="pricewithoutdph"
             label="Price without DPH:"
@@ -108,7 +109,7 @@ const BaseProductForm = ({
           />
           <Alert>{printErrorMessage(validationErrors.pricewithoutdph)}</Alert>
         </Grid>
-        <Grid item xs={12}>
+        <Grid className={disabled && styles.dialog__disable} item xs={12}>
           <TextField
             id="pricewithdph"
             label="Price with DPH:"
@@ -158,7 +159,7 @@ const BaseProductForm = ({
           </div>
           <Alert>{printErrorMessage(validationErrors.barcode)}</Alert>
         </Grid>
-        <Grid item xs={12}>
+        <Grid className={disabled && styles.dialog__disable} item xs={12}>
           <UploadButton
             handleInputChange={handleInputChange}
             photo={photo}
@@ -173,6 +174,7 @@ const BaseProductForm = ({
 };
 
 BaseProductForm.propTypes = {
+  disabled: PropTypes.bool,
   handleInputChange: PropTypes.func.isRequired,
   printErrorMessage: PropTypes.func.isRequired,
   productState: PropTypes.shape({
@@ -186,6 +188,7 @@ BaseProductForm.propTypes = {
 };
 
 BaseProductForm.defaultProps = {
+  disabled: false,
   productState: PropTypes.shape({
     product: productDefaultProps
   }),
